@@ -4,14 +4,14 @@ import Footer from "../Components/Footer";
 
 function Main() {
     const location = useLocation();
-    const shouldRenderHeaderFooter = !["/login", "/signUp"].includes(
+    const shouldRenderHeaderFooter = !["/login", "/signup"].includes(
         location.pathname
     );
 
     return (
         <div className="">
             {shouldRenderHeaderFooter && <Navbar />}
-            <div className="min-h-[75vh]">
+            <div className="min-h-[79vh] pt-28">
                 <Outlet />
             </div>
             {shouldRenderHeaderFooter && <Footer />}
