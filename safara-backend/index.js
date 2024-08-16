@@ -1,26 +1,45 @@
-const express = require("express");
+const mongoose = require('mongoose');
+const express = require('express');
 const cors = require('cors');
+const userRoutes = require('./Routes/userRoutes.js');
+
 require('dotenv').config()
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 
 const app = express();
 
 app.use(cors())
 
-const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t9lecvs.mongodb.net/Node-API?retryWrites=true&w=majority&appName=Cluster0`
+// app.post("/jwt", async (req, res) => {
+//   const user = req.body;
 
-app.post("/jwt", async (req, res) => {
-  const user = req.body;
+//   const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+//     expiresIn: "24h",
+//   });
+//   res.send({token})
+// });
 
-  const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "24h",
-  });
-  res.send({token})
-});
+// Middleware to parse JSON request bodies
+app.use(express.json());
+app.use(cors());
 
-app.get("/",async(req,res)=>{
-    res.send('working server safara')
+//routes
+app.use("/api/user", userRoutes);
+
+app.get("/", async (req, res) => {
+  res.send('working server safara')
 })
-app.listen(4000, () => {
-  console.log("server is running on port 4000");
-});
+
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t9lecvs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+mongoose
+  .connect(url)
+  .then(() => {
+    // listen for request
+    console.log("Successfully Connected to DB");
+    app.listen(process.env.PORT, () => {
+      console.log(`Listening on PORT ${process.env.PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
