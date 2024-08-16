@@ -12,7 +12,7 @@ const Navbar = () => {
                         <Link>Home</Link>
                         <Link>Courses</Link>
                         <Link to={'/login'}>Login</Link>
-                        <Link to={'/signup'} className="bg-[#125ca6] text-white px-3 py-1 rounded-md">Signup</Link>
+                        <Link to={'/signup'} className="bg-[#125ca6] text-white px-3 pt-1 pb-[0.4rem] rounded-md">Signup</Link>
                     </div>
                 </div>
             </div>
