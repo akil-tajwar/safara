@@ -9,14 +9,16 @@ import {
 import app from "../firebase/firebase.config";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 
-const provider = new GoogleAuthProvider();
 const AuthContext = createContext(null);
-const AuthProvider = () => {
-  const auth = getAuth(app);
 
+const AuthProvider = ({children}) => {
+  const provider = new GoogleAuthProvider();
+  const auth = getAuth(app);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const axiosPublic = useAxiosPublic();
+
+  // google login
   const googleLogin = () => {
     return signInWithPopup(auth, provider);
   };
@@ -49,7 +51,7 @@ const AuthProvider = () => {
     user,
     googleLogin,
   };
-  return <AuthContext.Provider value={userInfo}></AuthContext.Provider>;
+  return <AuthContext.Provider value={userInfo}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

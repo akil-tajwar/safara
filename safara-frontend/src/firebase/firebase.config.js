@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.SAFARA_apiKey,
-  authDomain: import.meta.env.SAFARA_authDomain,
-  projectId: import.meta.env.SAFARA_projectId,
-  storageBucket: import.meta.env.SAFARA_storageBucket,
-  messagingSenderId: import.meta.env.SAFARA_messagingSenderId,
-  appId: import.meta.env.SAFARA_appId,
+  apiKey: "AIzaSyCMnniFWRh9qUUnkHU6qQcF6U_PwoCUCTg",
+  authDomain: "safara-6656e.firebaseapp.com",
+  projectId: "safara-6656e",
+  storageBucket: "safara-6656e.appspot.com",
+  messagingSenderId: "1070641804765",
+  appId: "1:1070641804765:web:3d52bba1e6d44a7501f234"
 };
 
 // Initialize Firebase
