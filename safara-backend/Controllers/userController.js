@@ -8,10 +8,11 @@ const createToken = (_id) => {
 
 const signupUser = async (req, res) => {
     const { firstname, lastname, email, phone, role, password } = req.body;
+    console.log("🚀 ~ signupUser ~ req.body:", req.body)
     try {
         const user = await userModel.signup(firstname, lastname, email, phone, role, password);
         const token = createToken(user._id);
-        res.status(200).json({ username, token });
+        res.status(200).json({ user, token });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

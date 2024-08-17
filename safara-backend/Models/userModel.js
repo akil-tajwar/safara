@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema({
         unique: true,
     },
     phone: {
-        type: Number,
+        type: String,
         required: true,
-        unique: true,
+        // unique: true,
     },
     role: {
         type: String,
@@ -37,8 +37,8 @@ userSchema.statics.signup = async function (firstname, lastname, email, phone, r
             return exist;
         throw Error("Email already exists.!.");
     }
-    if (!email || !firstname || !phone) {
-        throw Error("All fields must be filled...");
+    if (!firstname ||!lastname || !email ||  !phone) {
+        throw Error("Required fields must be filled...");
     }
     if (!validator.isEmail(email)) {
         throw Error("Not a valid email.!.")
@@ -49,11 +49,11 @@ userSchema.statics.signup = async function (firstname, lastname, email, phone, r
     if (password) {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
-        const user = await this.create({ firstname, lastname, email, password: hash, role });
+        const user = await this.create({ firstname, lastname, email, phone, role, password: hash });
         return user;
     }
     else {
-        const user = await this.create({ firstname, lastname, email, role });
+        const user = await this.create({ firstname, lastname, email, phone, role });
         return user;
     }
 };
