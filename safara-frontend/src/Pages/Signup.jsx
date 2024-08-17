@@ -59,24 +59,38 @@ const Signup = () => {
     const handleGoogleLogin = () => {
         googleLogin()
             .then((result) => {
-                navigate("/");
+            
                 console.log(result.user);
+                 const displayName = result.user?.displayName
+                 const nameParts = displayName.trim().split(" ")
+
+                 const firstPart = nameParts[0];
+
+                 const lastPart = nameParts.length > 1? nameParts.slice(1).join(' ') : '';
+
                 const userInfo = {
-                    name: result.user?.displayName,
+                    firstname: firstPart,
+                    lastname: lastPart,
                     email: result.user?.email,
+                    phone: result.user?.phoneNumber,
+                    role:"",
+                    password:""
+
+
                     // photo: result.user?.photoURL,
-                };
+                };  
+                
                 axiosPublic.post("http://localhost:4000/api/user/signup", userInfo).then((res) => {
-                    if (res.data.insertedId) {
-                        Swal.fire({
-                            position: "top-middle",
-                            icon: "success",
-                            title: "You logged successfully",
-                            showConfirmButton: false,
-                            timer: 1000,
-                        });
-                        navigate("/");
-                    }
+                  if (res.data.insertedId) {
+                      Swal.fire({
+                          position: "top-middle",
+                          icon: "success",
+                          title: "Your account has been created",
+                          showConfirmButton: false,
+                          timer: 1500,
+                      });
+                      navigate("/");
+                  }
                     console.log(res.data);
                 });
             })
