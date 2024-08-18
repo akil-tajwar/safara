@@ -1,11 +1,10 @@
-import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
 
 const Signup = () => {
-    const { signup, error } = useSignup();
+    const { signup } = useSignup();
     const {
         register,
         handleSubmit,
@@ -14,25 +13,7 @@ const Signup = () => {
 
     const onSubmit = async (data) => {
         const { firstname, lastname, email, phone, role, password } = data;
-
         await signup(firstname, lastname, email, phone, role, password);
-
-        if (!error) {
-            Swal.fire({
-                position: "top-middle",
-                icon: "success",
-                title: "Your account has been created",
-                showConfirmButton: false,
-                timer: 1500,
-            });
-        } else {
-            Swal.fire({
-                position: "top-middle",
-                icon: "error",
-                title: error,
-                showConfirmButton: true,
-            });
-        }
     };
 
     return (
@@ -56,11 +37,6 @@ const Signup = () => {
                             {...register("firstname", { required: true })}
                             className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
                         />
-                        {errors.firstname && (
-                            <p className="text-red-500" role="alert">
-                                First Name is required
-                            </p>
-                        )}
                     </div>
                     <div className="form-control">
                         <label className="label">
@@ -72,11 +48,6 @@ const Signup = () => {
                             {...register("lastname", { required: true })}
                             className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
                         />
-                        {errors.lastname && (
-                            <p className="text-red-500" role="alert">
-                                Last Name is required
-                            </p>
-                        )}
                     </div>
                     <div className="form-control">
                         <label className="label">
@@ -88,11 +59,6 @@ const Signup = () => {
                             {...register("email", { required: true })}
                             className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
                         />
-                        {errors.email && (
-                            <p className="text-red-500" role="alert">
-                                Email is required
-                            </p>
-                        )}
                     </div>
                     <div className="form-control">
                         <label className="label">
@@ -104,11 +70,6 @@ const Signup = () => {
                             {...register("phone", { required: true })}
                             className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
                         />
-                        {errors.phone && (
-                            <p className="text-red-500" role="alert">
-                                Phone is required
-                            </p>
-                        )}
                     </div>
                     <div className="form-control">
                         <label className="label">
@@ -122,11 +83,6 @@ const Signup = () => {
                             <option value="Teacher">Teacher</option>
                             <option value="Student">Student</option>
                         </select>
-                        {errors.role && (
-                            <p className="text-red-500" role="alert">
-                                Role is required
-                            </p>
-                        )}
                     </div>
                     <div className="form-control">
                         <label className="label">
@@ -138,11 +94,6 @@ const Signup = () => {
                             {...register("password", { required: true })}
                             className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
                         />
-                        {errors.password && (
-                            <p className="text-red-500" role="alert">
-                                Password is required
-                            </p>
-                        )}
                         <label className="label">
                             <a href="#" className="label-text-alt link link-hover">
                                 Forgot password?
