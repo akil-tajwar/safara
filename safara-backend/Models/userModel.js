@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true,
-        // unique: true,
+        unique: true,
     },
     role: {
         type: String,
@@ -37,7 +37,7 @@ userSchema.statics.signup = async function (firstname, lastname, email, phone, r
             return exist;
         throw Error("Email already exists.!.");
     }
-    if (!firstname ||!lastname || !email ||  !phone) {
+    if (!firstname || !lastname || !email || !phone) {
         throw Error("Required fields must be filled...");
     }
     if (!validator.isEmail(email)) {
@@ -60,37 +60,28 @@ userSchema.statics.signup = async function (firstname, lastname, email, phone, r
 
 
 userSchema.statics.login = async function (email, password) {
-
     if (password) {
         if (!password || !email) {
             throw Error("All fields must be filled...");
         }
-
         const user = await this.findOne({ email });
-
         if (!user) {
             throw Error("Incorrect Email.!.");
         }
-
         const match = await bcrypt.compare(password, user.password);
-
         if (!match) {
             throw Error("Incorrect password.!.");
         }
-
         return user;
     }
     else {
         if (!email) {
             throw Error("All fields must be filled...");
         }
-
         const user = await this.findOne({ email });
-
         if (!user) {
             throw Error("Incorrect Email.!.");
         }
-
         return user;
     }
 

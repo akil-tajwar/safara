@@ -2,29 +2,20 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./Routes/userRoutes.js');
-
 require('dotenv').config()
-// const jwt = require("jsonwebtoken");
-
 const app = express();
-
 app.use(cors())
-
-// app.post("/jwt", async (req, res) => {
-//   const user = req.body;
-
-//   const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-//     expiresIn: "24h",
-//   });
-//   res.send({token})
-// });
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
 app.use(cors());
 
+
+
 //routes
 app.use("/api/user", userRoutes);
+
+
 
 app.get("/", async (req, res) => {
   res.send('working server safara')
