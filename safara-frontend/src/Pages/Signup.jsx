@@ -72,7 +72,7 @@ const Signup = () => {
                     firstname: firstPart,
                     lastname: lastPart,
                     email: result.user?.email,
-                    phone: result.user?.phoneNumber,
+                    phone: result.user?.phoneNumber ?result.user?.phoneNumber : "" ,
                     role:"",
                     password:""
 
