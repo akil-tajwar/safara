@@ -1,27 +1,25 @@
-const mongoose = require('mongoose');
-const express = require('express');
-const cors = require('cors');
-const userRoutes = require('./Routes/userRoutes.js');
-require('dotenv').config()
+const mongoose = require("mongoose");
+const express = require("express");
+const cors = require("cors");
+const userRoutes = require("./Routes/userRoutes.js");
+require("dotenv").config();
 const app = express();
-app.use(cors())
+app.use(cors( {
+  origin:['http://localhost:5173',"http://localhost:5174"]
+}));
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
 app.use(cors());
-
-
-
+app.use(express.urlencoded({ extended: true }));
 //routes
 app.use("/api/user", userRoutes);
 
-
-
 app.get("/", async (req, res) => {
-  res.send('working server safara')
-})
+  res.send("working server safara");
+});
 
-const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t9lecvs.mongodb.net/Safara-API?retryWrites=true&w=majority&appName=Cluster0`
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t9lecvs.mongodb.net/Safara-API?retryWrites=true&w=majority&appName=Cluster0`;
 mongoose
   .connect(url)
   .then(() => {
