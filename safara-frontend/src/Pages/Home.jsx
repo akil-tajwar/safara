@@ -1,5 +1,8 @@
+import useAuthContext from "../hooks/useAuthContext";
 
 const Home = () => {
+    const { user } = useAuthContext();
+    console.log("🚀 ~ Home ~ user:", user)
     return (
         <div className="w-3/4 mx-auto">
             <div className="grid grid-cols-2 gap-20 items-center">
