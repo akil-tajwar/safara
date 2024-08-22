@@ -11,7 +11,7 @@ function Main() {
     return (
         <div className="">
             {shouldRenderHeaderFooter && <Navbar />}
-            <div className="min-h-[79vh] pt-28">
+            <div className="min-h-[79vh] pt-32">
                 <Outlet />
             </div>
             {shouldRenderHeaderFooter && <Footer />}
