@@ -14,8 +14,9 @@ const Navbar = () => {
                         <img src="logo.png" alt="" />
                     </div>
                     <div className="flex gap-10 items-center">
-                        <Link>Home</Link>
-                        <Link>Courses</Link>
+                        <Link className="font-semibold">Home</Link>
+                        <Link className="font-semibold">Dashboard</Link>
+                        <Link className="font-semibold">Courses</Link>
                     </div>
                     {user ?
                         <div className="bg-[#125ca6] flex items-center gap-5 rounded-full">
