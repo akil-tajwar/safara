@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
+import { FaAngleLeft } from "react-icons/fa6";
 
 const Signup = () => {
     const { signup } = useSignup();
@@ -17,126 +18,99 @@ const Signup = () => {
     };
 
     return (
-        <div className="hero pt-10">
-            <div className="hero-content flex-col lg:flex-row-reverse">
-                <div className="text-center lg:text-left">
-                    <h1 className="text-5xl font-nsans-bold animate-pulse ">
-                        Register now!
-                    </h1>
-                    <img src="/images/auth.png" alt="" />
+        <div className="pt-10 pb-24">
+            <Link to={'/'} className="flex items-center gap-2 font-semibold w-3/4 mx-auto text-xl pb-10">
+                <FaAngleLeft />
+                <p>Go back to home</p>
+            </Link>
+            <h2 className="text-center text-4xl font-semibold text-[#125ca6] pb-5">SIGNUP</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="w-1/4 mx-auto border rounded-md p-10">
+                <div className="form-control pb-4">
+                    <label className="">
+                        <span className="">First Name</span>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Enter your first name"
+                        {...register("firstname", { required: true })}
+                        className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    />
                 </div>
-
-                <form onSubmit={handleSubmit(onSubmit)} className="card-body w-full">
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">First Name</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Enter your first name"
-                            {...register("firstname", { required: true })}
-                            className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
-                        />
-                    </div>
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Last Name</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Enter your last name"
-                            {...register("lastname", { required: true })}
-                            className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
-                        />
-                    </div>
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Email</span>
-                        </label>
-                        <input
-                            type="email"
-                            placeholder="email"
-                            {...register("email", { required: true })}
-                            className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
-                        />
-                    </div>
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Phone</span>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="phone"
-                            {...register("phone", { required: true })}
-                            className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
-                        />
-                    </div>
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Role</span>
-                        </label>
-                        <select
-                            name="role"
-                            {...register("role", { required: true })}
-                            className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
-                        >
-                            <option value="Teacher">Teacher</option>
-                            <option value="Student">Student</option>
-                        </select>
-                    </div>
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label-text">Password</span>
-                        </label>
-                        <input
-                            type="password"
-                            placeholder="password"
-                            {...register("password", { required: true })}
-                            className="input input-bordered focus:border-none rounded-none border hover:border-red-500"
-                        />
-                        <label className="label">
-                            <a href="#" className="label-text-alt link link-hover">
-                                Forgot password?
-                            </a>
-                        </label>
-                    </div>
-                    <div className="form-control">
-                        <p className="my-2">Upload Your Image</p>
-                        <input
-                            type="file"
-                            {...register("image")}
-                            className="focus:border-none rounded-none "
-                        />
-                    </div>
-
-                    <div className="form-control mt-6">
-                        <button type="submit" className="btn btn-error text-3xl text-white">
-                            Signup
-                        </button>
-                    </div>
-                    <p className="text-center">
-                        New to here?{" "}
-                        <Link to="/login" className="text-red-500 animate-pulse">
-                            Login
-                        </Link>{" "}
-                    </p>
-                    <div
-                        className="border border-white text-white rounded-lg flex items-center justify-center gap-3 font-bold  p-3 mt-10 bg-[#cb7728] hover:shadow-xl hover:shadow-[#0ecb34]"
+                <div className="form-control pb-4">
+                    <label className="">
+                        <span className="">Last Name</span>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Enter your last name"
+                        {...register("lastname", { required: true })}
+                        className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    />
+                </div>
+                <div className="form-control pb-4">
+                    <label className="">
+                        <span className="">Email</span>
+                    </label>
+                    <input
+                        type="email"
+                        placeholder="email"
+                        {...register("email", { required: true })}
+                        className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    />
+                </div>
+                <div className="form-control pb-4">
+                    <label className="">
+                        <span className="">Phone</span>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="phone"
+                        {...register("phone", { required: true })}
+                        className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    />
+                </div>
+                <div className="form-control pb-4">
+                    <label className="">
+                        <span className="">Signup as</span>
+                    </label>
+                    <select
+                        name="role"
+                        {...register("role", { required: true })}
+                        className="focus:border-none rounded-md border hover:border-[#125ca6] p-3"
                     >
-                        <box-icon
-                            name="google"
-                            type="logo"
-                            color="rgba(9,242,46,0.99)"
-                        ></box-icon>
-                        <span>Login With Google</span>
-                    </div>
-                    <Link to={"/"} className="mx-auto">
-                        <span>
-                            <FaHome className="text-5xl text-red-400 text-center" />
-                        </span>
-                    </Link>
-                </form>
-            </div>
+                        <option value="Teacher">Teacher</option>
+                        <option value="Student">Student</option>
+                    </select>
+                </div>
+                <div className="form-control pb-4">
+                    <label className="">
+                        <span className="">Password</span>
+                    </label>
+                    <input
+                        type="password"
+                        placeholder="password"
+                        {...register("password", { required: true })}
+                        className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    />
+                </div>
+                <div className="form-control w-full  mb-4">
+                    <label>
+                        <span>Upload your image</span>
+                    </label>
+                    <input type="file" {...register("image")} className="file-input w-full file-input-bordered" />
+                </div>
+                <div className="form-control mt-10">
+                    <button type="submit" className="bg-[#125ca6] py-3 rounded-md text-white">
+                        Signup
+                    </button>
+                </div>
+                <p className="text-center pt-2">
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-[#125ca6]">
+                        Login
+                    </Link>{" "}
+                </p>
+            </form>
         </div>
     );
 };
