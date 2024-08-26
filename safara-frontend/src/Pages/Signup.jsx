@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
 import { FaAngleLeft } from "react-icons/fa6";
