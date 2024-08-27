@@ -22,7 +22,7 @@ const Sidebar = () => {
         whiteSpace: "nowrap",
         color: isActive ? "#125ca6" : "white"
     });
-    
+
     const isAdmin = true;
     return (
         <div className="w-64 bg-[#125ca6] text-white h-screen">
@@ -30,6 +30,12 @@ const Sidebar = () => {
                 <img src="logo.png" alt="" />
             </div>
             <ul className="menu p-4">
+                {/* <div className="flex gap-2 ml-4">
+                    <div className="w-12 rounded border-2 border-white">
+                        <img className="rounded" alt="Tailwind CSS Navbar component" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                    </div>
+                    <h5 className="font-semibold">{user?.user?.firstname} {user?.user?.lastname}</h5>
+                </div> */}
                 {isAdmin ? (
                     <>
                         <li>

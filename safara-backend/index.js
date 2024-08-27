@@ -12,8 +12,13 @@ app.use(cors( {
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+
+
+
 //routes
 app.use("/api/user", userRoutes);
+
+
 
 app.get("/", async (req, res) => {
   res.send("working server safara");
