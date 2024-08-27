@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const userModel = require('../Models/userModel.js')
 const jwt = require('jsonwebtoken');
 
@@ -18,7 +19,6 @@ const signupUser = async (req, res) => {
     }
 };
 
-
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -31,4 +31,26 @@ const loginUser = async (req, res) => {
 
 }
 
-module.exports = { signupUser, loginUser }
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await userModel.find({});
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const deleteUser = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: "Invalid ID" });
+    }
+    const deletedUser = await userModel.findOneAndDelete({ _id: id });
+    if (deletedUser) {
+        res.status(200).json(deletedUser);
+    } else {
+        return res.status(400).json({ error: "No Such user Found" });
+    }
+};
+
+module.exports = { signupUser, loginUser, getAllUsers, deleteUser }
