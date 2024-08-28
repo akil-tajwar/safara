@@ -15,7 +15,7 @@ const Home = () => {
 
   return (
     <div className="w-3/4 mx-auto">
-      <div className="grid grid-cols-2 gap-20 items-center">
+      <div className="grid grid-cols-2 gap-5 items-center">
         <div>
           <div>
             <h3 className="text-6xl font-semibold">Best learning Platform</h3>
@@ -39,25 +39,34 @@ const Home = () => {
       </div>
 
       {/* learn more started  */}
-      <div className="md:flex  mt-20">
-        <div className="md:w-1/2">
-          <div className="grid grid-cols-2  gap-y-2 ">
-            <img src="/learn1.jpg" alt="" className="w-[250px] h-[150px] " />
-            <img src="/learn2.jpg" alt="" className="w-[250px] h-[150px] " />
-            <img src="/learn3.jpg" alt="" className="w-[250px] h-[150px] " />
-            <img src="/learn4.jpg" alt="" className="w-[250px] h-[150px] " />
+      <div className="grid grid-cols-2 gap-5 mt-20">
+        <div className="">
+          <div className="grid grid-cols-2 gap-5 w-fit">
+            <img src="/learn1.jpg" alt="" className="w-[350px] h-[220px] object-cover" />
+            <img src="/learn2.jpg" alt="" className="w-[350px] h-[220px] object-cover" />
+            <img src="/learn3.jpg" alt="" className="w-[350px] h-[220px] object-cover" />
+            <img src="/learn4.jpg" alt="" className="w-[350px] h-[220px] object-cover" />
           </div>
         </div>
-        <div className="md:w-1/2 ">
+        <div className="">
           <h1 className="text-[#125ca6] font-medium text-4xl mb-5">
             Learn More
           </h1>
-          <p>
+          <p className="text-justify">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo
+            autem aperiam repellat quae ipsa?
+          </p>
+          <p className="text-justify pt-5">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo
             autem aperiam repellat quae ipsa? Sunt soluta necessitatibus iusto,
             corporis fugiat molestias repudiandae cum dolorum hic nam eum fugit.
             Quod cumque doloribus iste ab cupiditate ratione deserunt laboriosam
             harum architecto repellendus!
+          </p>
+          <p className="text-justify pt-5">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo
+            autem aperiam repellat quae ipsa? Sunt soluta necessitatibus iusto,
+            corporis fugiat molestias repudiandae cum dolorum hic nam eum fugit.
           </p>
         </div>
       </div>
