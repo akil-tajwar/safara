@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    prevRole: {
+      type: String,
+      required: true,
+    },
+    memberSince: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
     },

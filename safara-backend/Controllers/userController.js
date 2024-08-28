@@ -40,6 +40,19 @@ const getAllUsers = async (req, res) => {
     }
 };
 
+const getSingleUser = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: "Invalid ID" });
+    }
+    const user = await userModel.findById(id);
+    if (user) {
+        res.status(200).json(user);
+    } else {
+        return res.status(400).json({ error: "No Such user Found" });
+    }
+};
+
 const deleteUser = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -53,4 +66,62 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { signupUser, loginUser, getAllUsers, deleteUser }
+const makeAdmin = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: "Invalid ID." });
+    }
+    const { role } = req.body;
+    if (!role) {
+        return res.status(400).json({ error: "Role is required." });
+    }
+    const user = await userModel.findOneAndUpdate(
+        { _id: id },
+        { role : 'admin'},
+        { new: true }
+    );
+    if (user) {
+        res.status(200).json(user);
+    } else {
+        return res.status(400).json({ error: "No Such User Found." });
+    }
+};
+
+const undoAdmin = async (req, res) => {
+    const { id } = req.params;
+    
+    // Validate the provided ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: "Invalid ID." });
+    }
+    
+    try {
+        const prevUser = await userModel.findById(id);
+        const user = await userModel.findOneAndUpdate(
+            { _id: id },
+            { role: prevUser.prevRole },
+            { new: true }
+        );
+        console.log("🚀 ~ undoAdmin ~ user:", user)
+
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            return res.status(400).json({ error: "No Such User Found." });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Server error." });
+    }
+};
+
+
+
+module.exports = {
+    signupUser,
+    loginUser,
+    getAllUsers,
+    getSingleUser,
+    deleteUser,
+    makeAdmin,
+    undoAdmin
+}
