@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaUserMinus, FaUserShield, FaUserTimes } from "react-icons/fa";
+import { FaUserCheck } from "react-icons/fa6";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 
 const AllUsers = () => {
     const [allUsers, setAllUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 15; // Number of users to display per page
+    const usersPerPage = 15;
 
     const fetchAllUsers = () => {
         const url = `http://localhost:4000/api/user/allUsers`;
@@ -14,7 +15,6 @@ const AllUsers = () => {
             .then((res) => res.json())
             .then((data) => {
                 setAllUsers(data);
-                // console.log(data);
             })
             .catch((error) => console.log(error));
     };
@@ -24,7 +24,6 @@ const AllUsers = () => {
     }, []);
 
     const handleDelete = (id) => {
-        console.log(id);
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -43,7 +42,6 @@ const AllUsers = () => {
                 })
                     .then((res) => res.json())
                     .then((data) => {
-                        console.log(data);
                         Swal.fire({
                             title: "Deleted!",
                             text: "The user has been deleted.",
@@ -56,7 +54,6 @@ const AllUsers = () => {
                         fetchAllUsers();
                     })
                     .catch((error) => {
-                        console.log(error);
                         Swal.fire({
                             title: "Error!",
                             text: "There was an error deleting the user.",
@@ -70,7 +67,152 @@ const AllUsers = () => {
             }
         });
     };
+
+    const handleMakeAdmin = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#125ca6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, do it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost:4000/api/user/makeAdmin/${id}`, {
+                    method: "PATCH",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ role: 'admin' })
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        Swal.fire({
+                            title: "Done!",
+                            text: `${data.firstname} ${data.lastname} is an admin now`,
+                            icon: "success",
+                            confirmButtonColor: "#125ca6",
+                        });
+                        setAllUsers((prevUsers) => {
+                            return prevUsers.map((prevUser) => {
+                                if (prevUser._id === id) {
+                                    return { ...prevUser, role: "admin" };
+                                } else {
+                                    return prevUser;
+                                }
+                            });
+                        });
+                    });
+            }
+        });
+    };
     
+    const handleUndoAdmin = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#125ca6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, do it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost:4000/api/user/undoAdmin/${id}`, {
+                    method: "PATCH",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        Swal.fire({
+                            title: "Done!",
+                            text: `${data.firstname} ${data.lastname} is no longer an admin`,
+                            icon: "success",
+                            confirmButtonColor: "#125ca6",
+                        });
+                        setAllUsers((prevUsers) => {
+                            return prevUsers.map((prevUser) => {
+                                if (prevUser._id === id) {
+                                    return { ...prevUser, role: data.role };
+                                } else {
+                                    return prevUser;
+                                }
+                            });
+                        });
+                    });
+            }
+        });
+    };
+    
+
+    const handleSuspendUser = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, suspend!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost:4000/api/user/suspendUser/${id}`, {
+                    method: "PATCH",
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        Swal.fire({
+                            title: "Done!",
+                            text: `${data.firstname} ${data.lastname} has been suspended`,
+                            icon: "success"
+                        });
+                        setAllUsers((prevUsers) => {
+                            return prevUsers.map((prevUser) => {
+                                if (prevUser._id === id) {
+                                    return { ...prevUser, isSuspended: true };
+                                } else {
+                                    return prevUser;
+                                }
+                            });
+                        });
+                    });
+            }
+        });
+    };
+
+    const handleContinueUser = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, continue!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost:4000/api/user/continueUser/${id}`, {
+                    method: "PATCH",
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        Swal.fire({
+                            title: "Done!",
+                            text: `${data.firstname} ${data.lastname} has been reinstated`,
+                            icon: "success"
+                        });
+                        setAllUsers((prevUsers) => {
+                            return prevUsers.map((prevUser) => {
+                                if (prevUser._id === id) {
+                                    return { ...prevUser, isSuspended: false };
+                                } else {
+                                    return prevUser;
+                                }
+                            });
+                        });
+                    });
+            }
+        });
+    };
 
     // Pagination logic
     const indexOfLastUser = currentPage * usersPerPage;
@@ -117,12 +259,40 @@ const AllUsers = () => {
                                     <td className="col-span-3">{user.firstname} {user.lastname}</td>
                                     <td>{user.role}</td>
                                     <td className='flex gap-2 items-center'>
-                                        <button className='bg-[#125ca6] text-white rounded px-1 py-[2px]'>Make Admin</button>
-                                        <button className='bg-warning text-white rounded px-1 py-[2px]'>Suspend User</button>
-                                        <RiDeleteBin5Line
-                                            className="bg-error p-1 text-2xl text-white rounded"
-                                            onClick={() => handleDelete(user._id)}
-                                        />
+                                        {user.role === 'admin' ?
+                                            <div className="tooltip" data-tip="Undo Admin">
+                                                <FaUserMinus
+                                                    className="bg-[#125ca6] cursor-pointer tooltip p-1 text-2xl text-white rounded"
+                                                    onClick={() => handleUndoAdmin(user._id)}
+                                                />
+                                            </div> :
+                                            <div className="tooltip" data-tip="Make Admin">
+                                                <FaUserShield
+                                                    className="bg-success cursor-pointer tooltip p-1 text-2xl text-white rounded"
+                                                    onClick={() => handleMakeAdmin(user._id)}
+                                                />
+                                            </div>
+                                        }
+                                        {user.isSuspended === false ?
+                                            <div className="tooltip" data-tip="Suspend User">
+                                                <FaUserTimes
+                                                    className='bg-warning p-1 cursor-pointer tooltip text-2xl text-white rounded'
+                                                    onClick={() => handleSuspendUser(user._id)}
+                                                />
+                                            </div> :
+                                            <div className="tooltip" data-tip="Continue User">
+                                                <FaUserCheck
+                                                    className='bg-success p-1 cursor-pointer tooltip text-2xl text-white rounded'
+                                                    onClick={() => handleContinueUser(user._id)}
+                                                />
+                                            </div>
+                                        }
+                                        <div className="tooltip" data-tip="Delete User">
+                                            <RiDeleteBin5Line
+                                                className="bg-error cursor-pointer tooltip p-1 text-2xl text-white rounded"
+                                                onClick={() => handleDelete(user._id)}
+                                            />
+                                        </div>
                                     </td>
                                 </tr>
                             ))

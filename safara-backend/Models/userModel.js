@@ -28,11 +28,17 @@ const userSchema = new mongoose.Schema(
     },
     prevRole: {
       type: String,
-      required: true,
     },
-    memberSince: {
+    img: {
       type: String,
       required: true,
+    },
+    isSuspended: {
+      type: Boolean,
+      default: false,
+    },
+    img: {
+      type: String,
     },
     password: {
       type: String,
@@ -47,6 +53,7 @@ userSchema.statics.signup = async function (
   email,
   phone,
   role,
+  prevRole,
   password
 ) {
   const exist = await this.findOne({ email });
@@ -60,9 +67,9 @@ userSchema.statics.signup = async function (
   if (!validator.isEmail(email)) {
     throw Error("Not a valid email.!.");
   }
-  if (password && !validator.isStrongPassword(password)) {
-    throw Error("Password is not strong enough.!.");
-  }
+  // if (password && !validator.isStrongPassword(password)) {
+  //   throw Error("Password is not strong enough.!.");
+  // }
   if (password) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
@@ -72,6 +79,7 @@ userSchema.statics.signup = async function (
       email,
       phone,
       role,
+      prevRole,
       password: hash,
     });
     return user;
