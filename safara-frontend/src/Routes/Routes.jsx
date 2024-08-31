@@ -6,6 +6,7 @@ import Login from "../Pages/Login";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import AdminHome from "../Pages/Dashboard/AdminDashboard/AdminHome";
 import AllUsers from "../Pages/Dashboard/AdminDashboard/AllUsers";
+import UserHome from "../Pages/Dashboard/UserDashboard/UserHome";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,18 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/admin/allUsers",
         element: <AllUsers />,
+      },
+    ],
+  },
+  
+  //user dashboard
+  {
+    path: "/dashboard/user",
+    element: <Dashboard />,
+    children: [
+      {
+        path: "/dashboard/user/userHome",
+        element: <UserHome />,
       },
     ],
   },

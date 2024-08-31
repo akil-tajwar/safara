@@ -36,7 +36,7 @@ const Sidebar = () => {
                     </div>
                     <h5 className="font-semibold">{user?.user?.firstname} {user?.user?.lastname}</h5>
                 </div> */}
-                {isAdmin ? (
+                {user?.user?.role === 'admin' && (
                     <>
                         <li>
                             <NavLink style={navLinkStyle} to={"/dashboard/admin/adminHome"}>
@@ -67,10 +67,11 @@ const Sidebar = () => {
                             </NavLink>
                         </li>
                     </>
-                ) : (
+                )}
+                {user?.user?.role === 'user' && (
                     <>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/userHome"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userHome"}>
                                 <FaHome></FaHome>User Home
                             </NavLink>
                         </li>
@@ -103,6 +104,7 @@ const Sidebar = () => {
                         </li>
                     </>
                 )}
+
                 {/* shared  content */}
                 <div className="divider bg-white h-0.5"></div>
                 <li>
