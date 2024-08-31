@@ -15,7 +15,8 @@ const Navbar = () => {
                     </div>
                     <div className="flex gap-10 items-center">
                         <Link className="font-semibold">Home</Link>
-                        <Link to="/dashboard/admin/adminHome" className="font-semibold">Dashboard</Link>
+                        {user?.user?.role === 'admin' && <Link to="/dashboard/admin/adminHome" className="font-semibold">Dashboard</Link>}
+                        {user?.user?.role === 'user' && <Link to="/dashboard/user/userHome" className="font-semibold">Dashboard</Link>}
                         <Link className="font-semibold">Courses</Link>
                     </div>
                     {user ?

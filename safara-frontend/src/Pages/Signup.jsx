@@ -12,8 +12,9 @@ const Signup = () => {
     } = useForm();
 
     const onSubmit = async (data) => {
-        const { firstname, lastname, email, phone, role, password } = data;
+        const { firstname, lastname, email, phone, password } = data;
         const img = "URL of the uploaded img";
+        const role = 'user';
         const prevRole = role;
         await signup(firstname, lastname, email, phone, role, prevRole, img, password);
         console.log("🚀 ~ onSubmit ~ prevRole:", prevRole)

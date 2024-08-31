@@ -13,10 +13,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      alert("Please enter both email and password.");
-      return;
-    }
+    // if (!email || !password) {
+    //   alert("Please enter both email and password.");
+    //   return;
+    // }
 
     const response = await login(email, password);
     if (response) {
