@@ -19,7 +19,7 @@ const Signup = () => {
         await signup(firstname, lastname, email, phone, role, prevRole, img, password);
         console.log("🚀 ~ onSubmit ~ prevRole:", prevRole)
     };
-    
+
 
     return (
         <div className="pt-10 pb-24">
@@ -73,7 +73,7 @@ const Signup = () => {
                         className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
                     />
                 </div>
-                <div className="form-control pb-4">
+                {/* <div className="form-control pb-4">
                     <label className="">
                         <span className="">Signup as</span>
                     </label>
@@ -85,12 +85,12 @@ const Signup = () => {
                         <option value="Teacher">Teacher</option>
                         <option value="Student">Student</option>
                     </select>
-                </div>
+                </div> */}
                 <div className="form-control w-full  mb-4">
                     <label>
                         <span>Upload your img</span>
                     </label>
-                    <input type="file" {...register("img")} className="file-input w-full file-input-bordered" />
+                    <input type="file" className="file-input w-full file-input-bordered" />
                 </div>
                 <div className="form-control pb-4">
                     <label className="">
