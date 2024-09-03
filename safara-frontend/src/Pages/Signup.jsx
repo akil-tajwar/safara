@@ -17,6 +17,8 @@ const Signup = () => {
         const role = 'user';
         const prevRole = role;
         await signup(firstname, lastname, email, phone, role, prevRole, img, password);
+
+        
         console.log("🚀 ~ onSubmit ~ prevRole:", prevRole)
     };
 

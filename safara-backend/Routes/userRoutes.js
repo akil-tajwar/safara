@@ -6,7 +6,9 @@ const {
     deleteUser,
     getSingleUser,
     makeAdmin,
-    undoAdmin
+    undoAdmin, 
+    forgetPassword,
+    resetPassword
 } = require('../Controllers/userController.js');
 
 const router = express.Router();
@@ -26,4 +28,12 @@ router.delete('/deleteUser/:id', deleteUser);
 router.patch('/makeAdmin/:id', makeAdmin);
 router.patch('/undoAdmin/:id', undoAdmin);
 
+// forget Password
+
+router.post("/forgetPassword", forgetPassword)
+
+// reset password 
+
+router.post("/resetPassword/:token", resetPassword)
+  
 module.exports = router;

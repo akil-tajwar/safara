@@ -4,6 +4,7 @@ const cors = require("cors");
 const userRoutes = require("./Routes/userRoutes.js");
 require("dotenv").config();
 const app = express();
+
 app.use(cors( {
   origin:['http://localhost:5173',"http://localhost:5174"]
 }));

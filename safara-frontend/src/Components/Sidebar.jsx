@@ -23,7 +23,7 @@ const Sidebar = () => {
         color: isActive ? "#125ca6" : "white"
     });
 
-    const isAdmin = true;
+   
     return (
         <div className="w-64 bg-[#125ca6] text-white h-screen">
             <div className="w-60">
@@ -76,27 +76,27 @@ const Sidebar = () => {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/paymentHistory"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userPaymentHistory"}>
                                 {" "}
                                 <FaCalendar></FaCalendar>Payment History
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/cart"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userCourses"}>
                                 {" "}
                                 <FaShoppingCart />
                                 My Courses
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/userRating"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userReview"}>
                                 {" "}
                                 <FaAd />
                                 Add a Review
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/review"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userCertificate"}>
                                 {" "}
                                 <FaList />
                                 Certificate
@@ -114,10 +114,10 @@ const Sidebar = () => {
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink style={navLinkStyle} to={"/menu"}>
+                    <NavLink style={navLinkStyle} to={"/AllCourses"}>
                         {" "}
                         <FaSearch />
-                        Menu
+                  Courses
                     </NavLink>
                 </li>
             </ul>

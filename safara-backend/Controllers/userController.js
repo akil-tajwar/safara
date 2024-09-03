@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const userModel = require('../Models/userModel.js')
 const jwt = require('jsonwebtoken');
-
+const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 const createToken = (_id) => {
     console.log(process.env.ACCESS_TOKEN_SECRET);
     return jwt.sign({ _id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "3d" });
@@ -115,6 +116,70 @@ const undoAdmin = async (req, res) => {
 };
 
 
+// forget password
+
+const forgetPassword = async (req, res) => {
+    const { email } = req.body;  
+  
+      const user = await userModel.findOne({ email });
+      if (!user) {
+        return res.json({ message: "user not registered" });
+      }
+    const token = jwt.sign({id:user._id},process.env.ACCESS_TOKEN_SECRET,{expiresIn:"5m"})
+    console.log(token);
+  
+  
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "ammaraslam7164@gmail.com",
+        pass: "wefopxlsdumlohpx",
+      },
+    });
+  
+    var mailOptions = {
+      from: "ammaraslam7164@gmail.com",
+      to: email,
+      subject: "Sending Email for reset password",
+      text: `http://localhost:5173/resetPassword/${token}`,
+    };
+  
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        res.send({status:false, message: "error sending mail" });
+      } else {
+        console.log("Email sent: " + info.response);
+        res.send({status:true, message: "successfully sent!!" });
+      }
+    });
+  }
+  
+  // reset password
+
+  const resetPassword= async (req, res) => {
+    const { token } = req.params;
+  
+    const { password } = req.body;
+  
+    try {
+      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  
+      const id = decoded.id;
+      const hashPassword = await bcrypt.hash(password, 10);
+  
+      await userModel.findByIdAndUpdate({ _id: id }, { password: hashPassword });
+  
+      return res.json({ status: true, message: "successfully reset!" });
+    } catch (err) {
+      console.log(err);
+  
+      res.send({ status: false, message: "Something went wrong!" });
+    }
+  }
+  
+
+
 
 module.exports = {
     signupUser,
@@ -123,5 +188,7 @@ module.exports = {
     getSingleUser,
     deleteUser,
     makeAdmin,
-    undoAdmin
+    undoAdmin,
+    forgetPassword,
+    resetPassword
 }
