@@ -7,7 +7,7 @@ const Navbar = () => {
     const { logout } = useLogout();
     console.log("🚀 ~ Home ~ user:", user)
     return (
-        <div className="fixed w-full py-9">
+        <div className="fixed w-full py-9 bg-white">
             <div className="w-3/4 mx-auto">
                 <div className="flex justify-between items-center">
                     <div className="w-60">
@@ -15,7 +15,8 @@ const Navbar = () => {
                     </div>
                     <div className="flex gap-10 items-center">
                         <Link className="font-semibold">Home</Link>
-                        <Link to="/dashboard/admin/adminHome" className="font-semibold">Dashboard</Link>
+                        {user?.user?.role === 'admin' && <Link to="/dashboard/admin/adminHome" className="font-semibold">Dashboard</Link>}
+                        {user?.user?.role === 'user' && <Link to="/dashboard/user/userHome" className="font-semibold">Dashboard</Link>}
                         <Link className="font-semibold">Courses</Link>
                     </div>
                     {user ?
@@ -38,7 +39,7 @@ const Navbar = () => {
                                 </ul>
                             </div>
                         </div> :
-                        <div className="flex gap-10 items-center">
+                        <div className="flex gap-10 items-center font-semibold">
                             <Link to={'/login'}>Login</Link>
                             <Link to={'/signup'} className="bg-[#125ca6] text-white px-3 pt-1 pb-[0.4rem] rounded-md">Signup</Link>
                         </div>}

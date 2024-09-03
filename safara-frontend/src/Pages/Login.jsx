@@ -57,9 +57,9 @@ const Login = () => {
             className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
           />
           <label className="mt-4">
-            <a href="#" className="">
+          <Link to="/forgetPassword"><a href="#" className="">
               Forgot password?
-            </a>
+            </a></Link>  
           </label>
         </div>
 

@@ -12,9 +12,16 @@ const Signup = () => {
     } = useForm();
 
     const onSubmit = async (data) => {
-        const { firstname, lastname, email, phone, role, password } = data;
-        await signup(firstname, lastname, email, phone, role, password);
+        const { firstname, lastname, email, phone, password } = data;
+        const img = "URL of the uploaded img";
+        const role = 'user';
+        const prevRole = role;
+        await signup(firstname, lastname, email, phone, role, prevRole, img, password);
+
+        
+        console.log("🚀 ~ onSubmit ~ prevRole:", prevRole)
     };
+
 
     return (
         <div className="pt-10 pb-24">
@@ -68,7 +75,7 @@ const Signup = () => {
                         className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
                     />
                 </div>
-                <div className="form-control pb-4">
+                {/* <div className="form-control pb-4">
                     <label className="">
                         <span className="">Signup as</span>
                     </label>
@@ -80,6 +87,12 @@ const Signup = () => {
                         <option value="Teacher">Teacher</option>
                         <option value="Student">Student</option>
                     </select>
+                </div> */}
+                <div className="form-control w-full  mb-4">
+                    <label>
+                        <span>Upload your img</span>
+                    </label>
+                    <input type="file" className="file-input w-full file-input-bordered" />
                 </div>
                 <div className="form-control pb-4">
                     <label className="">
@@ -91,12 +104,6 @@ const Signup = () => {
                         {...register("password", { required: true })}
                         className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
                     />
-                </div>
-                <div className="form-control w-full  mb-4">
-                    <label>
-                        <span>Upload your image</span>
-                    </label>
-                    <input type="file" {...register("image")} className="file-input w-full file-input-bordered" />
                 </div>
                 <div className="form-control mt-10">
                     <button type="submit" className="bg-[#125ca6] py-3 rounded-md text-white">

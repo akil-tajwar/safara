@@ -23,7 +23,7 @@ const Sidebar = () => {
         color: isActive ? "#125ca6" : "white"
     });
 
-    const isAdmin = true;
+   
     return (
         <div className="w-64 bg-[#125ca6] text-white h-screen">
             <div className="w-60">
@@ -36,7 +36,7 @@ const Sidebar = () => {
                     </div>
                     <h5 className="font-semibold">{user?.user?.firstname} {user?.user?.lastname}</h5>
                 </div> */}
-                {isAdmin ? (
+                {user?.user?.role === 'admin' && (
                     <>
                         <li>
                             <NavLink style={navLinkStyle} to={"/dashboard/admin/adminHome"}>
@@ -67,35 +67,36 @@ const Sidebar = () => {
                             </NavLink>
                         </li>
                     </>
-                ) : (
+                )}
+                {user?.user?.role === 'user' && (
                     <>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/userHome"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userHome"}>
                                 <FaHome></FaHome>User Home
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/paymentHistory"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userPaymentHistory"}>
                                 {" "}
                                 <FaCalendar></FaCalendar>Payment History
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/cart"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userCourses"}>
                                 {" "}
                                 <FaShoppingCart />
                                 My Courses
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/userRating"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userReview"}>
                                 {" "}
                                 <FaAd />
                                 Add a Review
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink style={navLinkStyle} to={"/dashboard/review"}>
+                            <NavLink style={navLinkStyle} to={"/dashboard/user/userCertificate"}>
                                 {" "}
                                 <FaList />
                                 Certificate
@@ -103,6 +104,7 @@ const Sidebar = () => {
                         </li>
                     </>
                 )}
+
                 {/* shared  content */}
                 <div className="divider bg-white h-0.5"></div>
                 <li>
@@ -112,10 +114,10 @@ const Sidebar = () => {
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink style={navLinkStyle} to={"/menu"}>
+                    <NavLink style={navLinkStyle} to={"/AllCourses"}>
                         {" "}
                         <FaSearch />
-                        Menu
+                  Courses
                     </NavLink>
                 </li>
             </ul>
