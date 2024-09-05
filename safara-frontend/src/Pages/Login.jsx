@@ -20,6 +20,7 @@ const Login = () => {
 
     const response = await login(email, password);
     if (response) {
+      console.log(response);
       console.log(response.message);
       navigate('/');
     }

@@ -10,10 +10,10 @@ import UserHome from "../Pages/Dashboard/UserDashboard/UserHome";
 import AllCourses from "../Components/AllCourses";
 import Certificate from "../Pages/Dashboard/UserDashboard/Certificate";
 import AddReview from "../Pages/Dashboard/UserDashboard/AddReview";
-import MyCourses from "../Pages/Dashboard/UserDashboard/MyCourses";
 import PaymentHistory from "../Pages/Dashboard/UserDashboard/PaymentHistory";
 import ForgetPassword from "../Components/ForgetPassword";
 import ResetPassword from "../Components/ResetPassword";
+import MyClasses from "../Pages/Dashboard/UserDashboard/MyClasses";
 
 export const router = createBrowserRouter([
   {
@@ -78,7 +78,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/user/userCourses",
-        element: <MyCourses />,
+        element: <MyClasses />,
       },
       {
         path: "/dashboard/user/userReview",

@@ -8,6 +8,10 @@ import {
     FaUsers,
     FaUtensilSpoon,
 } from "react-icons/fa";
+import { MdAttachMoney, MdPreview } from "react-icons/md";
+
+import { TbCertificate } from "react-icons/tb";
+import { SiCoursera } from "react-icons/si";
 import { NavLink } from "react-router-dom";
 import useAuthContext from "../hooks/useAuthContext";
 
@@ -50,7 +54,7 @@ const Sidebar = () => {
                         </li>
                         <li>
                             <NavLink style={navLinkStyle} to={"/dashboard/manageItems"}>
-                                <FaList />
+                            <SiCoursera />
                                 Manage Courses
                             </NavLink>
                         </li>
@@ -78,27 +82,27 @@ const Sidebar = () => {
                         <li>
                             <NavLink style={navLinkStyle} to={"/dashboard/user/userPaymentHistory"}>
                                 {" "}
-                                <FaCalendar></FaCalendar>Payment History
+                                <MdAttachMoney />Payment History
                             </NavLink>
                         </li>
                         <li>
                             <NavLink style={navLinkStyle} to={"/dashboard/user/userCourses"}>
                                 {" "}
-                                <FaShoppingCart />
-                                My Courses
+                                <SiCoursera />
+                                My Classes
                             </NavLink>
                         </li>
                         <li>
                             <NavLink style={navLinkStyle} to={"/dashboard/user/userReview"}>
                                 {" "}
-                                <FaAd />
+                                <MdPreview />
                                 Add a Review
                             </NavLink>
                         </li>
                         <li>
                             <NavLink style={navLinkStyle} to={"/dashboard/user/userCertificate"}>
                                 {" "}
-                                <FaList />
+                                <TbCertificate />
                                 Certificate
                             </NavLink>
                         </li>
