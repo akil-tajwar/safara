@@ -5,7 +5,7 @@ import {
   FaUsers,
   FaUtensilSpoon,
 } from "react-icons/fa";
-import { MdAttachMoney, MdPreview } from "react-icons/md";
+import { MdAttachMoney, MdOutlineNoteAdd, MdPreview } from "react-icons/md";
 
 import { TbCertificate } from "react-icons/tb";
 import { SiCoursera } from "react-icons/si";
@@ -36,7 +36,7 @@ const Sidebar = () => {
                     </div>
                     <h5 className="font-semibold">{user?.user?.firstname} {user?.user?.lastname}</h5>
                 </div> */}
-        {user?.user?.role === "admin" && (
+        {user?.user?.role === "user" && (
           <>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/admin/adminHome"}>
@@ -44,18 +44,19 @@ const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink style={navLinkStyle} to={"/dashboard/addItems"}>
-                <FaUtensilSpoon></FaUtensilSpoon>Add Course
+              <NavLink style={navLinkStyle} to={"/dashboard/admin/addCourses"}>
+              <MdOutlineNoteAdd />Add Course
               </NavLink>
             </li>
             <li>
-              <NavLink style={navLinkStyle} to={"/dashboard/manageItems"}>
+              <NavLink style={navLinkStyle} to={"/dashboard/admin/manageCourses"}>
                 <SiCoursera />
                 Manage Courses
               </NavLink>
             </li>
+           
             <li>
-              <NavLink style={navLinkStyle} to={"/dashboard/bookings"}>
+              <NavLink style={navLinkStyle} to={"/dashboard/admin/manageBookings"}>
                 <FaAd />
                 Manage Course Bookings
               </NavLink>
