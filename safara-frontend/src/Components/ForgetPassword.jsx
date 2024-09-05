@@ -23,7 +23,7 @@ const ForgetPassword = () => {
           
           Swal.fire({
               position: "top-middle",
-              icon: "error",
+              icon: "success",
               title: "Reset Email Sent!",
               showConfirmButton: true,
           });

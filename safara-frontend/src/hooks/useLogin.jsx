@@ -2,19 +2,22 @@ import { useState } from "react";
 import useAuth from "./useAuthContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+  
 
 export const useLogin = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate;
     const { dispatch } = useAuth();
-
+    
+  // Get the user's device information
+    const userAgent = navigator.userAgent;
     const login = async (email, password) => {
         setError(null);
         try {
             const response = await fetch("http://localhost:4000/api/user/login", {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password , deviceInfo: userAgent })
             });
             const json = await response.json();
             console.log("Response from server:", json);
