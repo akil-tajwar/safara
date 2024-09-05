@@ -14,6 +14,9 @@ import PaymentHistory from "../Pages/Dashboard/UserDashboard/PaymentHistory";
 import ForgetPassword from "../Components/ForgetPassword";
 import ResetPassword from "../Components/ResetPassword";
 import MyClasses from "../Pages/Dashboard/UserDashboard/MyClasses";
+import ManageCourses from "../Pages/Dashboard/AdminDashboard/ManageCourses";
+import ManageCourseBooking from "../Pages/Dashboard/AdminDashboard/ManageCourseBooking";
+import AddCourses from "../Pages/Dashboard/AdminDashboard/AddCourses";
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +58,19 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/admin/adminHome",
         element: <AdminHome />,
+      },
+      {
+        path: "/dashboard/admin/addCourses",
+        element: <AddCourses/>,
+      },
+      {
+        path: "/dashboard/admin/manageCourses",
+        element: <ManageCourses/>,
+      },
+  
+      {
+        path: "/dashboard/admin/manageBookings",
+        element: <ManageCourseBooking/>,
       },
       {
         path: "/dashboard/admin/allUsers",
