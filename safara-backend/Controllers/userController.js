@@ -43,8 +43,7 @@ const loginUser = async (req, res) => {
   try {
     const user = await userModel.login(email, password);
     // Detect the device type
-    const device = deviceDetector.parse(deviceInfo);
-    console.log("Device type:", device.device.type);
+
     const token = createToken(user._id);
     res.status(200).json({ user, token });
   } catch (error) {

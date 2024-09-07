@@ -10,14 +10,14 @@ export const useLogin = () => {
     const { dispatch } = useAuth();
     
   // Get the user's device information
-    const userAgent = navigator.userAgent;
+ 
     const login = async (email, password) => {
         setError(null);
         try {
             const response = await fetch("http://localhost:4000/api/user/login", {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email, password , deviceInfo: userAgent })
+                body: JSON.stringify({ email, password  })
             });
             const json = await response.json();
             console.log("Response from server:", json);
