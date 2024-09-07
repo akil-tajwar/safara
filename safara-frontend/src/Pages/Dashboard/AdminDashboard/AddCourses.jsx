@@ -16,8 +16,8 @@ const AddCourses = () => {
             <input
               type="text"
               name="title"
-              placeholder="Recipe name"
-              className="input input-bordered"
+              placeholder="Course name"
+              className="input input-bordered rounded-none"
             />
           </div>
           <div className="flex justify-between gap-3 ">
@@ -26,14 +26,14 @@ const AddCourses = () => {
                 <span className="label-text">Category*</span>
               </label>
 
-              <select className="select select-bordered w-full max-w-xs">
+              <select className="select select-bordered rounded-none w-full max-w-xs">
                 <option disabled selected>
                   Select a category
                 </option>
                 <option>Web Development</option>
-                <option>BBQ</option>
-                <option>SHAWARMA</option>
-                <option>GRILL</option>
+                <option>C++</option>
+                <option>Python</option>
+                <option>Sharpe</option>
               </select>
             </div>
             <div className="form-control w-full">
@@ -43,7 +43,7 @@ const AddCourses = () => {
               <input
                 type="number"
                 placeholder="Price"
-                className="input input-bordered"
+                className="input input-bordered rounded-none"
               />
             </div>
           </div>
@@ -53,8 +53,8 @@ const AddCourses = () => {
               <span className="label-text">Course Details*</span>
             </label>
             <textarea
-              className="textarea  textarea-bordered h-24"
-              placeholder="Recipe Details"
+              className="textarea  textarea-bordered rounded-none h-24"
+              placeholder="Course Details"
             ></textarea>
           </div>
           <div className="form-control w-full">
@@ -68,7 +68,7 @@ const AddCourses = () => {
             type="submit"
             className="btn bg-[#125ca6] text-white text-3xl "
           >
-            Add item
+            Add Course
           </button>
         </form>
       </div>
