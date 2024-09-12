@@ -2,26 +2,69 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
 import { FaAngleLeft } from "react-icons/fa6";
+import { useState } from "react";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Signup = () => {
     const { signup } = useSignup();
+    const [uploadPerc, setUploadPerc] = useState(0);
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
 
+    const [selectedImage, setSelectedImage] = useState(null);
+
     const onSubmit = async (data) => {
         const { firstname, lastname, email, phone, password } = data;
-        const img = "URL of the uploaded img";
-        const role = 'user';
+        const storage = getStorage();
+        const role = "user";
         const prevRole = role;
-        await signup(firstname, lastname, email, phone, role, prevRole, img, password);
 
-        
-        console.log("🚀 ~ onSubmit ~ prevRole:", prevRole)
+        try {
+            // Check if an image file is selected
+            if (selectedImage) {
+                const imgName = `${new Date().getTime()}_${selectedImage.name}`;
+                const storageRef = ref(storage, `images/${imgName}`);
+                const uploadTask = uploadBytesResumable(storageRef, selectedImage);
+
+                // Listen for state changes, errors, and completion of the upload
+                uploadTask.on(
+                    "state_changed",
+                    (snapshot) => {
+                        // Calculate and set upload progress
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setUploadPerc(Math.round(progress));
+                    },
+                    (error) => {
+                        console.error("Error uploading image: ", error);
+                    },
+                    async () => {
+                        // Get the download URL once upload is complete
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+                        // Call signup function with all data including image URL
+                        await signup(firstname, lastname, email, phone, role, prevRole, downloadURL, password);
+
+                        console.log("Signup successful with image URL:", downloadURL);
+                    }
+                );
+            } else {
+                // If no image is selected, proceed without image URL
+                await signup(firstname, lastname, email, phone, role, prevRole, "", password);
+                console.log("Signup successful without image.");
+            }
+        } catch (error) {
+            console.error("Error in signup: ", error);
+        }
     };
 
+    const handleImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setSelectedImage(e.target.files[0]);
+        }
+    };
 
     return (
         <div className="pt-10 pb-24">
@@ -31,6 +74,7 @@ const Signup = () => {
             </Link>
             <h2 className="text-center text-4xl font-semibold text-[#125ca6] pb-5">SIGNUP</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="w-1/4 mx-auto border rounded-md p-10">
+                {/* Form Fields */}
                 <div className="form-control pb-4">
                     <label className="">
                         <span className="">First Name</span>
@@ -75,24 +119,18 @@ const Signup = () => {
                         className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
                     />
                 </div>
-                {/* <div className="form-control pb-4">
-                    <label className="">
-                        <span className="">Signup as</span>
-                    </label>
-                    <select
-                        name="role"
-                        {...register("role", { required: true })}
-                        className="focus:border-none rounded-md border hover:border-[#125ca6] p-3"
-                    >
-                        <option value="Teacher">Teacher</option>
-                        <option value="Student">Student</option>
-                    </select>
-                </div> */}
-                <div className="form-control w-full  mb-4">
+                {/* Image Upload Field */}
+                <div className="form-control w-full mb-4">
                     <label>
                         <span>Upload your img</span>
                     </label>
-                    <input type="file" className="file-input w-full file-input-bordered" />
+                    {/* <p>{uploadPerc}%</p> */}
+                    <input
+                        type="file"
+                        accept="image/*"
+                        className="file-input w-full file-input-bordered"
+                        onChange={handleImageChange}
+                    />
                 </div>
                 <div className="form-control pb-4">
                     <label className="">

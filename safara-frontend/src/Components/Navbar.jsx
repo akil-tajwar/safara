@@ -26,8 +26,8 @@ const Navbar = () => {
                                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                                     <div className="w-12 mt-1 mr-1 rounded-full border-2 border-white">
                                         <img
-                                            alt="Tailwind CSS Navbar component"
-                                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                                            alt="Profile Picture"
+                                            src={user?.user?.img} />
                                     </div>
                                 </div>
                                 <ul
