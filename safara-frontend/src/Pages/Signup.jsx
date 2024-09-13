@@ -124,7 +124,7 @@ const Signup = () => {
                     <label>
                         <span>Upload your img</span>
                     </label>
-                    {/* <p>{uploadPerc}%</p> */}
+                    <p>{uploadPerc}%</p>
                     <input
                         type="file"
                         accept="image/*"

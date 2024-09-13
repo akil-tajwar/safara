@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const userRoutes = require("./Routes/userRoutes.js");
+const courseRoutes = require("./Routes/courseRoutes.js");
 require("dotenv").config();
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 app.use("/api/user", userRoutes);
+app.use("/api/course", courseRoutes);
 
 
 
