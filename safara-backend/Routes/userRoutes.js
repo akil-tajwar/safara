@@ -13,9 +13,12 @@ const {
 
 const router = express.Router();
 
+
 //post
 router.post('/signup', signupUser);
 router.post('/login', loginUser);
+router.post("/forgetPassword", forgetPassword)
+router.post("/resetPassword/:token", resetPassword)
 
 //get
 router.get('/allUsers', getAllUsers);
@@ -28,12 +31,5 @@ router.delete('/deleteUser/:id', deleteUser);
 router.patch('/makeAdmin/:id', makeAdmin);
 router.patch('/undoAdmin/:id', undoAdmin);
 
-// forget Password
-
-router.post("/forgetPassword", forgetPassword)
-
-// reset password 
-
-router.post("/resetPassword/:token", resetPassword)
   
 module.exports = router;
