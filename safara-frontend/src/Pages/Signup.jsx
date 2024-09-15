@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
 import { FaAngleLeft } from "react-icons/fa6";
 import { useState } from "react";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from '../firebase/firebase'; // Use storage from the initialized firebase file
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Signup = () => {
     const { signup } = useSignup();
@@ -18,7 +19,6 @@ const Signup = () => {
 
     const onSubmit = async (data) => {
         const { firstname, lastname, email, phone, password } = data;
-        const storage = getStorage();
         const role = "user";
         const prevRole = role;
 
