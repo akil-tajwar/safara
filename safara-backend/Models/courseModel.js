@@ -8,20 +8,27 @@ const courseSchema = new mongoose.Schema({
     title: {
         type: String,
     },
-    details:{
+    details: {
         type: String
     },
-    requirements:{
+    requirements: {
         type: String
     },
     instructorsId: [{
-        type: mongoose.Schema.Types.ObjectId, // Ensure this is the correct type
-        ref: "userCollection", // Reference the correct collection
-      }],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "userCollection",
+    }],
     banner: {
         type: String,
     },
-    videos: [String],
+    videos: [{
+        videoTitle: {
+            type: String,
+        },
+        videoLink: {
+            type: String,
+        }
+    }],
     category: {
         type: String,
     },
@@ -41,7 +48,7 @@ const courseSchema = new mongoose.Schema({
     studentsId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "userCollection",
-      }],
+    }],
 }, { timestamps: true });
 
 const course = mongoose.model("courseCollection", courseSchema);
