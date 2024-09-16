@@ -3,10 +3,21 @@ import JoditEditor from 'jodit-react';
 import { RxCross2 } from "react-icons/rx";
 import { storage } from '../../../firebase/firebase'; // Import the initialized Firebase storage
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import useAuthContext from "../../../hooks/useAuthContext";
 
 const AddCourses = () => {
+  const { user } = useAuthContext();
   const editor = useRef(null);
-  const [content, setContent] = useState('');
+  
+  // Form state variables
+  const [courseTitle, setCourseTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [requirements, setRequirements] = useState("");
+
+  const [content, setContent] = useState(''); // For course details
   const [searchTerm, setSearchTerm] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectInstructors, setSelectInstructors] = useState([]);
@@ -117,18 +128,19 @@ const AddCourses = () => {
 
       // Prepare data for API
       const courseData = {
-        title: "Course Title", // Replace with actual course title
-        details: content,
-        requirements: "Course Requirements", // Replace with actual requirements
+        userId: user?.user?._id,
+        title: courseTitle, // Actual course title from the form
+        details: content, // Course details from the editor
+        requirements, // Actual requirements from the form
         instructorsId: selectedInstructors.map((inst) => inst._id),
         banner: bannerURL,
         videos: videoURLs,
-        category: "Category", // Replace with actual category
-        subCategory: "SubCategory", // Replace with actual sub-category
+        category, // Actual category from the form
+        subCategory, // Actual sub-category from the form
         syllabus: pdfURL,
         keywords: selectedKeywords,
-        price: "100", // Replace with actual price
-        discount: "10", // Replace with actual discount
+        price, // Actual price from the form
+        discount, // Actual discount from the form
       };
 
       // Make a POST request to the backend API
@@ -158,7 +170,7 @@ const AddCourses = () => {
     <div>
       {loading ? (
         <div className="fixed inset-0 bg-white flex justify-center items-center">
-          <h2 className="text-xl font-semibold">Please wait. Files are uploading...</h2>
+          <h2 className="text-2xl font-semibold text-center">Please wait. Files are uploading. <br /> This may take a while.</h2>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="card-body">
@@ -166,7 +178,14 @@ const AddCourses = () => {
             <label className="label">
               <span className="label-text">Course Title</span>
             </label>
-            <input type="text" name="courseTitle" placeholder="Course Title" className="px-3 py-[11px] rounded-md border border-slate-200" />
+            <input
+              type="text"
+              name="courseTitle"
+              value={courseTitle}
+              onChange={(e) => setCourseTitle(e.target.value)}
+              placeholder="Course Title"
+              className="px-3 py-[11px] rounded-md border border-slate-200"
+            />
           </div>
 
           <div className="flex justify-between gap-3">
@@ -174,8 +193,14 @@ const AddCourses = () => {
               <label className="label">
                 <span className="label-text">Category</span>
               </label>
-              <select className="px-3 py-[11px] rounded-md cursor-pointer border border-slate-200">
-                <option disabled selected>Select a category</option>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="px-3 py-[11px] rounded-md cursor-pointer border border-slate-200"
+              >
+                <option disabled selected>
+                  Select a category
+                </option>
                 <option>Web Development</option>
                 <option>C++</option>
                 <option>Python</option>
@@ -187,8 +212,14 @@ const AddCourses = () => {
               <label className="label">
                 <span className="label-text">Sub category</span>
               </label>
-              <select className="px-3 py-[11px] rounded-md cursor-pointer border border-slate-200">
-                <option disabled selected>Select a sub-category</option>
+              <select
+                value={subCategory}
+                onChange={(e) => setSubCategory(e.target.value)}
+                className="px-3 py-[11px] rounded-md cursor-pointer border border-slate-200"
+              >
+                <option disabled selected>
+                  Select a sub-category
+                </option>
                 <option>Web Development</option>
                 <option>C++</option>
                 <option>Python</option>
@@ -202,14 +233,26 @@ const AddCourses = () => {
               <label className="label">
                 <span className="label-text">Price</span>
               </label>
-              <input type="number" placeholder="Price" className="px-3 py-[11px] rounded-md border border-slate-200" />
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="Price"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+              />
             </div>
 
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Discount</span>
               </label>
-              <input type="number" placeholder="Discount" className="px-3 py-[11px] rounded-md border border-slate-200" />
+              <input
+                type="number"
+                value={discount}
+                onChange={(e) => setDiscount(e.target.value)}
+                placeholder="Discount"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+              />
             </div>
           </div>
 
@@ -359,7 +402,7 @@ const AddCourses = () => {
               <label className="label">
                 <span className="label-text">Requirements</span>
               </label>
-              <input type="text" placeholder="Requirements" className="px-3 py-[11px] rounded-md border border-slate-200" />
+              <input type="text" value={requirements} onChange={(e) => setRequirements(e.target.value)} placeholder="Requirements" className="px-3 py-[11px] rounded-md border border-slate-200" />
             </div>
           </div>
 
