@@ -4,11 +4,15 @@ import Footer from "../Components/Footer";
 
 function Main() {
   const location = useLocation();
+
+  // Regular expression to match the singleCourse/:id route
+  const singleCourseRegex = /^\/singleCourse\/[^/]+$/;
+
   const shouldRenderHeaderFooter = ![
     "/login",
     "/dashboard",
     "/signup",
-  ].includes(location.pathname);
+  ].includes(location.pathname) && !singleCourseRegex.test(location.pathname);
 
   return (
     <div className="">
