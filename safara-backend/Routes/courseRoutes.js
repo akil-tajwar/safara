@@ -4,7 +4,8 @@ const {
     getAllCourses,
     getSingleCourse,
     deleteCourse,
-    updateCourse
+    updateCourse,
+    getReletedCourses
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.post('/createCourse', createCourse);
 //get
 router.get('/getAllCourses', getAllCourses);
 router.get('/getSingleCourse/:id', getSingleCourse);
+router.get('/getReletedCourse', getReletedCourses);
 
 //delete
 router.delete('/deleteCourse/:id', deleteCourse);

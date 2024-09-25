@@ -8,6 +8,9 @@ const courseSchema = new mongoose.Schema({
     title: {
         type: String,
     },
+    magnetLine: {
+        type: String,
+    },
     details: {
         type: String
     },
@@ -48,6 +51,18 @@ const courseSchema = new mongoose.Schema({
     studentsId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "userCollection",
+    }],
+    studentsOpinion: [{
+        reviewerId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "userCollection",
+        },
+        rating: {
+            type: String,
+        },
+        comments: {
+            type: String,
+        }
     }],
 }, { timestamps: true });
 
