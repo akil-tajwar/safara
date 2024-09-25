@@ -7,6 +7,39 @@ const bcrypt = require("bcrypt");
 const DeviceDetector = require('device-detector-js');
 const deviceDetector = new DeviceDetector();
 
+// nodemailer welcome message
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // or another email service
+  auth: {
+    user: "ammaraslam7164@gmail.com",
+    pass: "wefopxlsdumlohpx",
+  },
+});
+
+// Send welcome email function
+const sendWelcomeEmail = (userEmail, userName) => {
+  const mailOptions = {
+    from: 'ammaraslam7164@gmail.com', // sender's email
+    to: userEmail, // receiver's email
+    subject: 'Welcome to Our Website!',
+    html: `
+      <h2>Hello ${userName},</h2>
+      <p>Welcome to our website! We are excited to have you on board.</p>
+      <p>Feel free to explore and let us know if you need any help.</p>
+      <p>Best regards,<br/>Safara Academy</p>
+    `
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Error sending email:', error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+};
+
 
 
 const createToken = (_id) => {
@@ -45,6 +78,10 @@ const loginUser = async (req, res) => {
     // Detect the device type
 
     const token = createToken(user._id);
+    if(user && token)
+    {
+      sendWelcomeEmail(email, user.firstname);
+    }
     res.status(200).json({ user, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -149,7 +186,7 @@ const forgetPassword = async (req, res) => {
   console.log(token);
 
   var transporter = nodemailer.createTransport({
-    service: "gmail",
+
     auth: {
       user: "ammaraslam7164@gmail.com",
       pass: "wefopxlsdumlohpx",
