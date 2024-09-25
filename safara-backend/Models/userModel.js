@@ -33,6 +33,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    identity: [String], //businessman, entrepreneur
+    institution: {
+      type: String,
+    }, //IIUC, USTC, Chittaong University, Jamuna Bank
+    profession: [String], //lecturer, manager, student
+    result: {
+      type: String,
+    },
     isSuspended: {
       type: Boolean,
       default: false,

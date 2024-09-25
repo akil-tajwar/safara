@@ -8,15 +8,15 @@ import useAuthContext from "../../../hooks/useAuthContext";
 const AddCourses = () => {
   const { user } = useAuthContext();
   const editor = useRef(null);
-  
+
   // Form state variables
   const [courseTitle, setCourseTitle] = useState("");
+  const [magnetLine, setmagnetLine] = useState("");
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [requirements, setRequirements] = useState("");
-
   const [content, setContent] = useState(''); // For course details
   const [searchTerm, setSearchTerm] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -130,6 +130,7 @@ const AddCourses = () => {
       const courseData = {
         userId: user?.user?._id,
         title: courseTitle, // Actual course title from the form
+        magnetLine: magnetLine, // Actual magnet line from the form
         details: content, // Course details from the editor
         requirements, // Actual requirements from the form
         instructorsId: selectedInstructors.map((inst) => inst._id),
@@ -174,18 +175,33 @@ const AddCourses = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="card-body">
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Course Title</span>
-            </label>
-            <input
-              type="text"
-              name="courseTitle"
-              value={courseTitle}
-              onChange={(e) => setCourseTitle(e.target.value)}
-              placeholder="Course Title"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-            />
+          <div className="flex justify-between gap-3">
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Course Title</span>
+              </label>
+              <input
+                type="text"
+                name="courseTitle"
+                value={courseTitle}
+                onChange={(e) => setCourseTitle(e.target.value)}
+                placeholder="Course Title"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Magnet Line</span>
+              </label>
+              <input
+                type="text"
+                name="magnetLine"
+                value={magnetLine}
+                onChange={(e) => setmagnetLine(e.target.value)}
+                placeholder="Magnet Line"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+              />
+            </div>
           </div>
 
           <div className="flex justify-between gap-3">

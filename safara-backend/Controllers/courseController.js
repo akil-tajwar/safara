@@ -2,12 +2,13 @@ const mongoose = require("mongoose");
 const courseModel = require("../Models/courseModel.js");
 
 const createCourse = async (req, res) => {
-    const { userId, title, details, requirements, instructorsId, banner, videos, category, subCategory, syllabus, keywords, price, discount, studentsId } = req.body;
+    const { userId, title, magnetLine, details, requirements, instructorsId, banner, videos, category, subCategory, syllabus, keywords, price, discount, studentsId, studentsOpinion } = req.body;
 
     try {
         const newCourse = new courseModel({
             userId,
             title,
+            magnetLine,
             details,
             requirements,
             instructorsId,
@@ -19,7 +20,8 @@ const createCourse = async (req, res) => {
             keywords,
             price,
             discount,
-            studentsId
+            studentsId,
+            studentsOpinion
         });
 
         const savedCourse = await newCourse.save();
@@ -55,6 +57,40 @@ const getSingleCourse = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+const getReletedCourses = async (req, res) => {
+    const { id } = req.params;  // Expecting the course ID as a parameter
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ error: "Invalid ID" });
+    }
+
+    try {
+        // Retrieve the current course using its ID
+        const course = await courseModel.findById(id);
+        if (!course) {
+            return res.status(404).json({ error: "Course not found" });
+        }
+
+        const keywords = course.keywords;  // Get keywords from the retrieved course
+
+        if (!keywords || !Array.isArray(keywords) || keywords.length === 0) {
+            return res.status(400).json({ error: "No keywords available for this course" });
+        }
+
+        // Find courses that have at least one matching keyword
+        const relatedCourses = await courseModel.find({
+            _id: { $ne: id },  // Exclude the current course from the results
+            keywords: { $in: keywords }
+        });
+
+        res.status(200).json(relatedCourses);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+
 
 const updateCourse = async (req, res) => {
     const { id } = req.params;
@@ -96,6 +132,7 @@ module.exports = {
     createCourse,
     getAllCourses,
     getSingleCourse,
+    getReletedCourses,
     updateCourse,
     deleteCourse,
 };
