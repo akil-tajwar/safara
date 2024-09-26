@@ -58,7 +58,7 @@ const courseSchema = new mongoose.Schema({
             ref: "userCollection",
         },
         rating: {
-            type: String,
+            type: String, //for rating field
         },
         comments: {
             type: String,

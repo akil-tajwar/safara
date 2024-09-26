@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    identity: [String], //businessman, entrepreneur
+    identity: [String], //businessman, entrepreneur`
     institution: {
       type: String,
     }, //IIUC, USTC, Chittaong University, Jamuna Bank
