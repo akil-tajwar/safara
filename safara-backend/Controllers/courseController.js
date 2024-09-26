@@ -89,9 +89,6 @@ const getReletedCourses = async (req, res) => {
     }
 };
 
-
-
-
 const updateCourse = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -128,6 +125,36 @@ const deleteCourse = async (req, res) => {
     }
 };
 
+const giveRating = async (req, res) => {
+    const { courseId } = req.params;
+    const { reviewerId, rating, comments } = req.body;
+    try {
+        const course = await courseModel.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
+        const existingReview = course.studentsOpinion.find(
+            (opinion) => opinion.reviewerId.toString() === reviewerId
+        );
+        if (existingReview) {
+            // If a review already exists, return an error message
+            return res.status(400).json({ message: "An user cannot give multiple reviews" });
+        } else {
+            // Add a new review if none exists
+            course.studentsOpinion.push({
+                reviewerId,
+                rating,
+                comments,
+            });
+        }
+        await course.save();
+        res.status(200).json({ message: "Rating submitted successfully", course });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
 module.exports = {
     createCourse,
     getAllCourses,
@@ -135,4 +162,5 @@ module.exports = {
     getReletedCourses,
     updateCourse,
     deleteCourse,
+    giveRating,
 };

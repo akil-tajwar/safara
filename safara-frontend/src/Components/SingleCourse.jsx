@@ -9,21 +9,68 @@ import { GoNote } from "react-icons/go";
 import { TbLivePhoto } from "react-icons/tb";
 import Footer from "./Footer";
 import { FaRegCirclePlay } from "react-icons/fa6";
+import useAuthContext from "../hooks/useAuthContext";
+import Swal from "sweetalert2";
 
 const SingleCourse = () => {
     const { id } = useParams();
+    const { user } = useAuthContext();
     const [fetched, setFetched] = useState(false);
     const [courseData, setCourseData] = useState([]);
     const [reletedCourses, setreletedCourses] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [selectedVideo, setSelectedVideo] = useState(null); // State to track selected video
     const [isAdminOrStudent, setIsAdminOrStudent] = useState(false);
+    const [rating, setRating] = useState(null);
+    const [comments, setComments] = useState("");
+    const userId = user?.user?._id; // Replace with the actual user ID from your authentication
+
+    const handleRatingClick = (rate) => {
+        setRating(rate);
+    };
+
+    const handleSubmitRating = async () => {
+        const url = `http://localhost:4000/api/course/giveRating/${courseData._id}`;
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    reviewerId: userId,
+                    rating: rating.toString(), // Ensure the rating is a string as per your model
+                    comments,
+                }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                // Check if the error is due to multiple reviews
+                if (data.message === "An user cannot give multiple reviews") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                    });
+                } else {
+                    throw new Error("Failed to submit rating");
+                }
+            } else {
+                const data = await response.json();
+                console.log("Rating submitted successfully", data);
+                // Optionally, update the local state or re-fetch course data to reflect the new rating
+            }
+        } catch (error) {
+            console.error("Error submitting rating:", error);
+        }
+    };
+
+
 
     const fetchSingleCourse = async () => {
         try {
-            const response = await fetch(
-                `http://localhost:4000/api/course/getSingleCourse/${id}`
-            );
+            const response = await fetch(`http://localhost:4000/api/course/getSingleCourse/${id}`);
             if (!response.ok) {
                 throw new Error("Failed to fetch course");
             }
@@ -65,19 +112,7 @@ const SingleCourse = () => {
     };
 
     useEffect(() => {
-        const fetchSingleCourse = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/api/course/getSingleCourse/${id}`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch course");
-                }
-                const data = await response.json();
-                setCourseData(data);
-                setSelectedVideo(data.videos[0]); // Set the first video as default
-            } catch (error) {
-                console.error("Error fetching course:", error);
-            }
-        };
+
 
         fetchSingleCourse();
         fetchAllUsers(); // You can fetch users as well if needed.
@@ -182,7 +217,37 @@ const SingleCourse = () => {
                     <p className="text-justify">{courseData?.requirements}</p>
                 </div>
             </div>
-            <div className="pt-10">
+            {isAdminOrStudent && (
+                <div className="pt-10">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-2xl font-semibold pb-2">Give us your valuable opinion</h3>
+                        <div className="flex gap-1 items-center cursor-pointer">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <div key={star} onClick={() => handleRatingClick(star)}>
+                                    {rating >= star ? (
+                                        <FaStar className="text-yellow-400" />
+                                    ) : (
+                                        <FaRegStar />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <textarea
+                            className="border rounded-md w-full h-32 p-2"
+                            value={comments}
+                            onChange={(e) => setComments(e.target.value)}
+                        ></textarea>
+                        <div className="text-right">
+                            <button onClick={handleSubmitRating} className="bg-[#125ca6] text-white px-5 py-2 mt-1 rounded-md">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            <div className="pt-10"> {/*other students opinion. now user should see others opinion. if database  has 1, user should see one star. if database has 2 user should see 2 star. if database has 3, user should see 3 star. if database has 4, user should see 4 star. if database has 5, user should see 5 star. i has reviewer id. now show me dynamic data. */}
                 <div className="flex gap-2 items-center justify-between">
                     <h3 className="text-2xl font-semibold">Students Opinion</h3>
                     <div className="flex gap-2 text-2xl text-white">
@@ -198,53 +263,33 @@ const SingleCourse = () => {
                 </div>
                 <div
                     ref={studentsOpinionCarouselRef}
-                    className="carousel carousel-center space-x-4 p-4 mt-2 border w-full rounded-md"
-                >
-                    {/* Your Students Opinion content here */}
-                    <div>
-                        <div className="border rounded-md py-3 px-4 w-[490px]">
-                            <div className="flex gap-3">
-                                <div className="w-20 rounded-full border mt-1">
-                                    <img className="w-20 h-20 object-top rounded-full object-cover" alt="Profile Picture" src="" />
+                    className="carousel carousel-center space-x-4 p-4 mt-2 border w-full rounded-md">
+                    {courseData?.studentsOpinion?.map((opinion, index) => {
+                        const reviewer = allUsers.find(user => user._id === opinion.reviewerId);
+                        return (
+                            <div key={index} className="border rounded-md py-3 px-4 w-[490px]">
+                                <div className="flex gap-3">
+                                    <div className="w-20 rounded-full border mt-1">
+                                        <img className="w-20 h-20 object-top rounded-full object-cover" alt="Profile Picture" src={reviewer?.img} />
+                                    </div>
+                                    <div>
+                                        <h5 className="font-semibold text-xl">{reviewer?.firstname} {reviewer?.lastname}</h5>
+                                        <p>Student</p>
+                                        <p>{reviewer?.department || "Department Unknown"}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h5 className="font-semibold text-xl">Full Name</h5>
-                                    <p>Student</p>
-                                    <p>Computer Science, JNU</p>
+                                <div className="flex gap-1 mt-2 mb-5 items-center">
+                                    {[...Array(5)].map((star, i) => (
+                                        i < opinion.rating
+                                            ? <FaStar key={i} className="text-yellow-400" />
+                                            : <FaRegStar key={i} />
+                                    ))}
                                 </div>
+                                <p>{opinion.comments}</p>
                             </div>
-                            <div className="flex gap-1 mt-2 mb-5 items-center">
-                                <FaStar className="text-yellow-400" />
-                                <FaStar className="text-yellow-400" />
-                                <FaStar className="text-yellow-400" />
-                                <FaRegStar />
-                                <FaRegStar />
-                            </div>
-                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi delectus beatae illo a dolore omnis totam atque expedita! Earum, reiciendis.</p>
-                        </div>
-                    </div>
-                    <div className="">
-                        <div className="border rounded-md py-3 px-4 w-[490px]">
-                            <div className="flex gap-3">
-                                <div className="w-20 rounded-full border mt-1">
-                                    <img className="w-20 h-20 object-top rounded-full object-cover" alt="Profile Picture" src="" />
-                                </div>
-                                <div>
-                                    <h5 className="font-semibold text-xl">Full Name</h5>
-                                    <p>Student</p>
-                                    <p>Computer Science, JNU</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-1 mt-2 mb-5 items-center">
-                                <FaStar className="text-yellow-400" />
-                                <FaStar className="text-yellow-400" />
-                                <FaStar className="text-yellow-400" />
-                                <FaRegStar />
-                                <FaRegStar />
-                            </div>
-                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi delectus beatae illo a dolore omnis totam atque expedita! Earum, reiciendis.</p>
-                        </div>
-                    </div>
+                        );
+                    })}
+
                 </div>
             </div>
             <div className="pt-10">
