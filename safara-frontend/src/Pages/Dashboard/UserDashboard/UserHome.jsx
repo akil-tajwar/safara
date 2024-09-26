@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const UserHome = () => {
   return (
     <div>
@@ -54,33 +56,14 @@ const UserHome = () => {
             />
           </div>
         </div>
-        <div className="md:flex justify-around w-full">
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Role</span>
-            </label>
-            <input
-              type="text"
-              placeholder="role"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-            />
-          </div>
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Password</span>
-            </label>
-            <input
-              type="password"
-              placeholder="********"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-            />
-          </div>
-        </div>
 
         <div className="form-control mt-6 md:mx-[70px]">
-          <button className="btn bg-blue-700 text-3xl text-white">Update</button>
+          <Link
+            to="/dashboard/user/updateProfile"
+            className="btn bg-blue-700 text-3xl text-white"
+          >
+            Update
+          </Link>
         </div>
       </form>
     </div>
