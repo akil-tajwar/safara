@@ -3,9 +3,9 @@ import useAuthContext from "../../../hooks/useAuthContext";
 import axios from "axios";
 
 const UserHome = () => {
-  const { user } = useAuthContext();// Assuming 'user' contains user details like firstName, lastName, email, etc.
- 
+  const { user } = useAuthContext(); // Assuming 'user' contains user details like user ID
 
+  // State to hold user data and loading status
   const [userData, setUserData] = useState({
     firstname: "",
     lastname: "",
@@ -16,27 +16,40 @@ const UserHome = () => {
     profession: "",
     result: "",
   });
-
-
+  const [loading, setLoading] = useState(true); // New state to manage loading
+ 
   useEffect(() => {
-    axios
-      .get(`http://localhost:4000/api/user/singleUser/${user.user._id}`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        setUserData(response.data); // Assuming response.data contains the user info
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the user data!", error);
-      });
-  }, []);
+    // Fetch user data if the user exists
+    if (user?.user._id) {
+      axios
+        .get(`http://localhost:4000/api/user/singleUser/${user?.user._id}`, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          setUserData(response.data); // Set the user data
+          setLoading(false); // Set loading to false after fetching data
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the user data!", error);
+          setLoading(false); // Stop loading if there's an error
+        });
+    } else {
+      setLoading(false); // If no user, stop loading
+    }
+  }, [user]);
 
+  // Show a loader or message while loading
+  if (loading) {
+    return <div>Loading...</div>; // You can customize this loader UI
+  }
+
+  // If the user data is loaded, render the form
   return (
     <div>
       <p className="md:text-4xl font-bold text-[#125ca6]">My Profile</p>
       <div className="divider"></div>
 
-      <form  className="card-body">
+      <form className="card-body">
         <div className="md:flex justify-around">
           <div className="form-control md:w-1/3">
             <label className="label">
@@ -48,7 +61,7 @@ const UserHome = () => {
               name="firstName"
               className="input input-bordered rounded-none hover:border-blue-400"
               required
-              defaultValue={userData.firstname}
+              defaultValue={userData?.firstname}
             />
           </div>
           <div className="form-control md:w-1/3">
@@ -57,11 +70,11 @@ const UserHome = () => {
             </label>
             <input
               type="text"
-              name="lastName" // Corrected the name to "lastName"
+              name="lastName"
               placeholder="Last Name"
               className="input input-bordered rounded-none hover:border-blue-400"
               required
-              defaultValue={userData.lastname}
+              defaultValue={userData?.lastname}
             />
           </div>
         </div>
@@ -77,7 +90,7 @@ const UserHome = () => {
               placeholder="Email"
               className="input input-bordered rounded-none hover:border-blue-400"
               required
-              defaultValue={userData.email}
+              defaultValue={userData?.email}
             />
           </div>
           <div className="form-control md:w-1/3">
@@ -90,7 +103,7 @@ const UserHome = () => {
               placeholder="Phone"
               className="input input-bordered rounded-none hover:border-blue-400"
               required
-              defaultValue={userData.phone}
+              defaultValue={userData?.phone}
             />
           </div>
         </div>
@@ -106,7 +119,7 @@ const UserHome = () => {
               placeholder="Identity"
               className="input input-bordered rounded-none hover:border-blue-400"
               required
-              defaultValue={userData.identity}
+              defaultValue={userData?.identity}
             />
           </div>
           <div className="form-control md:w-1/3">
@@ -119,7 +132,7 @@ const UserHome = () => {
               placeholder="Institution"
               className="input input-bordered rounded-none hover:border-blue-400"
               required
-              defaultValue={userData.institution}
+              defaultValue={userData?.institution}
             />
           </div>
         </div>
@@ -135,7 +148,7 @@ const UserHome = () => {
               placeholder="Profession"
               className="input input-bordered rounded-none hover:border-blue-400"
               required
-              defaultValue={userData.profession}
+              defaultValue={userData?.profession}
             />
           </div>
           <div className="form-control md:w-1/3">
@@ -148,11 +161,10 @@ const UserHome = () => {
               placeholder="Result"
               className="input input-bordered rounded-none hover:border-blue-400"
               required
-              defaultValue={userData.result}
+              defaultValue={userData?.result}
             />
           </div>
         </div>
-
       </form>
     </div>
   );

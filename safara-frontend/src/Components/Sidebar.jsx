@@ -132,7 +132,7 @@ const Sidebar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink style={navLinkStyle} to={`/updateProfile/${user.user._id}`}>
+          <NavLink style={navLinkStyle} to={`/updateProfile/${user?.user?._id}`}>
             <FaUser />
              Update
           </NavLink>
