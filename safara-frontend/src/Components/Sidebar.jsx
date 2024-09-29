@@ -4,9 +4,11 @@ import { TbCertificate } from "react-icons/tb";
 import { SiCoursera } from "react-icons/si";
 import { NavLink, useLocation } from "react-router-dom";
 import useAuthContext from "../hooks/useAuthContext";
+import { FaUser } from "react-icons/fa6";
 
 const Sidebar = () => {
   const { user } = useAuthContext();
+  
   const location = useLocation();
 
   // Regex to match the /singleCourse/:id pattern
@@ -127,6 +129,12 @@ const Sidebar = () => {
           <NavLink style={navLinkStyle} to={"/AllCourses"}>
             <FaSearch />
             Courses
+          </NavLink>
+        </li>
+        <li>
+          <NavLink style={navLinkStyle} to={`/updateProfile/${user.user._id}`}>
+            <FaUser />
+             Update
           </NavLink>
         </li>
       </ul>
