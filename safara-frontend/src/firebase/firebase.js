@@ -6,13 +6,15 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.SAFARA_apiKey,
-  authDomain: import.meta.env.SAFARA_authDomain,
-  projectId: import.meta.env.SAFARA_projectId,
-  storageBucket: import.meta.env.SAFARA_storageBucket,
-  messagingSenderId: import.meta.env.SAFARA_messagingSenderId ,
-  appId: import.meta.env.SAFARA_appId 
+  apiKey: 'AIzaSyDf_Lwj-ZcL_-c6uws5UI_vGM81Rva_rL0',
+  authDomain: 'safara-85edf.firebaseapp.com',
+  projectId: 'safara-85edf',
+  storageBucket: 'safara-85edf.appspot.com',
+  messagingSenderId: '839104368645',
+  appId: '1:839104368645:web:4da3c3ffe25d4787ddcc6c',
 };
+console.log("🚀 ~ firebaseConfig:", firebaseConfig)
+console.log("🚀 ~ firebaseConfig.storageBucket:", firebaseConfig.storageBucket)
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

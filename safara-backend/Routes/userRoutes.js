@@ -8,7 +8,8 @@ const {
     makeAdmin,
     undoAdmin, 
     forgetPassword,
-    resetPassword
+    resetPassword,
+    updateUser
 } = require('../Controllers/userController.js');
 
 const router = express.Router();
@@ -30,6 +31,7 @@ router.delete('/deleteUser/:id', deleteUser);
 //patch
 router.patch('/makeAdmin/:id', makeAdmin);
 router.patch('/undoAdmin/:id', undoAdmin);
+router.patch('/updateUser/:id', updateUser);
 
   
 module.exports = router;
