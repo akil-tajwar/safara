@@ -78,8 +78,7 @@ const loginUser = async (req, res) => {
     // Detect the device type
 
     const token = createToken(user._id);
-    if(user && token)
-    {
+    if (user && token) {
       sendWelcomeEmail(email, user.firstname);
     }
     res.status(200).json({ user, token });
@@ -171,6 +170,24 @@ const undoAdmin = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Invalid ID" });
+  }
+
+  try {
+    const updatedUser = await userModel.findByIdAndUpdate(id, req.body, { new: true });
+    if (updatedUser) {
+      res.status(200).json(updatedUser);
+    } else {
+      return res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 // forget password
 
 const forgetPassword = async (req, res) => {
@@ -240,6 +257,7 @@ module.exports = {
   getAllUsers,
   getSingleUser,
   deleteUser,
+  updateUser,
   makeAdmin,
   undoAdmin,
   forgetPassword,

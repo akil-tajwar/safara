@@ -28,6 +28,8 @@ const AddCourses = () => {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [keywordInput, setKeywordInput] = useState("");
   const [loading, setLoading] = useState(false); // Loading state for upload process
+  const [uploadProgress, setUploadProgress] = useState(0); // Track the overall upload progress
+
 
   // Fetch instructors data
   const fetchAllUsers = () => {
@@ -90,7 +92,13 @@ const AddCourses = () => {
 
       uploadTask.on(
         "state_changed",
-        null,
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress((prevProgress) => {
+            const newProgress = prevProgress + (progress / totalFiles); // Adjust total progress
+            return Math.min(newProgress, 100); // Ensure it doesn't exceed 100%
+          });
+        },
         (error) => reject(error),
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
@@ -100,10 +108,15 @@ const AddCourses = () => {
     });
   };
 
+
   // Handle form submission
+  let totalFiles = 0;
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Set loading to true to show the loading screen
+
+    totalFiles = selectedVideos.length + (bannerFile ? 1 : 0) + (pdfFile ? 1 : 0);
+    setUploadProgress(0); // Reset progress to 0
 
     try {
       let bannerURL = "";
@@ -164,14 +177,26 @@ const AddCourses = () => {
       console.error("Error uploading files:", error);
     } finally {
       setLoading(false); // Hide loading screen after upload is done
+      setUploadProgress(100); // Ensure it reaches 100% after upload is done
     }
   };
+
 
   return (
     <div>
       {loading ? (
-        <div className="fixed inset-0 bg-white flex justify-center items-center">
-          <h2 className="text-2xl font-semibold text-center">Please wait. Files are uploading. <br /> This may take a while.</h2>
+        <div className="fixed inset-0 bg-white flex flex-col justify-center items-center">
+          <h2 className="text-2xl font-semibold text-center">
+            Please wait. Files are uploading. <br /> This may take a while.
+          </h2>
+          <input
+            type="range"
+            value={uploadProgress}
+            max="100"
+            className="w-64 mt-4"
+            readOnly
+          />
+          <p className="mt-2 text-gray-600">{Math.round(uploadProgress)}%</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="card-body">
