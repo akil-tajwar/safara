@@ -48,9 +48,14 @@ const courseSchema = new mongoose.Schema({
     discount: {
         type: String,
     },
-    studentsId: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "userCollection",
+    students: [{
+        studentsId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "userCollection",
+        },
+        certificate: {
+            type: String,
+        }
     }],
     studentsOpinion: [{
         reviewerId: {

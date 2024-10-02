@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    gender: {
+      type: String,
+    },
+    birthday: {
+      type: String,
+    },
     role: {
       type: String,
       required: true,
@@ -33,20 +39,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    identity: [String], //businessman, entrepreneur`
+    location: {
+      type: String,
+    },
     institution: {
       type: String,
     }, //IIUC, USTC, Chittaong University, Jamuna Bank
     profession: [String], //lecturer, manager, student
+    educationHistory: {
+      type: String,
+    }, //bba(hon's), mba
     result: {
       type: String,
     },
     isSuspended: {
       type: Boolean,
       default: false,
-    },
-    img: {
-      type: String,
     },
     password: {
       type: String,
