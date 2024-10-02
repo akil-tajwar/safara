@@ -18,7 +18,7 @@ const Navbar = () => {
                         <img src={logo} alt="" />
                     </div>
                     <div className="flex gap-10 items-center">
-                        <Link className="font-semibold">Home</Link>
+                        <Link to={'/'} className="font-semibold">Home</Link>
                         {user?.user?.role === 'admin' && <Link to="/dashboard/admin/adminHome" className="font-semibold">Dashboard</Link>}
                         {user?.user?.role === 'user' && <Link to="/dashboard/user/userHome" className="font-semibold">Dashboard</Link>}
                         <Link className="font-semibold">Courses</Link>
@@ -38,7 +38,7 @@ const Navbar = () => {
                                 <ul
                                     tabIndex={0}
                                     className="menu menu-sm dropdown-content bg-base-100 rounded-md border z-[1] mt-3 w-52 p-2 shadow">
-                                    <li><Link><CgProfile /> Profile</Link></li>
+                                    <li><Link to={'/profile'}><CgProfile /> Profile</Link></li>
                                     <li><Link><IoSettingsOutline /> Settings</Link></li>
                                     <li onClick={logout}><Link><MdLogout /> Logout</Link></li>
                                 </ul>

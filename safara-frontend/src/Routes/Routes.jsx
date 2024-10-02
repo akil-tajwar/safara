@@ -19,6 +19,7 @@ import ManageCourseBooking from "../Pages/Dashboard/AdminDashboard/ManageCourseB
 import AddCourses from "../Pages/Dashboard/AdminDashboard/AddCourses";
 import SingleCourse from "../Components/SingleCourse";
 import UpdateProfile from "../Pages/Dashboard/UserDashboard/UpdateProfile";
+import Profile from "../Pages/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -52,12 +53,15 @@ export const router = createBrowserRouter([
       {
         path: "/singleCourse/:id",
         element: <SingleCourse/>,
-      },  
+      }, 
+      {
+        path: "/profile",
+        element: <Profile/>,
+      }, 
       {
         path: "/updateProfile/:id",
         element: <UpdateProfile />,
       },
-      
     ],
   },
 
