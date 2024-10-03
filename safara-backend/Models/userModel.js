@@ -42,11 +42,15 @@ const userSchema = new mongoose.Schema(
     location: {
       type: String,
     },
-    institution: {
-      type: String,
-    }, //IIUC, USTC, Chittaong University, Jamuna Bank
-    profession: [String], //lecturer, manager, student
-    educationHistory: {
+    profession: [{
+      position: {
+        type: String,
+      },//lecturer, manager, student
+      institution: {
+        type: String,
+      }, //IIUC, USTC, Chittaong University, Jamuna Bank
+    }],
+    degree: {
       type: String,
     }, //bba(hon's), mba
     result: {
