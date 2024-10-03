@@ -1,185 +1,284 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import useAuthContext from "../../../hooks/useAuthContext";
+import { storage } from '../../../firebase/firebase'; // Firebase import
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const UpdateProfile = () => {
-  const { id } = useParams();
+  const { user } = useAuthContext();
+  const [loading, setLoading] = useState(false); // State for loader visibility
+  const [uploadPerc, setUploadPerc] = useState(0); // Upload percentage for image
+  const [selectedImage, setSelectedImage] = useState(null); // State to handle image selection
+
   const [userData, setUserData] = useState({
     firstname: "",
     lastname: "",
     email: "",
     phone: "",
-    identity: "",
-    institution: "",
-    profession: "",
+    birthday: "",
+    gender: "",
+    profession: [{ position: "", institution: "" }],
+    degree: "",
     result: "",
+    location: "",
+    img: "",
   });
 
-  // Fetch user data by id
+  // Fetch user data by ID
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/user/singleUser/${id}`, {
+      .get(`http://localhost:4000/api/user/singleUser/${user?.user?._id}`, {
         withCredentials: true,
       })
       .then((response) => {
-        setUserData(response.data); // Assuming response.data contains the user info
+        setUserData(response.data); // Populate form with fetched user data
       })
       .catch((error) => {
         console.error("There was an error fetching the user data!", error);
       });
-  }, [id]);
+  }, [user?.user?._id]);
 
-  const handleUpdate = (e) => {
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedImage(e.target.files[0]);
+    }
+  };
+
+  const handleProfessionChange = (index, field, value) => {
+    const updatedProfession = [...userData.profession];
+    updatedProfession[index][field] = value;
+    setUserData({ ...userData, profession: updatedProfession });
+  };
+
+  const handleUpdate = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const form = e.target;
+
     const updatedData = {
-      firstname: form.firstName.value,
-      lastname: form.lastName.value,
-      email: form.email.value,
-      phone: form.phone.value,
-      identity: form.identity.value,
-      institution: form.institution.value,
-      profession: form.profession.value,
-      result: form.result.value,
+      firstname: form.firstName.value || userData.firstname,
+      lastname: form.lastName.value || userData.lastname,
+      email: form.email.value || userData.email,
+      phone: form.phone.value || userData.phone,
+      birthday: form.birthday.value || userData.birthday,
+      gender: form.gender.value || userData.gender,
+      profession: [
+        {
+          position: form.position.value || userData.profession[0]?.position,
+          institution: form.institution.value || userData.profession[0]?.institution,
+        },
+      ],
+      degree: form.degree.value || userData.degree,
+      result: form.result.value || userData.result,
+      location: form.location.value || userData.location,
     };
 
-    axios
-      .patch(`http://localhost:4000/api/user/updateUser/${id}`, updatedData, {
-        withCredentials: true,
-      })
-      .then(() => {
-        alert("Profile updated successfully");
-      })
-      .catch((error) => {
-        console.error("There was an error updating the profile!", error);
-      });
+    try {
+      // If an image is selected, upload to Firebase first
+      if (selectedImage) {
+        const imgName = `${new Date().getTime()}_${selectedImage.name}`;
+        const storageRef = ref(storage, `images/${imgName}`);
+        const uploadTask = uploadBytesResumable(storageRef, selectedImage);
+
+        // Listen for state changes during upload
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setUploadPerc(Math.round(progress));
+          },
+          (error) => {
+            console.error("Error uploading image: ", error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            updatedData.img = downloadURL; // Update image URL
+            await axios.patch(
+              `http://localhost:4000/api/user/updateUser/${user?.user?._id}`,
+              updatedData,
+              { withCredentials: true }
+            );
+            setLoading(false);
+          }
+        );
+      } else {
+        await axios.patch(
+          `http://localhost:4000/api/user/updateUser/${user?.user?._id}`,
+          updatedData,
+          { withCredentials: true }
+        );
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("There was an error updating the profile!", error);
+    }
   };
 
   return (
-    <div>
-      <p className="md:text-4xl font-bold text-[#125ca6]">Update Profile</p>
-      <div className="divider"></div>
-
-      <form onSubmit={handleUpdate} className="card-body">
-        <div className="md:flex justify-around">
-          <div className="form-control md:w-1/3">
+    <div className="w-3/4 mx-auto">
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <span className="loading loading-spinner loading-lg text-"></span>
+        </div>
+      )}
+      <p className="md:text-3xl border-b font-bold text-[#125ca6] pb-2 mb-10">Update Profile</p>
+      <form onSubmit={handleUpdate} className="">
+        <p className="font-semibold text-xs text-slate-400 pb-1">PERSONAL INFO</p>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="form-control w-full">
             <label className="label">
               <span className="label-text">First Name</span>
             </label>
             <input
               type="text"
-              placeholder="First Name"
               name="firstName"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
+              className="px-3 py-[11px] rounded-md border border-slate-200"
               defaultValue={userData.firstname}
             />
           </div>
-          <div className="form-control md:w-1/3">
+          <div className="form-control w-full">
             <label className="label">
               <span className="label-text">Last Name</span>
             </label>
             <input
               type="text"
-              name="lastName" // Corrected the name to "lastName"
-              placeholder="Last Name"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
+              name="lastName"
+              className="px-3 py-[11px] rounded-md border border-slate-200"
               defaultValue={userData.lastname}
             />
           </div>
-        </div>
-
-        <div className="md:flex justify-around">
-          <div className="form-control md:w-1/3">
+          <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">Email</span>
+              <span className="label-text">Birthday</span>
             </label>
             <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData.email}
+              type="date"
+              name="birthday"
+              className="px-3 py-[11px] rounded-md border border-slate-200"
+              defaultValue={userData.birthday}
             />
           </div>
-          <div className="form-control md:w-1/3">
+          <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">Phone</span>
+              <span className="label-text">Gender</span>
+            </label>
+            <select name="gender" className="px-3 cursor-pointer py-[11px] rounded-md border border-slate-200">
+              <option value="Choose Gender" selected={userData.gender === "Choose Gender"}>
+                Choose Gender
+              </option>
+              <option value="Male" selected={userData.gender === "Male"}>
+                Male
+              </option>
+              <option value="Female" selected={userData.gender === "Female"}>
+                Female
+              </option>
+              <option value="Third Gender" selected={userData.gender === "Third Gender"}>
+                Third Gender
+              </option>
+            </select>
+          </div>
+          <div className="form-control w-full">
+            <label className="label">
+              <span className="label-text">Photo</span>
+            </label>
+            <input type="file" accept="image/*" className="file-input w-full border border-slate-200" onChange={handleImageChange} />
+            {/* <p>{uploadPerc}% uploaded</p> */}
+          </div>
+        </div>
+        {/* Profession Section */}
+        <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">PROFESSIONAL INFO</p>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="form-control w-full">
+            <label className="label">
+              <span className="label-text">Position</span>
             </label>
             <input
               type="text"
-              name="phone"
-              placeholder="Phone"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData.phone}
+              name="position"
+              className="px-3 py-[11px] rounded-md border border-slate-200"
+              defaultValue={userData.profession[0]?.position}
             />
           </div>
-        </div>
-
-        <div className="md:flex justify-around">
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Identity</span>
-            </label>
-            <input
-              type="text"
-              name="identity"
-              placeholder="Identity"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData.identity}
-            />
-          </div>
-          <div className="form-control md:w-1/3">
+          <div className="form-control w-full">
             <label className="label">
               <span className="label-text">Institution</span>
             </label>
             <input
               type="text"
               name="institution"
-              placeholder="Institution"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData.institution}
+              className="px-3 py-[11px] rounded-md border border-slate-200"
+              defaultValue={userData.profession[0]?.institution}
             />
           </div>
         </div>
-
-        <div className="md:flex justify-around">
-          <div className="form-control md:w-1/3">
+        {/* Educational History */}
+        <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">EDUCATIONAL HISTORY</p>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="form-control w-full">
             <label className="label">
-              <span className="label-text">Profession</span>
+              <span className="label-text">Degree</span>
             </label>
             <input
               type="text"
-              name="profession"
-              placeholder="Profession"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData.profession}
+              name="degree"
+              className="px-3 py-[11px] rounded-md border border-slate-200"
+              defaultValue={userData.degree}
             />
           </div>
-          <div className="form-control md:w-1/3">
+          <div className="form-control w-full">
             <label className="label">
               <span className="label-text">Result</span>
             </label>
             <input
               type="text"
               name="result"
-              placeholder="Result"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
+              className="px-3 py-[11px] rounded-md border border-slate-200"
               defaultValue={userData.result}
             />
           </div>
         </div>
-
-        <button type="submit" className="btn btn-primary mt-4">
-          Update
-        </button>
+        {/* Contact Info */}
+        <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">CONTACT INFO</p>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="form-control w-full">
+            <label className="label">
+              <span className="label-text">Phone</span>
+            </label>
+            <input
+              type="text"
+              name="phone"
+              className="px-3 py-[11px] rounded-md border border-slate-200"
+              defaultValue={userData.phone}
+            />
+          </div>
+          <div className="form-control w-full">
+            <label className="label">
+              <span className="label-text">Address</span>
+            </label>
+            <input
+              type="text"
+              name="location"
+              className="px-3 py-[11px] rounded-md border border-slate-200"
+              defaultValue={userData.location}
+            />
+          </div>
+          <div className="form-control w-full">
+            <label className="label">
+              <span className="label-text">Email</span>
+            </label>
+            <input
+              type="text"
+              name="email"
+              className="px-3 py-[11px] rounded-md border border-slate-200"
+              defaultValue={userData.email}
+            />
+          </div>
+        </div>
+        <div className="py-10 text-center">
+          <button type="submit" className="rounded-md py-[11px] px-4 bg-[#125ca6] text-white">
+            Update
+          </button>
+        </div>
       </form>
     </div>
   );
