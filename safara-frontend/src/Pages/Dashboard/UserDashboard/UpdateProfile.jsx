@@ -118,7 +118,7 @@ const UpdateProfile = () => {
     <div className="w-3/4 mx-auto">
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <span className="loading loading-spinner loading-lg text-"></span>
+          <span className="loading loading-spinner w-40 h-40 text-white"></span>
         </div>
       )}
       <p className="md:text-3xl border-b font-bold text-[#125ca6] pb-2 mb-10">Update Profile</p>

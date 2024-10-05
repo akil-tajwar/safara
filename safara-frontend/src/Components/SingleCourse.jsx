@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { useState, useEffect, useRef } from "react";
 import { IoMdDownload } from "react-icons/io";
-import { FaChevronLeft, FaChevronRight, FaRegStar, FaStar } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaRegStar, FaRegStarHalf, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import Navbar from "./Navbar";
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
 import { GoNote } from "react-icons/go";
@@ -59,6 +59,12 @@ const SingleCourse = () => {
             } else {
                 const data = await response.json();
                 console.log("Rating submitted successfully", data);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thank You',
+                    text: 'Your review is submitted successfully',
+                });
+                fetchSingleCourse();
                 // Optionally, update the local state or re-fetch course data to reflect the new rating
             }
         } catch (error) {
@@ -149,6 +155,45 @@ const SingleCourse = () => {
             });
         }
     };
+
+    const calculateAverageRating = () => {
+        if (!courseData?.studentsOpinion || courseData.studentsOpinion.length === 0) {
+            return 0;
+        }
+
+        const totalRating = courseData?.studentsOpinion?.reduce((acc, opinion) => acc + parseInt(opinion.rating), 0);
+        console.log("🚀 ~ calculateAverageRating ~ totalRating:", totalRating)
+
+        const averageRating = totalRating / courseData.studentsOpinion.length;
+        console.log("🚀 ~ calculateAverageRating ~ averageRating:", averageRating)
+
+        return parseFloat(averageRating.toFixed(1));
+    };
+
+    const renderStars = (averageRating) => {
+        const stars = [];
+        const fullStars = Math.floor(averageRating); // Number of full stars
+        const halfStar = averageRating % 1 >= 0.25 && averageRating % 1 < 0.75; // Check for half star between 0.25 and 0.75
+        const emptyStars = 5 - Math.ceil(averageRating); // Remaining empty stars
+
+        // Render full stars
+        for (let i = 0; i < fullStars; i++) {
+            stars.push(<FaStar key={i} className="text-yellow-400" />);
+        }
+
+        // Render half star if applicable
+        if (halfStar) {
+            stars.push(<FaStarHalfAlt key={fullStars} className="text-yellow-400" />);
+        }
+
+        // Render empty stars
+        for (let i = 0; i < emptyStars; i++) {
+            stars.push(<FaRegStar key={fullStars + i + 1} className="text-yellow-400" />);
+        }
+
+        return stars;
+    };
+
 
     const tempEnrollBtn = () => {
         setIsAdminOrStudent(true);
@@ -329,12 +374,9 @@ const SingleCourse = () => {
                                     <div>
                                         <h3 className="text-3xl font-semibold">{courseData?.title}</h3>
                                         <div className="flex gap-1 text-xl mt-2 items-center">
-                                            <FaStar className="text-yellow-400" />
-                                            <FaStar className="text-yellow-400" />
-                                            <FaStar className="text-yellow-400" />
-                                            <FaRegStar />
-                                            <FaRegStar />
-                                            <p>(23)</p>
+                                            {renderStars(calculateAverageRating())}
+                                            {/* <p>{calculateAverageRating()}</p> */}
+                                            <p className="ml-3">{courseData?.studentsOpinion?.length || 0} Ratings</p>
                                         </div>
                                     </div>
                                     <button className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md">
