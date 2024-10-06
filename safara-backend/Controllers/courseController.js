@@ -154,6 +154,13 @@ const giveRating = async (req, res) => {
     }
 };
 
+const courseCount = async(req,res)=>{
+
+    const courseCount= await courseModel.estimatedDocumentCount();
+    res.send({courseCount})
+     
+}
+
 
 module.exports = {
     createCourse,
@@ -163,4 +170,5 @@ module.exports = {
     updateCourse,
     deleteCourse,
     giveRating,
+    courseCount
 };

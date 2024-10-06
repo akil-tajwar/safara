@@ -6,7 +6,8 @@ const {
     deleteCourse,
     updateCourse,
     getReletedCourses,
-    giveRating
+    giveRating,
+    courseCount
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.post('/giveRating/:courseId', giveRating);
 
 //get
 router.get('/getAllCourses', getAllCourses);
+router.get('/getCourseCount', courseCount );
 router.get('/getSingleCourse/:id', getSingleCourse);
 router.get('/getReletedCourse', getReletedCourses);
 

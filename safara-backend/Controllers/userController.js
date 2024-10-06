@@ -250,6 +250,13 @@ const resetPassword = async (req, res) => {
     res.send({ status: false, message: "Something went wrong!" });
   }
 };
+// user count
+
+  const getAllUsersCount = async(req,res)=>{
+
+     const usersCount =  await userModel.estimatedDocumentCount()
+     res.send({usersCount})
+  }
 
 module.exports = {
   signupUser,
@@ -262,4 +269,5 @@ module.exports = {
   undoAdmin,
   forgetPassword,
   resetPassword,
+  getAllUsersCount
 };
