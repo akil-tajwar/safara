@@ -5,6 +5,8 @@ import { IoIosNotifications } from "react-icons/io";
 import React, { PureComponent } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { curveCardinal } from 'd3-shape';
+import useAuthContext from '../../../hooks/useAuthContext';
+
 
 const data = [
     {
@@ -74,6 +76,11 @@ const data02 = [
 ];
 
 const AdminHome = () => {
+    
+    const {user}= useAuthContext()
+
+    console.log(user.user.img);
+   
   return (
     <div>
       <div className="navbar bg-base-100">
@@ -115,7 +122,7 @@ const AdminHome = () => {
               <div className="w-10 rounded-full">
                 <img
                   alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  src={user?.user?.img}
                 />
               </div>
             </div>
