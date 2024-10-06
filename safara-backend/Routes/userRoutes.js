@@ -3,6 +3,7 @@ const {
     signupUser,
     loginUser,
     getAllUsers,
+    getAllUsersCount,
     deleteUser,
     getSingleUser,
     makeAdmin,
@@ -23,6 +24,7 @@ router.post("/resetPassword/:token", resetPassword)
 
 //get
 router.get('/allUsers', getAllUsers);
+router.get('/allUsersCount', getAllUsersCount);
 router.get('/singleUser/:id', getSingleUser);
 
 //delete
