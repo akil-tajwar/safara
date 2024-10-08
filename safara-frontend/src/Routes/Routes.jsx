@@ -8,7 +8,7 @@ import AdminHome from "../Pages/Dashboard/AdminDashboard/AdminHome";
 import AllUsers from "../Pages/Dashboard/AdminDashboard/AllUsers";
 import UserHome from "../Pages/Dashboard/UserDashboard/UserHome";
 import AllCourses from "../Components/AllCourses";
-import Certificate from "../Pages/Dashboard/UserDashboard/Certificate";
+
 import AddReview from "../Pages/Dashboard/UserDashboard/AddReview";
 import PaymentHistory from "../Pages/Dashboard/UserDashboard/PaymentHistory";
 import ForgetPassword from "../Components/ForgetPassword";
@@ -20,6 +20,7 @@ import AddCourses from "../Pages/Dashboard/AdminDashboard/AddCourses";
 import SingleCourse from "../Components/SingleCourse";
 import UpdateProfile from "../Pages/Dashboard/UserDashboard/UpdateProfile";
 import Profile from "../Pages/Profile";
+import Certificate from "../Components/certificate";
 
 export const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile/>,
+      }, 
+      {
+        path: "/certificate",
+        element: <Certificate/>,
       }, 
       {
         path: "/updateProfile",
