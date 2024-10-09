@@ -21,6 +21,7 @@ import SingleCourse from "../Components/SingleCourse";
 import UpdateProfile from "../Pages/Dashboard/UserDashboard/UpdateProfile";
 import Profile from "../Pages/Profile";
 import Certificate from "../Components/certificate";
+import Settings from "../Components/Settings";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +59,10 @@ export const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile/>,
+      }, 
+      {
+        path: "/settings",
+        element: <Settings/>,
       }, 
       {
         path: "/certificate",

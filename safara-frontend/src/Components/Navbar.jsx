@@ -60,7 +60,7 @@ const Navbar = () => {
                                     tabIndex={0}
                                     className="menu menu-sm dropdown-content bg-base-100 rounded-md border z-[1] mt-3 w-52 p-2 shadow">
                                     <li><Link to={'/profile'}><CgProfile /> Profile</Link></li>
-                                    <li><Link><IoSettingsOutline /> Settings</Link></li>
+                                    <li><Link to={`/settings`}><IoSettingsOutline /> Settings</Link></li>
                                     <li onClick={logout}><Link><MdLogout /> Logout</Link></li>
                                 </ul>
                             </div>
