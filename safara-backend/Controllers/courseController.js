@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const courseModel = require("../Models/courseModel.js");
+const { createPayment, executePayment, queryPayment, searchTransaction, refundTransaction } = require('bkash-payment')
 
 const createCourse = async (req, res) => {
     const { userId, title, magnetLine, details, requirements, instructorsId, banner, videos, category, subCategory, syllabus, keywords, price, discount, studentsId, studentsOpinion } = req.body;
@@ -154,13 +155,12 @@ const giveRating = async (req, res) => {
     }
 };
 
-const courseCount = async(req,res)=>{
+const courseCount = async (req, res) => {
 
-    const courseCount= await courseModel.estimatedDocumentCount();
-    res.send({courseCount})
-     
+    const courseCount = await courseModel.estimatedDocumentCount();
+    res.send({ courseCount })
+
 }
-
 
 module.exports = {
     createCourse,
@@ -170,5 +170,5 @@ module.exports = {
     updateCourse,
     deleteCourse,
     giveRating,
-    courseCount
+    courseCount,
 };

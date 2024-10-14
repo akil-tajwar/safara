@@ -7,7 +7,8 @@ const {
     updateCourse,
     getReletedCourses,
     giveRating,
-    courseCount
+    courseCount,
+    bkashPayment
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
