@@ -46,9 +46,7 @@ const UserHome = () => {
   // If the user data is loaded, render the form
   return (
     <div>
-      <p className="md:text-4xl font-bold text-[#125ca6]">My Profile</p>
-      <div className="divider"></div>
-
+   
       <form className="card-body">
         <div className="md:flex justify-around">
           <div className="form-control md:w-1/3">

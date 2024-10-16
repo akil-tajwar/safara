@@ -82,7 +82,7 @@ const Sidebar = () => {
         )}
         {user?.user?.role === "user" && (
           <> 
-          <h2>User Dashboard</h2>
+          <h2 className="text-2xl font-bold pb-8 ">User Dashboard</h2>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userHome"}>
                 <FaHome></FaHome>User Home
