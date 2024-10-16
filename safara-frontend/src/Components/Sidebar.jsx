@@ -1,4 +1,4 @@
-import { FaAd, FaHome, FaSearch, FaUsers } from "react-icons/fa";
+import { FaAd, FaBuilding, FaHome, FaMoneyBill, FaSearch, FaTachometerAlt, FaUsers } from "react-icons/fa";
 import { MdAttachMoney, MdOutlineNoteAdd, MdPreview } from "react-icons/md";
 import { TbCertificate } from "react-icons/tb";
 import { SiCoursera } from "react-icons/si";
@@ -43,7 +43,7 @@ const Sidebar = () => {
           <h2 className="text-2xl font-bold pb-8 ">Admin Dashboard</h2>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/admin/adminHome"}>
-                <FaHome></FaHome>Admin Home
+                <FaTachometerAlt></FaTachometerAlt>Admin Home
               </NavLink>
             </li>
             <li>
@@ -85,7 +85,7 @@ const Sidebar = () => {
           <h2 className="text-2xl font-bold pb-8 ">User Dashboard</h2>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userHome"}>
-                <FaHome></FaHome>User Home
+                <FaTachometerAlt></FaTachometerAlt>User Home
               </NavLink>
             </li>
             <li>
@@ -93,13 +93,13 @@ const Sidebar = () => {
                 style={navLinkStyle}
                 to={"/dashboard/user/userPaymentHistory"}
               >
-                <MdAttachMoney />
+                <FaMoneyBill />
                 Payment History
               </NavLink>
             </li>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userCourses"}>
-                <SiCoursera />
+                <FaBuilding />
                 My Classes
               </NavLink>
             </li>
