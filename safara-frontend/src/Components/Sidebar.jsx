@@ -23,22 +23,24 @@ const Sidebar = () => {
       (isSingleCoursePage && path === "/dashboard/admin/manageCourses");
 
     return {
-      backgroundColor: shouldApplyActiveStyle ? "white" : "transparent",
+      backgroundColor: shouldApplyActiveStyle ? "#125ca6" : "transparent",
       borderRadius: "4px",
       fontSize: "15px",
       whiteSpace: "nowrap",
-      color: shouldApplyActiveStyle ? "#125ca6" : "white",
+      color: shouldApplyActiveStyle ? "white": "white"  ,
     };
   };
 
   return (
-    <div className="w-64 bg-[#125ca6] text-white h-screen">
+    <div className="bg-gray-800 text-white h-screen fixed left-0 top-0 bottom-0 space-y-2 w-64">
+   
       <div className="w-60">
         <img src="logo.png" alt="" />
       </div>
       <ul className="menu p-4">
         {user?.user?.role === "admin" && (
           <>
+          <h2 className="text-2xl font-bold pb-8 ">Admin Dashboard</h2>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/admin/adminHome"}>
                 <FaHome></FaHome>Admin Home
@@ -79,7 +81,8 @@ const Sidebar = () => {
           </>
         )}
         {user?.user?.role === "user" && (
-          <>
+          <> 
+          <h2>User Dashboard</h2>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userHome"}>
                 <FaHome></FaHome>User Home
