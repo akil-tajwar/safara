@@ -1,7 +1,8 @@
-import { FaAd, FaBuilding, FaHome, FaMoneyBill, FaSearch, FaTachometerAlt, FaUsers } from "react-icons/fa";
-import { MdAttachMoney, MdOutlineNoteAdd, MdPreview } from "react-icons/md";
-import { TbCertificate } from "react-icons/tb";
-import { SiCoursera } from "react-icons/si";
+import { FaAd, FaBuilding, FaHome, FaMoneyBill, FaRegBuilding, FaSearch, FaTachometerAlt, FaUsers } from "react-icons/fa";
+import {  MdOutlineNoteAdd} from "react-icons/md";
+import { VscPreview } from "react-icons/vsc";
+import { GrDocumentConfig, GrDocumentDownload, GrDocumentUpdate } from "react-icons/gr";
+import { FcDepartment } from "react-icons/fc";
 import { NavLink, useLocation } from "react-router-dom";
 import useAuthContext from "../hooks/useAuthContext";
 import { FaUser } from "react-icons/fa6";
@@ -48,7 +49,7 @@ const Sidebar = () => {
             </li>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/admin/addCourses"}>
-                <MdOutlineNoteAdd />
+              <GrDocumentUpdate />
                 Add Course
               </NavLink>
             </li>
@@ -59,7 +60,7 @@ const Sidebar = () => {
                 }
                 to={"/dashboard/admin/manageCourses"}
               >
-                <SiCoursera />
+              <FaRegBuilding />
                 Manage Courses
               </NavLink>
             </li>
@@ -68,7 +69,7 @@ const Sidebar = () => {
                 style={navLinkStyle}
                 to={"/dashboard/admin/manageBookings"}
               >
-                <FaAd />
+               <GrDocumentConfig />
                 Manage Course Bookings
               </NavLink>
             </li>
@@ -99,13 +100,13 @@ const Sidebar = () => {
             </li>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userCourses"}>
-                <FaBuilding />
+                <FcDepartment />
                 My Classes
               </NavLink>
             </li>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userReview"}>
-                <MdPreview />
+              <VscPreview />
                 Add a Review
               </NavLink>
             </li>
@@ -114,7 +115,7 @@ const Sidebar = () => {
                 style={navLinkStyle}
                 to={"/dashboard/user/userCertificate"}
               >
-                <TbCertificate />
+              <GrDocumentDownload />
                 Certificate
               </NavLink>
             </li>
