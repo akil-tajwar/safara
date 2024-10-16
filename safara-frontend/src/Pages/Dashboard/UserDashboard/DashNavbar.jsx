@@ -17,7 +17,7 @@ const DashNavbar = () => {
       <div className="navbar bg-gray-800 pt-4">
         <div className="flex-1">
           <a className="text-2xl font-bold  text-white">
-            Welcome {user?.user?.firstname + "" + user?.user?.lastname}
+            Welcome {user?.user?.firstname + " " + user?.user?.lastname}
           </a>
         </div>
         <div className="flex-none">
