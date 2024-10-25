@@ -53,7 +53,18 @@ const courseSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "userCollection",
         },
-        certificate: {
+        paymentId: {
+            type: String,
+        },
+        paymentComplete: {
+            type: Boolean,
+            default: false
+        },
+        isCourseComplete: {
+            type: Boolean,
+            default: false
+        },
+        certificateUrl: {
             type: String,
         }
     }],

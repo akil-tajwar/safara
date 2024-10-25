@@ -1,20 +1,19 @@
+const cors = require("cors");
 const mongoose = require("mongoose");
 const express = require("express");
-const cors = require("cors");
 const { google } = require("googleapis"); // Missing Google API Import
 const userRoutes = require("./Routes/userRoutes.js");
 const courseRoutes = require("./Routes/courseRoutes.js");
+
 require("dotenv").config();
 const app = express();
 const { OAuth2 } = google.auth;
 
-// CORS configuration
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: 'http://localhost:5173', // Your frontend URL
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  credentials: true // If needed for cookies/auth
+}));
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
@@ -23,14 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/user", userRoutes);
 app.use("/api/course", courseRoutes);
-
 // calender
-
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true,
-}));
-app.use(express.json());
 
 // Google OAuth2 Client
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -87,7 +79,7 @@ app.get("/", async (req, res) => {
   res.send("Server is working!");
 });
 
-// Connect to MongoDB
+
 const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t9lecvs.mongodb.net/Safara-API?retryWrites=true&w=majority&appName=Cluster0`;
 mongoose
   .connect(url)

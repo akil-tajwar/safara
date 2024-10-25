@@ -18,6 +18,7 @@ import Footer from "./Footer";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import useAuthContext from "../hooks/useAuthContext";
 import Swal from "sweetalert2";
+import axios from 'axios';
 
 const SingleCourse = () => {
   const { id } = useParams();
@@ -52,6 +53,7 @@ const SingleCourse = () => {
     // Remove the <a> element from the DOM after the click
     aTag.remove();
   };
+
 
   const handleRatingClick = (rate) => {
     setRating(rate);
@@ -233,6 +235,31 @@ const SingleCourse = () => {
   const tempEnrollBtn = () => {
     setIsAdminOrStudent(true);
   };
+
+  const makePayment = async () => {
+    const paymentData = {
+      courseId: courseData._id,  // The course being enrolled in
+      studentsId: userId,        // ID of the currently logged-in user
+      price: courseData.price,   // Price of the course
+    };
+    console.log('Payment Data before sent:', paymentData);
+
+    // Make a POST request to the backend payment API
+    fetch('http://localhost:4000/api/course/payment/order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(paymentData)
+    })
+      .then(res => res.json())
+      .then((result) => {
+        window.location.replace(result.url); // Redirect to payment gateway
+        console.log(result);
+      })
+      .catch(error => console.error('Error during payment process:', error));
+  };
+
 
   const commonSections = (
     <div>
@@ -491,11 +518,25 @@ const SingleCourse = () => {
                       ৳{courseData?.price}
                     </h3>
                     <button
-                      onClick={tempEnrollBtn}
+                      // onClick={tempEnrollBtn}
+                      onClick={makePayment}
+                      target="_blank"
                       className="bg-[#125ca6] text-white w-full text-xl py-2 mt-2 rounded-md"
                     >
                       Enroll
                     </button>
+                    {/* <dialog id="my_modal_2" className="modal">
+                      <div className="modal-box">
+                        <h3 className="text-2xl font-semibold text-center">Choose a payment method</h3>
+                        <div className="grid grid-cols-2 gap-5 pt-5">
+                          <img onClick={bkashPayment} className="border rounded-md cursor-pointer hover:border-[#125ca6]" src="/bkash.png" alt="" />
+                          <img className="border rounded-md cursor-pointer hover:border-[#125ca6]" src="/nagad.png" alt="" />
+                        </div>
+                      </div>
+                      <form method="dialog" className="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog> */}
                   </div>
                 </div>
               </div>
@@ -545,11 +586,10 @@ const SingleCourse = () => {
                 {courseData?.videos?.map((video, index) => (
                   <p
                     key={video?._id}
-                    className={`whitespace-nowrap m-3 p-2 rounded-md border ${
-                      selectedVideo?._id === video._id
-                        ? "bg-[#125ca6] border-[#125ca6] text-white"
-                        : "text-black"
-                    } overflow-hidden cursor-pointer`}
+                    className={`whitespace-nowrap m-3 p-2 rounded-md border ${selectedVideo?._id === video._id
+                      ? "bg-[#125ca6] border-[#125ca6] text-white"
+                      : "text-black"
+                      } overflow-hidden cursor-pointer`}
                     onClick={() => handleVideoSelect(video)} // Update video on click
                   >
                     {index + 1}. {video?.videoTitle}
