@@ -33,14 +33,24 @@ const SingleCourse = () => {
   const [comments, setComments] = useState("");
   const userId = user?.user?._id; // Replace with the actual user ID from your authentication
 
-  // syllabus dowload
+  //   syllabus dowload
+
   const downloadFiteAtURL = (url) => {
-    const fileName = url.split("/").pop();
+    // Extract the filename from the URL
+    const fileName = url?.split("/").pop().split("?")[0]; // Removes query params like '?alt=media'
+
+    // Create an invisible <a> element
     const aTag = document.createElement("a");
     aTag.href = url;
+
+    // Set the download attribute to force download
     aTag.setAttribute("download", fileName);
+
+    // Programmatically trigger a click on the <a> element
     document.body.appendChild(aTag);
     aTag.click();
+
+    // Remove the <a> element from the DOM after the click
     aTag.remove();
   };
 
@@ -107,8 +117,7 @@ const SingleCourse = () => {
       console.error("Error fetching course:", error);
     }
   };
-
-
+  console.log("pdf link", courseData.syllabus);
 
   const fetchreletedCourses = () => {
     const url = `http://localhost:4000/api/course/getAllCourses`;
@@ -227,26 +236,6 @@ const SingleCourse = () => {
     setIsAdminOrStudent(true);
   };
 
-  const bkashPayment = async () => {
-    try {
-      const { data } = await axios.post('http://localhost:4000/api/payment/bkashCheckout', {
-        price: 1,
-        callbackURL: 'http://localhost:4000/api/payment/bkashCallback',
-        orderID: 1,
-        orderReferrance: 2
-      }).then(response => {
-        console.log(response);
-        window.location.href = response?.data
-      }).catch(error => {
-        console.log(error);
-      })
-      console.log('bkash', data);
-    }
-    catch (error) {
-      console.log(error.response.data.message);
-    }
-  }
-
   const makePayment = async () => {
     const paymentData = {
       courseId: courseData._id,  // The course being enrolled in
@@ -256,7 +245,7 @@ const SingleCourse = () => {
     console.log('Payment Data before sent:', paymentData);
 
     // Make a POST request to the backend payment API
-    fetch('http://localhost:4000/order', {
+    fetch('http://localhost:4000/api/course/payment/order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -336,6 +325,7 @@ const SingleCourse = () => {
             beatae asperiores sunt nostrum odio? Aut voluptate dicta nesciunt
             iusto. Necessitatibus omnis dolorem quasi aut.
           </p>
+          <Link to="/dashboard/admin/schedulemeet" className="btn btn-primary">Create Meet</Link>
         </div>
       </div>
       <div className="pt-10">
@@ -505,9 +495,7 @@ const SingleCourse = () => {
                     </div>
                   </div>
                   <button
-                    onClick={() => {
-                      downloadFiteAtURL(courseData.syllabus);
-                    }}
+                    onClick={()=>downloadFiteAtURL(courseData.syllabus)}
                     className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                   >
                     <IoMdDownload className="text-xl" />
@@ -537,7 +525,7 @@ const SingleCourse = () => {
                     >
                       Enroll
                     </button>
-                    <dialog id="my_modal_2" className="modal">
+                    {/* <dialog id="my_modal_2" className="modal">
                       <div className="modal-box">
                         <h3 className="text-2xl font-semibold text-center">Choose a payment method</h3>
                         <div className="grid grid-cols-2 gap-5 pt-5">
@@ -548,7 +536,7 @@ const SingleCourse = () => {
                       <form method="dialog" className="modal-backdrop">
                         <button>close</button>
                       </form>
-                    </dialog>
+                    </dialog> */}
                   </div>
                 </div>
               </div>

@@ -8,7 +8,9 @@ const {
     getReletedCourses,
     giveRating,
     courseCount,
-    bkashPayment
+    bkashPayment,
+    order,
+    success
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -17,6 +19,8 @@ const router = express.Router();
 //post
 router.post('/createCourse', createCourse);
 router.post('/giveRating/:courseId', giveRating);
+router.post('/payment/order', order);
+router.post('/payment/success/:tran_id', success);
 
 //get
 router.get('/getAllCourses', getAllCourses);

@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar";
+import DashNavbar from "./UserDashboard/DashNavbar";
 
 const Dashboard = () => {
   return (
@@ -7,8 +8,12 @@ const Dashboard = () => {
       <div className="fixed">
         <Sidebar />
       </div>
-      <div className="p-8 ml-64 flex-1 text-black">
-        <Outlet />
+      <div className="flex-1 ml-64  h-screen">
+        <DashNavbar />
+        <div className="p-4">
+          {" "}
+          <Outlet />
+        </div>
       </div>
     </div>
   );
