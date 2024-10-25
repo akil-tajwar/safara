@@ -249,10 +249,11 @@ const SingleCourse = () => {
 
   const makePayment = async () => {
     const paymentData = {
-      courseId: courseData._id,      // The course being enrolled in
-      studentsId: userId,               // ID of the currently logged-in user
-      price: courseData.price,      // Price of the course
+      courseId: courseData._id,  // The course being enrolled in
+      studentsId: userId,        // ID of the currently logged-in user
+      price: courseData.price,   // Price of the course
     };
+    console.log('Payment Data before sent:', paymentData);
 
     // Make a POST request to the backend payment API
     fetch('http://localhost:4000/order', {
@@ -264,9 +265,10 @@ const SingleCourse = () => {
     })
       .then(res => res.json())
       .then((result) => {
-        window.location.replace(result.url);
+        window.location.replace(result.url); // Redirect to payment gateway
         console.log(result);
       })
+      .catch(error => console.error('Error during payment process:', error));
   };
 
 
