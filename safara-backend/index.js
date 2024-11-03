@@ -1,9 +1,11 @@
 const cors = require("cors");
 const mongoose = require("mongoose");
 const express = require("express");
+const axios = require('axios');
 const { google } = require("googleapis"); // Missing Google API Import
 const userRoutes = require("./Routes/userRoutes.js");
 const courseRoutes = require("./Routes/courseRoutes.js");
+const whatsappRoutes = require("./Routes/whatsappRoutes.js");
 
 require("dotenv").config();
 const app = express();
@@ -22,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/user", userRoutes);
 app.use("/api/course", courseRoutes);
-// calender
+app.use("/api/whatsapp", whatsappRoutes);
 
 // Google OAuth2 Client
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -38,38 +40,38 @@ const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 // Route to create a Google Meet event
 app.post("/api/create-meet", async (req, res) => {
   const { summary, startTime, endTime } = req.body;
-  console.log("from backend ai create-meet",summary,startTime,endTime);
+  console.log("from backend ai create-meet", summary, startTime, endTime);
 
   if (!summary || !startTime || !endTime) {
-      return res.status(400).send("Missing required fields: summary, startTime, and endTime");
+    return res.status(400).send("Missing required fields: summary, startTime, and endTime");
   }
 
   // Event object for Google Calendar
   const event = {
-      summary: summary || "Google Meet Event",
-      start: { dateTime: new Date(startTime).toISOString(), timeZone: "America/Los_Angeles" },
-      end: { dateTime: new Date(endTime).toISOString(), timeZone: "America/Los_Angeles" },
-      conferenceData: {
-          createRequest: {
-              requestId: "sample123", // A unique request ID
-              conferenceSolutionKey: { type: "hangoutsMeet" },
-          },
+    summary: summary || "Google Meet Event",
+    start: { dateTime: new Date(startTime).toISOString(), timeZone: "America/Los_Angeles" },
+    end: { dateTime: new Date(endTime).toISOString(), timeZone: "America/Los_Angeles" },
+    conferenceData: {
+      createRequest: {
+        requestId: "sample123", // A unique request ID
+        conferenceSolutionKey: { type: "hangoutsMeet" },
       },
+    },
   };
 
   try {
-      const response = await calendar.events.insert({
-          calendarId: "primary",
-          resource: event,
-          conferenceDataVersion: 1,
-      });
+    const response = await calendar.events.insert({
+      calendarId: "primary",
+      resource: event,
+      conferenceDataVersion: 1,
+    });
 
-      res.json({ meetLink: response.data.hangoutLink });
+    res.json({ meetLink: response.data.hangoutLink });
   } catch (error) {
-      // Log the error for debugging
-      console.error("Error creating event:", error);
-      // Send a detailed error message back to the client
-      res.status(500).send("Error creating event: " + error.message);
+    // Log the error for debugging
+    console.error("Error creating event:", error);
+    // Send a detailed error message back to the client
+    res.status(500).send("Error creating event: " + error.message);
   }
 });
 

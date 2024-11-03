@@ -8,7 +8,6 @@ const {
     getReletedCourses,
     giveRating,
     courseCount,
-    bkashPayment,
     order,
     success
 } = require("../Controllers/courseController.js");

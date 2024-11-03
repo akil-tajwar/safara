@@ -24,7 +24,7 @@ const Navbar = () => {
     };
 
     useEffect(() => {
-        if (user?.user?._id) { // Ensure fetch is only triggered when the user ID is available
+        if (user?.user?._id) {  // Ensure fetch is only triggered when the user ID is available
             fetchUser();
         }
     }, [user?.user?._id]);
