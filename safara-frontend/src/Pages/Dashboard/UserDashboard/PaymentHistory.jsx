@@ -18,16 +18,7 @@ const PaymentHistory = () => {
         </tr>
       </thead>
       <tbody>
-     {
-  
-        <tr >
-          <th>status</th>
-          <td>transcationId</td>
-          <td>Price</td>
-          <td>date</td>
-        </tr>
-     
-     }
+    
        
       </tbody>
     </table>
