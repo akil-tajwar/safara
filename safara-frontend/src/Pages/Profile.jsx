@@ -4,11 +4,12 @@ import { FaMedal } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-
 const Profile = () => {
   const { user } = useAuthContext();
   const [activeTab, setActiveTab] = useState(0);
-  const [userData, setUserData] = useState(null); // Start with null to avoid rendering issues before data is fetched
+  const [userData, setUserData] = useState(null);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [courses, setCourses] = useState([]);
 
   const fetchSingleUser = () => {
     const url = `http://localhost:4000/api/user/singleUser/${user?.user?._id}`;
@@ -16,18 +17,51 @@ const Profile = () => {
       .then((res) => res.json())
       .then((data) => {
         setUserData(data);
+
+        checkEnrollment(data._id); // Check enrollment after fetching user data
+      })
+      .catch((error) => console.log(error));
+  };
+  console.log("user", user?.user?._id);
+  // console.log("course", courses);
+  const fetchCourses = () => {
+    const url = `http://localhost:4000/api/course/getAllCourses`; // Your courses endpoint
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        setCourses(data);
+
+        checkEnrollment(user?.user?._id, data); // Check enrollment with the fetched courses
       })
       .catch((error) => console.log(error));
   };
 
+  // check enrollment if set by default false  eita fix korte parle hobe
+  const checkEnrollment = (userId, courses) => {
+    if (!courses || courses.length === 0) return;
+
+    // Check if userId exists in any of the courses' students
+    const enrolled = courses.some((course) =>
+      course.students.some((student) => {
+        const match = student.studentsId.toString() === userId;
+        if (match) {
+          console.log("Matched studentsId:", student.studentsId); // Log the matching studentsId
+        }
+        return match; // Return the result of the comparison
+      })
+    );
+
+    console.log("Is Enrolled:", enrolled);
+    setIsEnrolled(enrolled); // Update state based on enrollment check
+  };
+
   useEffect(() => {
     if (user?.user?._id) {
-      // Only fetch data if the user ID exists
       fetchSingleUser();
+      fetchCourses();
     }
   }, [user?.user?._id]);
 
-  // If userData is still null, show a loading state or message
   if (!userData) {
     return <div>Loading...</div>;
   }
@@ -45,19 +79,15 @@ const Profile = () => {
             <p className="font-semibold text-xs text-slate-400 pb-1">
               PROFESSIONAL INFO
             </p>
-            <div className="">
-              <p>{userData.institution}</p>
-              <p>{userData.profession[0]?.position}</p>
-            </div>
+            <p>{userData.institution}</p>
+            <p>{userData.profession[0]?.position}</p>
           </div>
           <div className="py-5">
             <p className="font-semibold text-xs text-slate-400 pb-1">
               EDUCATIONAL HISTORY
             </p>
-            <div className="">
-              <p>{userData.degree}</p>
-              <p>{userData.result}</p>
-            </div>
+            <p>{userData.degree}</p>
+            <p>{userData.result}</p>
           </div>
         </div>
         <div className="col-span-5">
@@ -125,14 +155,15 @@ const Profile = () => {
             </div>
           )}
           {activeTab === 1 && (
-            <div className="">
-              {user ? (
-                <Link to={'/certificate'} className="btn btn-primary" >
+            <div>
+              {isEnrolled ? (
+                <Link to={"/certificate"} className="btn btn-primary">
                   Download Certificate
                 </Link>
               ) : (
                 <h4 className="text-xl flex justify-center items-center pt-32">
-                  This user did not achieve any certificate yet
+                  You are not enrolled in any course; thus, no certificate is
+                  available.
                 </h4>
               )}
             </div>
