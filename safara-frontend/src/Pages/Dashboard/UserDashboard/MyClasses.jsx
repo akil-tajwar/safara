@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import AllCourses from "../../../Components/AllCourses";
 const MyClasses = () => {
   const categories = ["My Classes", "Explore", "Incoming","Course Details"];
   const { category } = useParams();
@@ -34,7 +35,7 @@ const MyClasses = () => {
           <div className="card-actions justify-end"></div>
         </div>
       </div></TabPanel>
-        <TabPanel>All Courses</TabPanel>
+        <TabPanel><AllCourses></AllCourses></TabPanel>
         <TabPanel>Upcoming</TabPanel>
         <TabPanel>My courses details</TabPanel>
       </Tabs>
