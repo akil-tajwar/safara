@@ -21,9 +21,7 @@ function Main() {
       <div className="min-h-[79vh]">
         <Outlet />
       </div>
-      <div className="">
-        <Whatsapp />
-      </div>
+      <Whatsapp />
       {shouldRenderHeaderFooter && <Footer />}
     </div>
   );
