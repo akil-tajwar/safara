@@ -23,6 +23,7 @@ import Profile from "../Pages/Profile";
 import Certificate from "../Components/certificate";
 import Settings from "../Components/Settings";
 import ScheduleMeet from "../Components/ScheduleMeet";
+import UpdateCourse from "../Pages/Dashboard/AdminDashboard/UpdateCourse";
 
 export const router = createBrowserRouter([
   {
@@ -88,6 +89,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/admin/addCourses",
         element: <AddCourses/>,
+      },
+      {
+        path: "/dashboard/admin/updateCourse/:id",
+        element: <UpdateCourse/>,
       },
       {
         path: "/dashboard/admin/manageCourses",

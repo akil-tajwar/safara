@@ -29,7 +29,7 @@ const Whatsapp = () => {
         <Link>
             <img
                 className="w-16 fixed z-50 bottom-10 right-10 cursor-pointer"
-                src="whatsapp-logo.png"
+                src="./whatsapp-logo.png"
                 alt="WhatsApp Logo"
                 onClick={handleClick}
             />

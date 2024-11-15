@@ -101,10 +101,10 @@ const ManageCourses = () => {
               />
               {visibleDropdown === course._id && (
                 <div className="border bg-white w-52 p-3 rounded-md absolute right-0 top-10 z-10">
-                  <div className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md">
+                  <Link to={`/dashboard/admin/updateCourse/${course?._id}`} className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md">
                     <MdEdit className="tooltip p-1 text-2xl bg-[#125ca6] text-white rounded-full" />
                     <p>Update Course</p>
-                  </div>
+                  </Link>
                   <div
                     onClick={() => handleDelete(course._id)}
                     className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md"
