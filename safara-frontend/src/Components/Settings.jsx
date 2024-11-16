@@ -84,7 +84,27 @@ const Settings = () => {
         <h3 className="text-2xl pb-2">Danger Zone</h3>
         <div className="border border-error p-4 rounded-lg flex justify-between items-center">
           <h5 className="text-lg">Delete your account permanently</h5>
-          <button className="text-error bg-slate-200 border border-error py-2 w-44 px-5 rounded-md">Delete Account</button>
+          <button className="text-white bg-error py-2 w-44 px-5 rounded-md" onClick={() => document.getElementById('delete-account').showModal()}>Delete Account</button>
+          <dialog id="delete-account" className="modal">
+            <div className="modal-box">
+              <form method="dialog">
+                {/* if there is a button in form, it will close the modal */}
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+              </form>
+              <h3 className="font-semibold text-lg pb-3">Delete your account</h3>
+              <div className="form-control">
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                />
+              </div>
+              <button type="submit" className="text-white bg-error w-full mt-6 py-3 rounded-md">
+                  Delete Account
+                </button>
+              <p className="pt-4 text-error text-center font-semibold">NB: You will loose all of your coruses and certificates</p>
+            </div>
+          </dialog>
         </div>
       </div>
     </div>
