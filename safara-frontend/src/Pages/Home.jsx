@@ -8,6 +8,7 @@ import 'swiper/css/pagination';
 
 // import required modules
 import { Pagination } from 'swiper/modules';
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const { user } = useAuthContext();
@@ -15,7 +16,7 @@ const Home = () => {
 
   return (
     <div className="w-3/4 mx-auto">
-  
+
       <div className="grid grid-cols-2 gap-5 items-center">
         <div>
           <div>
@@ -30,9 +31,27 @@ const Home = () => {
             libero magni. Perferendis vel sequi velit in voluptas deleniti
             praesentium, exercitationem optio nisi dicta ea?
           </p>
-          <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
-            Get Started
-          </button>
+          {user?.user ? (
+            user?.user?.role === 'admin' ? (
+              <Link to={'/dashboard/admin/adminHome'}>
+                <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
+                  Get Started
+                </button>
+              </Link>
+            ) : (
+              <Link to={'/dashboard/user/userHome'}>
+                <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
+                  Get Started
+                </button>
+              </Link>
+            )
+          ) : (
+            <Link to={'/login'}>
+              <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
+                Get Started
+              </button>
+            </Link>
+          )}
         </div>
         <div>
           <img src="banner.png" alt="" />
@@ -189,7 +208,7 @@ const Home = () => {
 
       {/* featured ended  */}
 
-  
+
     </div>
   );
 };
