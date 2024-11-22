@@ -9,7 +9,7 @@ const ScheduleMeet = () => {
 
     const createMeet = async () => {
       try {
-        const response = await axios.post("http://localhost:4000/api/create-meet", {
+        const response = await axios.post("http://localhost:4000/api/meet/createMeet", {
             summary,
             startTime: new Date(startTime).toISOString(),
             endTime: new Date(endTime).toISOString()
