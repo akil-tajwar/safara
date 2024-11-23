@@ -325,7 +325,7 @@ const SingleCourse = () => {
             beatae asperiores sunt nostrum odio? Aut voluptate dicta nesciunt
             iusto. Necessitatibus omnis dolorem quasi aut.
           </p>
-          <Link to="/dashboard/admin/schedulemeet" className="btn btn-primary">Create Meet</Link>
+          <Link to={`/dashboard/admin/schedulemeet?${id}`} className="btn btn-primary">Create Meet</Link>
         </div>
       </div>
       <div className="pt-10">
