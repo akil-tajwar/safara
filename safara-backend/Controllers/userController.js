@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 
-const DeviceDetector = require('device-detector-js');
+const DeviceDetector = require("device-detector-js");
 const deviceDetector = new DeviceDetector();
 
 // nodemailer welcome message
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // or another email service
+  service: "gmail", // or another email service
   auth: {
     user: "ammaraslam7164@gmail.com",
     pass: "wefopxlsdumlohpx",
@@ -19,28 +19,26 @@ const transporter = nodemailer.createTransport({
 // Send welcome email function
 const sendWelcomeEmail = (userEmail, userName) => {
   const mailOptions = {
-    from: 'ammaraslam7164@gmail.com', // sender's email
+    from: "ammaraslam7164@gmail.com", // sender's email
     to: userEmail, // receiver's email
-    subject: 'Welcome to Our Website!',
+    subject: "Welcome to Our Website!",
     html: `
       <h2>Hello ${userName},</h2>
       <p>Welcome to our website! We are excited to have you on board.</p>
       <p>Feel free to explore and let us know if you need any help.</p>
       <p>Best regards,<br/>Safara Academy</p>
-    `
+    `,
   };
 
   // Send the email
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log('Error sending email:', error);
+      console.log("Error sending email:", error);
     } else {
-      console.log('Email sent: ' + info.response);
+      console.log("Email sent: " + info.response);
     }
   });
 };
-
-
 
 const createToken = (_id) => {
   console.log(process.env.ACCESS_TOKEN_SECRET);
@@ -177,7 +175,9 @@ const updateUser = async (req, res) => {
   }
 
   try {
-    const updatedUser = await userModel.findByIdAndUpdate(id, req.body, { new: true });
+    const updatedUser = await userModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
     if (updatedUser) {
       res.status(200).json(updatedUser);
     } else {
@@ -186,7 +186,7 @@ const updateUser = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-}
+};
 
 // forget password
 
@@ -203,7 +203,6 @@ const forgetPassword = async (req, res) => {
   console.log(token);
 
   var transporter = nodemailer.createTransport({
-
     auth: {
       user: "ammaraslam7164@gmail.com",
       pass: "wefopxlsdumlohpx",
@@ -251,12 +250,55 @@ const resetPassword = async (req, res) => {
   }
 };
 // user count
+const getAllUsersCount = async (req, res) => {
+  const usersCount = await userModel.estimatedDocumentCount();
+  res.send({ usersCount });
+};
 
-  const getAllUsersCount = async(req,res)=>{
+// Change Password API
+const changePassword = async (req, res) => {
+  console.log("change password api hitted");
+  const { oldPassword, newPassword, retypePassword, id } = req.body;
+  const userId = id;
+  console.log(oldPassword, newPassword);
 
-     const usersCount =  await userModel.estimatedDocumentCount()
-     res.send({usersCount})
+  // Validate input fields
+  if (!oldPassword || !newPassword || !retypePassword) {
+    return res.status(400).json({ error: "All fields are required." });
   }
+
+  if (newPassword !== retypePassword) {
+    return res
+      .status(400)
+      .json({ error: "New password and confirmation do not match." });
+  }
+
+  // Get the authenticated user's ID (replace with your authentication logic)
+
+  console.log("id", userId);
+
+  // Find user by ID
+  const user = await userModel.findById(userId);
+  if (!user) {
+    return res.status(404).json({ error: "User not found." });
+  }
+
+  // Check if the old password is correct
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ error: "Old password is incorrect." });
+  }
+
+  // Hash the new password
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update the user's password
+  user.password = hashedPassword;
+  await user.save();
+
+  res.status(200).json({ message: "Password updated successfully." });
+};
 
 module.exports = {
   signupUser,
@@ -269,5 +311,6 @@ module.exports = {
   undoAdmin,
   forgetPassword,
   resetPassword,
-  getAllUsersCount
+  getAllUsersCount,
+  changePassword,
 };
