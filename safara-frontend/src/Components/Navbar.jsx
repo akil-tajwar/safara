@@ -13,6 +13,8 @@ const Navbar = () => {
     const { logout } = useLogout();
     console.log("🚀 ~ Home ~ user:", user);
 
+    
+
     const fetchUser = () => {
         const url = `http://localhost:4000/api/user/singleUser/${user?.user?._id}`;
         fetch(url)
