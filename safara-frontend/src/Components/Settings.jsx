@@ -1,11 +1,44 @@
 import axios from "axios";
 import { useState } from "react";
 import useAuthContext from "../hooks/useAuthContext";
+import { useLogout } from "../hooks/useLogout";
 const Settings = () => {
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState(""); // for success messages
   const [error, setError] = useState(""); // for error messages
   const { user } = useAuthContext();
+  const { logout } = useLogout();
   const id = user?.user?._id;
+
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+
+    // Reset messages
+    setMessage("");
+    setError("");
+
+    if (!password) {
+      setError("Password is required.");
+      return;
+    }
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:4000/api/user/deleteUser/${id}`
+      );
+
+      setMessage(response.data.message || "Account deleted successfully.");
+      // Optionally, log the user out and redirect
+      localStorage.removeItem("token");
+
+      logout();
+    } catch (err) {
+      setError(
+        err.response?.data?.error || "An error occurred. Please try again."
+      );
+    }
+  };
+
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
@@ -13,8 +46,8 @@ const Settings = () => {
     const oldPassword = form.oldPassword.value;
     const newPassword = form.newPassword.value;
     const retypePassword = form.retypePassword.value;
-      
-    console.log(oldPassword,newPassword,retypePassword,id);
+
+    console.log(oldPassword, newPassword, retypePassword, id);
     // Clear previous messages
     setMessage("");
     setError("");
@@ -39,11 +72,8 @@ const Settings = () => {
       // Make API request
       const response = await axios.patch(
         "http://localhost:4000/api/user/changePassword",
-        { oldPassword, newPassword, retypePassword ,id},
-       
+        { oldPassword, newPassword, retypePassword, id }
       );
-
-   
 
       // Handle successful response
       setMessage(response.data.message || "Password changed successfully!");
@@ -143,31 +173,38 @@ const Settings = () => {
           </button>
           <dialog id="delete-account" className="modal">
             <div className="modal-box">
-              <form method="dialog">
-                {/* if there is a button in form, it will close the modal */}
+              <form method="dialog" onSubmit={handleDeleteAccount}>
                 <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                   ✕
                 </button>
+                <h3 className="font-semibold text-lg pb-3">
+                  Delete your account
+                </h3>
+                <div className="form-control">
+                  <input
+                    type="password"
+                    placeholder="Enter your password"
+                    className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="text-white bg-error w-full mt-6 py-3 rounded-md"
+                >
+                  Delete Account
+                </button>
+                {error && (
+                  <p className="text-error text-center mt-2">{error}</p>
+                )}
+                {message && (
+                  <p className="text-success text-center mt-2">{message}</p>
+                )}
+                <p className="pt-4 text-error text-center font-semibold">
+                  NB: You will lose all of your courses and certificates.
+                </p>
               </form>
-              <h3 className="font-semibold text-lg pb-3">
-                Delete your account
-              </h3>
-              <div className="form-control">
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
-                />
-              </div>
-              <button
-                type="submit"
-                className="text-white bg-error w-full mt-6 py-3 rounded-md"
-              >
-                Delete Account
-              </button>
-              <p className="pt-4 text-error text-center font-semibold">
-                NB: You will loose all of your coruses and certificates
-              </p>
             </div>
           </dialog>
         </div>
