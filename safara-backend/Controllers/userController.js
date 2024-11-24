@@ -300,6 +300,52 @@ const changePassword = async (req, res) => {
   res.status(200).json({ message: "Password updated successfully." });
 };
 
+// Google Login Route
+
+const googleLogin = async (req, res) => {
+  const { email, firstname, lastname, img } = req.body;
+
+  if (!email || !firstname || !lastname) {
+    return res
+      .status(400)
+      .json({ error: "Email, firstname, and lastname are required." });
+  }
+
+  try {
+    // Check if user already exists
+    let user = await userModel.findOne({ email });
+
+    if (user) {
+      return res.status(200).json({
+        message: "User logged in successfully.",
+        newUser: false,
+        user,
+      });
+    }
+
+    // Create a new user without a password
+    user = new userModel({
+      email,
+      firstname,
+      lastname,
+      img,
+      phone: "N/A", // or another placeholder
+      role: "user", // Default role
+    });
+
+    await user.save();
+
+    res.status(201).json({
+      message: "New user created successfully.",
+      newUser: true,
+      user,
+    });
+  } catch (error) {
+    console.error("Error during Google login:", error);
+    res.status(500).json({ error: "Server error." });
+  }
+};
+
 module.exports = {
   signupUser,
   loginUser,
@@ -313,4 +359,5 @@ module.exports = {
   resetPassword,
   getAllUsersCount,
   changePassword,
+  googleLogin,
 };

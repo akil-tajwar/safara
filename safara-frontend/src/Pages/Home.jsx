@@ -9,10 +9,56 @@ import 'swiper/css/pagination';
 // import required modules
 import { Pagination } from 'swiper/modules';
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Home = () => {
   const { user } = useAuthContext();
   console.log("🚀 ~ Home ~ user:", user);
+
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+
+
+  useEffect(() => {
+    // Fetch top courses from the API
+    const fetchTopCourses = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/course/topCourses");
+        if (!response.ok) {
+          throw new Error("Failed to fetch top courses");
+        }
+        const data = await response.json();
+        setCourses(data.data); // Assuming the API returns a "data" field with the courses
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchTopCourses();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
   return (
     <div className="w-3/4 mx-auto">
@@ -114,100 +160,22 @@ const Home = () => {
 
       {/* stat ended    */}
 
-      {/* featureCard  */}
+      {/* top 6 course according top 6 rating */}
 
       <div className="mt-20 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-y-10 mb-20">
-        {/* img1  */}
-        <div>
+      {courses.map((course) => (
+        <div key={course._id}>
           <img
-            src="/learn1.jpg"
-            alt=""
+            src={course.banner || "/placeholder.jpg"} // Fallback image if banner is not available
+            alt={course.title}
             className="w-[100px] h-[100px] rounded-xl"
           />
-          <h3 className="font-medium text-2xl text-[#125ca6]">
-            Intuitive Interface
-          </h3>
-          <p className="font-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,
-            tempora.
-          </p>
+          <h3 className="font-medium text-2xl text-[#125ca6]">{course.title}</h3>
+          <p className="font-bold">{course.details || "No details available."}</p>
+          <p className="text-sm text-gray-500">Rating: {course.averageRating.toFixed(1)}</p>
         </div>
-
-        {/* img2 */}
-        <div>
-          <img
-            src="/learn1.jpg"
-            alt=""
-            className="w-[100px] h-[100px] rounded-xl"
-          />
-          <h3 className="font-medium text-2xl text-[#125ca6]">
-            Intuitive Interface
-          </h3>
-          <p className="font-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,
-            tempora.
-          </p>
-        </div>
-
-        {/* img3 */}
-        <div>
-          <img
-            src="/learn1.jpg"
-            alt=""
-            className="w-[100px] h-[100px] rounded-xl"
-          />
-          <h3 className="font-medium text-2xl text-[#125ca6]">
-            Intuitive Interface
-          </h3>
-          <p className="font-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,
-            tempora.
-          </p>
-        </div>
-
-        {/* img4  */}
-        <div>
-          <img
-            src="/learn1.jpg"
-            alt=""
-            className="w-[100px] h-[100px] rounded-xl"
-          />
-          <h3 className="font-medium text-2xl text-[#125ca6]">
-            Intuitive Interface
-          </h3>
-          <p className="font-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,
-            tempora.
-          </p>
-        </div>
-
-        {/* img5  */}
-        <div>
-          <img src="/learn1.jpg" alt="" className="w-[100px] h-[100px] " />
-          <h3 className="font-medium text-2xl text-[#125ca6]">
-            Intuitive Interface
-          </h3>
-          <p className="font-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,
-            tempora.
-          </p>
-        </div>
-
-        {/* img6 */}
-        <div>
-          <img src="/learn1.jpg" alt="" className="w-[100px] h-[100px] " />
-          <h3 className="font-medium text-2xl text-[#125ca6]">
-            Intuitive Interface
-          </h3>
-          <p className="font-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni,
-            tempora.
-          </p>
-        </div>
-      </div>
-
-      {/* featured ended  */}
-
+      ))}
+    </div>
 
     </div>
   );

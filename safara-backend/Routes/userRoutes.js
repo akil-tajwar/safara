@@ -11,7 +11,8 @@ const {
     forgetPassword,
     resetPassword,
     updateUser,
-    changePassword
+    changePassword,
+    googleLogin
 } = require('../Controllers/userController.js');
 
 const router = express.Router();
@@ -20,6 +21,7 @@ const router = express.Router();
 //post
 router.post('/signup', signupUser);
 router.post('/login', loginUser);
+router.post('/googleLogin', googleLogin);
 router.post("/forgetPassword", forgetPassword)
 router.post("/resetPassword/:token", resetPassword)
 
