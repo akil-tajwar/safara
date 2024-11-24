@@ -13,6 +13,7 @@ const Signup = () => {
         register,
         handleSubmit,
         formState: { errors },
+        watch, // Added for validation
     } = useForm();
 
     const [selectedImage, setSelectedImage] = useState(null);
@@ -65,6 +66,10 @@ const Signup = () => {
             setSelectedImage(e.target.files[0]);
         }
     };
+
+    // Watch password and retypePassword fields
+    const password = watch("password");
+    const retypePassword = watch("retypePassword");
 
     return (
         <div className="pt-10 pb-24">
@@ -142,6 +147,23 @@ const Signup = () => {
                         {...register("password", { required: true })}
                         className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
                     />
+                </div>
+                <div className="form-control pb-4">
+                    <label className="">
+                        <span className="">Retype Password</span>
+                    </label>
+                    <input
+                        type="password"
+                        placeholder="Retype password"
+                        {...register("retypePassword", {
+                            required: true,
+                            validate: (value) => value === password || "Passwords do not match",
+                        })}
+                        className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    />
+                    {errors.retypePassword && (
+                        <p className="text-red-500 text-sm mt-1">{errors.retypePassword.message}</p>
+                    )}
                 </div>
                 <div className="form-control mt-10">
                     <button type="submit" className="bg-[#125ca6] py-3 rounded-md text-white">

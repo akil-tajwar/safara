@@ -19,3 +19,5 @@ console.log("🚀 ~ firebaseConfig.storageBucket:", firebaseConfig.storageBucket
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
+
+export default app

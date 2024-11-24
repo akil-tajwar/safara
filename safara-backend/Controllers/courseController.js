@@ -319,7 +319,50 @@ const success = async (req, res) => {
       });
   }
 };
+ const topCourses= async (req, res) => {
+  try {
+      // Use MongoDB aggregation to calculate average ratings and fetch top 6 courses
+      const topCourses = await courseModel.aggregate([
+          // Unwind the studentsOpinion array to work on individual ratings
+          { $unwind: "$studentsOpinion" },
 
+          // Convert the rating field to a number (if stored as string)
+          {
+              $addFields: {
+                  "studentsOpinion.rating": { $toDouble: "$studentsOpinion.rating" },
+              },
+          },
+
+          // Group by course and calculate the average rating
+          {
+              $group: {
+                  _id: "$_id",
+                  title: { $first: "$title" },
+                  banner: { $first: "$banner" },
+                  details: { $first: "$details" },
+                  averageRating: { $avg: "$studentsOpinion.rating" },
+              },
+          },
+
+          // Sort courses by average rating in descending order
+          { $sort: { averageRating: -1 } },
+
+          // Limit the result to top 6 courses
+          { $limit: 6 },
+      ]);
+
+      res.status(200).json({
+          success: true,
+          data: topCourses,
+      });
+  } catch (error) {
+      console.error("Error fetching top courses:", error);
+      res.status(500).json({
+          success: false,
+          message: "Failed to fetch top courses",
+      });
+  }
+}
 module.exports = {
   createCourse,
   getAllCourses,
@@ -331,4 +374,5 @@ module.exports = {
   courseCount,
   order,
   success,
+  topCourses
 };
