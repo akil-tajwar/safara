@@ -1,204 +1,167 @@
-import { PieChart, Pie, ResponsiveContainer } from "recharts";
-import { FaUsers } from "react-icons/fa6";
-import { SiCoursera } from "react-icons/si";
-import { IoIosNotifications } from "react-icons/io";
-import React, { PureComponent, useState } from "react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
-import { curveCardinal } from "d3-shape";
-import useAuthContext from "../../../hooks/useAuthContext";
-import useAxiosSecure from "../../../hooks/useAxiosSecure.jsx";
+import React from 'react';
+import { FaUsers, FaBookOpen, FaUserGraduate, FaChartLine, FaStar, FaEye, FaCheckCircle, FaClock, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
+import { MdEdit } from 'react-icons/md';
+import { RiDeleteBin5Line } from 'react-icons/ri';
 
-const data = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
+const AdminDashboard = () => {
+  const courseCategories = [
+    { name: 'Development', count: 150, color: 'bg-blue-500' },
+    { name: 'Business', count: 120, color: 'bg-green-500' },
+    { name: 'Design', count: 100, color: 'bg-yellow-500' },
+    { name: 'Marketing', count: 80, color: 'bg-red-500' },
+    { name: 'IT & Software', count: 70, color: 'bg-purple-500' },
+  ];
 
-const cardinal = curveCardinal.tension(0.2);
+  const recentEnrollments = [
+    { id: 1, user: 'John Doe', course: 'Advanced React Patterns', date: '2023-05-15' },
+    { id: 2, user: 'Jane Smith', course: 'Machine Learning Fundamentals', date: '2023-05-14' },
+    { id: 3, user: 'Bob Johnson', course: 'Digital Marketing Strategies', date: '2023-05-13' },
+    { id: 4, user: 'Alice Brown', course: 'UX/UI Design Principles', date: '2023-05-12' },
+  ];
 
-const data01 = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
-const data02 = [
-  { name: "A1", value: 100 },
-  { name: "A2", value: 300 },
-  { name: "B1", value: 100 },
-  { name: "B2", value: 80 },
-  { name: "B3", value: 40 },
-  { name: "B4", value: 30 },
-  { name: "B5", value: 50 },
-  { name: "C1", value: 100 },
-  { name: "C2", value: 200 },
-  { name: "D1", value: 150 },
-  { name: "D2", value: 50 },
-];
+  const topPerformingCourses = [
+    { id: 1, name: 'Advanced Machine Learning', enrolled: 1234, rating: 4.9, revenue: '$12,345' },
+    { id: 2, name: 'Full-Stack Web Development', enrolled: 987, rating: 4.8, revenue: '$9,870' },
+    { id: 3, name: 'Data Science Fundamentals', enrolled: 876, rating: 4.7, revenue: '$8,760' },
+    { id: 4, name: 'Digital Marketing Mastery', enrolled: 765, rating: 4.6, revenue: '$7,650' },
+  ];
 
-const AdminHome = () => {
-  const { user } = useAuthContext();
-
-  const [courseCount, setCourseCount] = useState();
-  const [usersCount, setUsersCount] = useState();
-
-  // count courses
-
-  const axiosSecure = useAxiosSecure();
-
-  axiosSecure
-    .get("/api/course/getCourseCount")
-    .then((res) => setCourseCount(res.data.courseCount));
-
-  // users count
-
-  axiosSecure.get('/api/user/allUsersCount')
-  .then(res=> setUsersCount(res.data.usersCount) )
   return (
-    <div>
-     
+    <div className="min-h-screen  p-8">
+      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Admin Dashboard</h1>
 
-      <div className="stats shadow gap-x-32 ml-40 mt-5">
-        <div className="stat mr-10">
-          <div className="stat-figure text-secondary">
-            <FaUsers className="text-3xl" />
+      <div className="grid gap-6 md:grid-cols-4 mb-8">
+        <StatCard icon={<FaUsers />} title="Total Users" value="1,234" change="+5.2%" />
+        <StatCard icon={<FaBookOpen />} title="Total Courses" value="42" change="+2.1%" />
+        <StatCard icon={<FaUserGraduate />} title="Enrolled Users" value="789" change="+3.7%" />
+        <StatCard icon={<FaChartLine />} title="Revenue" value="$12,345" change="+7.8%" />
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 mb-8">
+        <div className="bg-white rounded-lg border p-6">
+          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Course Categories</h2>
+          <div className="space-y-4">
+            {courseCategories.map((category, index) => (
+              <div key={index} className="flex items-center">
+                <div className={`w-2 h-2 ${category.color} rounded-full mr-2`}></div>
+                <span className="flex-grow">{category.name}</span>
+                <span className="font-semibold">{category.count}</span>
+              </div>
+            ))}
           </div>
-          <div className="stat-title">Users</div>
-          <div className="stat-value">{usersCount}</div>
-          <div className="stat-desc">Jan 1st - Feb 1st</div>
         </div>
 
-        <div className="stat mr-10">
-          <div className="stat-figure text-secondary">
-            <SiCoursera className="text-3xl" />
+        <div className="bg-white rounded-lg border p-6">
+          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Platform Overview</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <MetricCard icon={<FaStar className="text-yellow-400" />} title="Average Rating" value="4.8" />
+            <MetricCard icon={<FaEye className="text-blue-400" />} title="Total Views" value="250K" />
+            <MetricCard icon={<FaCheckCircle className="text-green-400" />} title="Completed Courses" value="5,678" />
+            <MetricCard icon={<FaClock className="text-red-400" />} title="Avg. Completion Time" value="4.2 weeks" />
           </div>
-          <div className="stat-title">All Courses</div>
-          <div className="stat-value">{courseCount}</div>
-          <div className="stat-desc">↗︎ 400 (22%)</div>
-        </div>
-
-        <div className="stat mr-10">
-          <div className="stat-figure text-secondary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              className="inline-block h-8 w-8 stroke-current"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-              ></path>
-            </svg>
-          </div>
-          <div className="stat-title">Enrolled Users</div>
-          <div className="stat-value">1,200</div>
-          <div className="stat-desc">↘︎ 90 (14%)</div>
         </div>
       </div>
-      <div className="flex mt-24">
-        <PieChart width={400} height={400}>
-          <Pie
-            data={data01}
-            dataKey="value"
-            cx="50%"
-            cy="50%"
-            outerRadius={60}
-            fill="#8884d8"
-          />
-          <Pie
-            data={data02}
-            dataKey="value"
-            cx="50%"
-            cy="50%"
-            innerRadius={70}
-            outerRadius={90}
-            fill="#82ca9d"
-            label
-          />
-        </PieChart>
 
-        <AreaChart
-          width={500}
-          height={400}
-          data={data}
-          margin={{
-            top: 10,
-            right: 30,
-            left: 0,
-            bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Area
-            type="monotone"
-            dataKey="uv"
-            stroke="#8884d8"
-            fill="#8884d8"
-            fillOpacity={0.3}
-          />
-          <Area
-            type={cardinal}
-            dataKey="uv"
-            stroke="#82ca9d"
-            fill="#82ca9d"
-            fillOpacity={0.3}
-          />
-        </AreaChart>
+      <div className="grid gap-6 md:grid-cols-3 mb-8">
+        <div className="bg-white rounded-lg md:col-span-2">
+          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Recent Enrollments</h2>
+          <div className="overflow-x-auto border rounded-md">
+            <table className="table table-zebra w-full">
+              <thead>
+                <tr className="grid grid-cols-6">
+                  <th className="col-span-2">User</th>
+                  <th className="col-span-3">Course</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentEnrollments.map((enrollment, index) => (
+                  <tr key={enrollment.id} className="grid grid-cols-6">
+                    <td className="col-span-2">{enrollment.user}</td>
+                    <td className="col-span-3">{enrollment.course}</td>
+                    <td>{enrollment.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg">
+          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">User Activity</h2>
+          <div className="h-[222px] flex items-center justify-center border rounded-md">
+            {/* Placeholder for user activity chart */}
+            <span className="text-gray-400">User Activity Chart</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg">
+        <div>
+          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Top Performing Courses</h2>
+        </div>
+        <div className="overflow-x-auto border rounded-md">
+          <table className="table table-zebra w-full">
+            <thead>
+              <tr className="grid grid-cols-8">
+                <th className="col-span-3">Course Name</th>
+                <th>Enrolled</th>
+                <th>Rating</th>
+                <th>Revenue</th>
+                <th className="col-span-2 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topPerformingCourses.map((course, index) => (
+                <tr key={course.id} className="grid grid-cols-8">
+                  <td className="col-span-3">{course.name}</td>
+                  <td>{course.enrolled}</td>
+                  <td>
+                    <div className="flex items-center">
+                      <FaStar className="text-yellow-400 mr-1" />
+                      {course.rating}
+                    </div>
+                  </td>
+                  <td>{course.revenue}</td>
+                  <td className="col-span-2 flex gap-2 items-center justify-end overflow-hidden">
+                    <div className="tooltip" data-tip="Delete User">
+                      <MdEdit className="bg-[#125ca6] cursor-pointer tooltip p-1 text-2xl text-white rounded"/>
+                    </div>
+                    <div className="tooltip" data-tip="Delete User">
+                      <RiDeleteBin5Line
+                        className="bg-error cursor-pointer tooltip p-1 text-2xl text-white rounded"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 };
 
-export default AdminHome;
+const StatCard = ({ icon, title, value, change }) => (
+  <div className="bg-white rounded-lg border p-6">
+    <div className="flex justify-between items-center mb-4">
+      <h2 className="text-sm font-medium text-gray-500">{title}</h2>
+      <div className="text-[#125ca6] text-xl">{icon}</div>
+    </div>
+    <p className="text-3xl font-bold">{value}</p>
+  </div>
+);
+
+const MetricCard = ({ icon, title, value }) => (
+  <div className="bg-gray-50 rounded-lg p-4">
+    <div className="flex items-center mb-2">
+      {icon}
+      <h3 className="ml-2 text-sm font-medium text-gray-500">{title}</h3>
+    </div>
+    <p className="text-xl font-semibold">{value}</p>
+  </div>
+);
+
+export default AdminDashboard;
+
