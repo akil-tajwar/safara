@@ -106,7 +106,7 @@ const AllUsers = () => {
             }
         });
     };
-    
+
     const handleUndoAdmin = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -144,7 +144,7 @@ const AllUsers = () => {
             }
         });
     };
-    
+
 
     const handleSuspendUser = (id) => {
         Swal.fire({
@@ -240,15 +240,16 @@ const AllUsers = () => {
     };
 
     return (
-        <div>
-            <div className="overflow-x-auto">
+        <div className=" m-6">
+            <h1 className="text-3xl font-bold text-[#125ca6] mb-6">All Users</h1>
+            <div className="overflow-x-auto border rounded-md">
                 <table className="table table-zebra">
                     <thead>
                         <tr className="grid grid-cols-6">
                             <th>Sl no.</th>
                             <th className="col-span-3">Name</th>
                             <th>Role</th>
-                            <th>Action</th>
+                            <th className="text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -258,7 +259,7 @@ const AllUsers = () => {
                                     <td>{indexOfFirstUser + index + 1}</td>
                                     <td className="col-span-3">{user.firstname} {user.lastname}</td>
                                     <td>{user.role}</td>
-                                    <td className='flex gap-2 items-center'>
+                                    <td className='flex gap-2 items-center justify-end overflow-hidden'>
                                         {user.role === 'admin' ?
                                             <div className="tooltip" data-tip="Undo Admin">
                                                 <FaUserMinus
@@ -270,20 +271,6 @@ const AllUsers = () => {
                                                 <FaUserShield
                                                     className="bg-success cursor-pointer tooltip p-1 text-2xl text-white rounded"
                                                     onClick={() => handleMakeAdmin(user._id)}
-                                                />
-                                            </div>
-                                        }
-                                        {user.isSuspended === false ?
-                                            <div className="tooltip" data-tip="Suspend User">
-                                                <FaUserTimes
-                                                    className='bg-warning p-1 cursor-pointer tooltip text-2xl text-white rounded'
-                                                    onClick={() => handleSuspendUser(user._id)}
-                                                />
-                                            </div> :
-                                            <div className="tooltip" data-tip="Continue User">
-                                                <FaUserCheck
-                                                    className='bg-success p-1 cursor-pointer tooltip text-2xl text-white rounded'
-                                                    onClick={() => handleContinueUser(user._id)}
                                                 />
                                             </div>
                                         }

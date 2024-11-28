@@ -85,7 +85,8 @@ const ManageCourses = () => {
   }, []);
 
   return (
-    <div>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Manage Courses</h1>
       <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-5 w-fit">
         {courses?.map((course) => (
           <div key={course._id} className="border rounded-xl relative">

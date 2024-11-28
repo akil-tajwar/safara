@@ -124,18 +124,16 @@ const Login = () => {
             signup
           </Link>{" "}
         </p>
-
-     
+        <button
+          onClick={handleGoogleLogin}
+          className="border border-[#125ca6] py-3 rounded-md w-full mt-4 flex items-center justify-center"
+        >
+          <FcGoogle className="text-3xl mr-3" />
+          <span>Login with Google</span>
+        </button>
       </form>
       <div>
-        <button
-        onClick={handleGoogleLogin}
-        className="border border-[#125ca6] py-3 rounded-md w-full mt-4 flex items-center justify-center"
-      >
-        <FcGoogle className="text-3xl mr-3" />
-        <span>Login with Google</span>
-      </button>
-        </div>
+      </div>
     </div>
   );
 };

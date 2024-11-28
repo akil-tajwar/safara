@@ -70,7 +70,7 @@ const Sidebar = () => {
                 to={"/dashboard/admin/manageBookings"}
               >
                <GrDocumentConfig />
-                Manage Course Bookings
+                Transaction History
               </NavLink>
             </li>
             <li>

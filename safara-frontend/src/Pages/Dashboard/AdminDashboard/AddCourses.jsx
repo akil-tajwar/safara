@@ -200,6 +200,7 @@ const AddCourses = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="card-body">
+          <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Add Course</h1>
           <div className="flex justify-between gap-3">
             <div className="form-control w-full">
               <label className="label">
