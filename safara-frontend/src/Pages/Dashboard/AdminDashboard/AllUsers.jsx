@@ -242,7 +242,7 @@ const AllUsers = () => {
     return (
         <div className=" m-6">
             <h1 className="text-3xl font-bold text-[#125ca6] mb-6">All Users</h1>
-            <div className="overflow-x-auto border rounded-md">
+            <div className="overflow-x-hidden border rounded-md">
                 <table className="table table-zebra">
                     <thead>
                         <tr className="grid grid-cols-6">
@@ -259,7 +259,7 @@ const AllUsers = () => {
                                     <td>{indexOfFirstUser + index + 1}</td>
                                     <td className="col-span-3">{user.firstname} {user.lastname}</td>
                                     <td>{user.role}</td>
-                                    <td className='flex gap-2 items-center justify-end overflow-hidden'>
+                                    <td className='flex gap-2 items-center justify-end'>
                                         {user.role === 'admin' ?
                                             <div className="tooltip" data-tip="Undo Admin">
                                                 <FaUserMinus
