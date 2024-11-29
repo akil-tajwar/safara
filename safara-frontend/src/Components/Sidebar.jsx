@@ -28,7 +28,7 @@ const Sidebar = () => {
       borderRadius: "4px",
       fontSize: "15px",
       whiteSpace: "nowrap",
-      color: shouldApplyActiveStyle ? "white": "white"  ,
+      color: shouldApplyActiveStyle ? "white": "white" ,
     };
   };
 

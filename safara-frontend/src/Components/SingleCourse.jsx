@@ -18,7 +18,6 @@ import Footer from "./Footer";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import useAuthContext from "../hooks/useAuthContext";
 import Swal from "sweetalert2";
-import axios from 'axios';
 
 const SingleCourse = () => {
   const { id } = useParams();
@@ -28,10 +27,17 @@ const SingleCourse = () => {
   const [reletedCourses, setreletedCourses] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null); // State to track selected video
-  const [isAdminOrStudent, setIsAdminOrStudent] = useState(false);
+  const [isAdminOrStudent, setIsAdminOrStudent] = useState(true);
   const [rating, setRating] = useState(null);
   const [comments, setComments] = useState("");
-  const userId = user?.user?._id; // Replace with the actual user ID from your authentication
+  const userId = user?.user?._id;
+
+  useEffect(() => {
+    if (courseData && courseData.students && userId) {
+      const isStudent = courseData.students.some(student => student.studentsId === userId);
+      setIsAdminOrStudent(!isStudent);
+    }
+  }, [courseData, userId]);
 
   //   syllabus dowload
 
@@ -236,6 +242,48 @@ const SingleCourse = () => {
     setIsAdminOrStudent(true);
   };
 
+  const renderStudentOpinions = () => {
+    if (!courseData?.studentsOpinion || courseData.studentsOpinion.length === 0) {
+      return <div className="w-full h-40 flex items-center justify-center">
+      <p className="text-gray-500 text-lg">No review yet</p>
+    </div>;
+    }
+
+    return courseData.studentsOpinion.map((opinion, index) => {
+      const reviewer = allUsers.find(user => user._id === opinion.reviewerId);
+      return (
+        <div key={index} className="border rounded-md py-3 px-4 w-[490px]">
+          <div className="flex gap-3">
+            <div className="w-20 rounded-full border mt-1">
+              <img
+                className="w-20 h-20 object-top rounded-full object-cover"
+                alt="Profile Picture"
+                src={reviewer?.img}
+              />
+            </div>
+            <div>
+              <h5 className="font-semibold text-xl">
+                {reviewer?.firstname} {reviewer?.lastname}
+              </h5>
+              <p>Student</p>
+              <p>{reviewer?.department || "Department Unknown"}</p>
+            </div>
+          </div>
+          <div className="flex gap-1 mt-2 mb-5 items-center">
+            {[...Array(5)].map((star, i) =>
+              i < opinion.rating ? (
+                <FaStar key={i} className="text-yellow-400" />
+              ) : (
+                <FaRegStar key={i} />
+              )
+            )}
+          </div>
+          <p>{opinion.comments}</p>
+        </div>
+      );
+    });
+  };
+
   const makePayment = async () => {
     const paymentData = {
       courseId: courseData._id,  // The course being enrolled in
@@ -325,7 +373,6 @@ const SingleCourse = () => {
             beatae asperiores sunt nostrum odio? Aut voluptate dicta nesciunt
             iusto. Necessitatibus omnis dolorem quasi aut.
           </p>
-          <Link to={`/dashboard/admin/schedulemeet?${id}`} className="btn btn-primary">Create Meet</Link>
         </div>
       </div>
       <div className="pt-10">
@@ -402,46 +449,9 @@ const SingleCourse = () => {
         </div>
         <div
           ref={studentsOpinionCarouselRef}
-          className="carousel carousel-center space-x-4 p-4 mt-2 border w-full rounded-md"
+          className="carousel carousel-center space-x-4 p-4 mt-2 border w-full min-h-52 rounded-md"
         >
-          {courseData?.studentsOpinion?.map((opinion, index) => {
-            const reviewer = allUsers.find(
-              (user) => user._id === opinion.reviewerId
-            );
-            return (
-              <div
-                key={index}
-                className="border rounded-md py-3 px-4 w-[490px]"
-              >
-                <div className="flex gap-3">
-                  <div className="w-20 rounded-full border mt-1">
-                    <img
-                      className="w-20 h-20 object-top rounded-full object-cover"
-                      alt="Profile Picture"
-                      src={reviewer?.img}
-                    />
-                  </div>
-                  <div>
-                    <h5 className="font-semibold text-xl">
-                      {reviewer?.firstname} {reviewer?.lastname}
-                    </h5>
-                    <p>Student</p>
-                    <p>{reviewer?.department || "Department Unknown"}</p>
-                  </div>
-                </div>
-                <div className="flex gap-1 mt-2 mb-5 items-center">
-                  {[...Array(5)].map((star, i) =>
-                    i < opinion.rating ? (
-                      <FaStar key={i} className="text-yellow-400" />
-                    ) : (
-                      <FaRegStar key={i} />
-                    )
-                  )}
-                </div>
-                <p>{opinion.comments}</p>
-              </div>
-            );
-          })}
+         {renderStudentOpinions()}
         </div>
       </div>
       <div className="pt-10">
@@ -494,13 +504,16 @@ const SingleCourse = () => {
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={()=>downloadFiteAtURL(courseData.syllabus)}
-                    className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
-                  >
-                    <IoMdDownload className="text-xl" />
-                    <p className="">Syllabus</p>
-                  </button>
+                  <div className="flex gap-2">
+                    <Link to={`/dashboard/admin/schedulemeet?${id}`} className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md">Create Meet</Link>
+                    <button
+                      onClick={() => downloadFiteAtURL(courseData.syllabus)}
+                      className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                    >
+                      <IoMdDownload className="text-xl" />
+                      <p className="">Syllabus</p>
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <p className="pt-5 w-2/3">{courseData?.magnetLine}</p>

@@ -100,7 +100,7 @@ const AdminDashboard = () => {
         <div>
           <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Top Performing Courses</h2>
         </div>
-        <div className="overflow-x-auto border rounded-md">
+        <div className="overflow-x-hidden border rounded-md">
           <table className="table table-zebra w-full">
             <thead>
               <tr className="grid grid-cols-8">
@@ -123,7 +123,7 @@ const AdminDashboard = () => {
                     </div>
                   </td>
                   <td>{course.revenue}</td>
-                  <td className="col-span-2 flex gap-2 items-center justify-end overflow-hidden">
+                  <td className="col-span-2 flex gap-2 items-center justify-end">
                     <div className="tooltip" data-tip="Delete User">
                       <MdEdit className="bg-[#125ca6] cursor-pointer tooltip p-1 text-2xl text-white rounded"/>
                     </div>
