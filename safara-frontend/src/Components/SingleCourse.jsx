@@ -27,7 +27,7 @@ const SingleCourse = () => {
   const [reletedCourses, setreletedCourses] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null); // State to track selected video
-  const [isAdminOrStudent, setIsAdminOrStudent] = useState(true);
+  const [isAdminOrStudent, setIsAdminOrStudent] = useState(false);
   const [rating, setRating] = useState(null);
   const [comments, setComments] = useState("");
   const userId = user?.user?._id;
@@ -35,7 +35,7 @@ const SingleCourse = () => {
   useEffect(() => {
     if (courseData && courseData.students && userId) {
       const isStudent = courseData.students.some(student => student.studentsId === userId);
-      setIsAdminOrStudent(!isStudent);
+      setIsAdminOrStudent(isStudent);
     }
   }, [courseData, userId]);
 
@@ -245,8 +245,8 @@ const SingleCourse = () => {
   const renderStudentOpinions = () => {
     if (!courseData?.studentsOpinion || courseData.studentsOpinion.length === 0) {
       return <div className="w-full h-40 flex items-center justify-center">
-      <p className="text-gray-500 text-lg">No review yet</p>
-    </div>;
+        <p className="text-gray-500 text-lg">No review yet</p>
+      </div>;
     }
 
     return courseData.studentsOpinion.map((opinion, index) => {
@@ -451,7 +451,7 @@ const SingleCourse = () => {
           ref={studentsOpinionCarouselRef}
           className="carousel carousel-center space-x-4 p-4 mt-2 border w-full min-h-52 rounded-md"
         >
-         {renderStudentOpinions()}
+          {renderStudentOpinions()}
         </div>
       </div>
       <div className="pt-10">
@@ -569,12 +569,11 @@ const SingleCourse = () => {
                 <div>
                   <h3 className="text-3xl">{courseData?.title}</h3>
                   <div className="flex gap-1 text-xl mt-2 items-center">
-                    <FaStar className="text-yellow-400" />
-                    <FaStar className="text-yellow-400" />
-                    <FaStar className="text-yellow-400" />
-                    <FaRegStar />
-                    <FaRegStar />
-                    <p>(23)</p>
+                    {renderStars(calculateAverageRating())}
+                    {/* <p>{calculateAverageRating()}</p> */}
+                    <p className="ml-3">
+                      {courseData?.studentsOpinion?.length || 0} Ratings
+                    </p>
                   </div>
                 </div>
                 <button className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md">
@@ -595,7 +594,7 @@ const SingleCourse = () => {
                 />
                 <div className="py-10">{commonSections}</div>
               </div>
-              <div className="col-span-2 border rounded-md h-[600px] sticky top-[20px]">
+              <div className="col-span-2 border rounded-md h-[600px] sticky top-[20px] relative">
                 {courseData?.videos?.map((video, index) => (
                   <p
                     key={video?._id}
@@ -603,11 +602,15 @@ const SingleCourse = () => {
                       ? "bg-[#125ca6] border-[#125ca6] text-white"
                       : "text-black"
                       } overflow-hidden cursor-pointer`}
-                    onClick={() => handleVideoSelect(video)} // Update video on click
+                    onClick={() => handleVideoSelect(video)}
                   >
                     {index + 1}. {video?.videoTitle}
                   </p>
                 ))}
+                <div className="text-white bg-white p-3 flex justify-between items-center p-3 absolute bottom-0 left-0 right-0">
+                  <button className="bg-[#125ca6] py-1 px-4 rounded-md">Prev</button>
+                  <button className="bg-[#125ca6] py-1 px-4 rounded-md">Next</button>
+                </div>
               </div>
             </div>
           </div>
