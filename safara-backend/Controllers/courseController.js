@@ -319,50 +319,118 @@ const success = async (req, res) => {
       });
   }
 };
- const topCourses= async (req, res) => {
+
+const topCourses = async (req, res) => {
   try {
-      // Use MongoDB aggregation to calculate average ratings and fetch top 6 courses
-      const topCourses = await courseModel.aggregate([
-          // Unwind the studentsOpinion array to work on individual ratings
-          { $unwind: "$studentsOpinion" },
+    // Use MongoDB aggregation to calculate average ratings and fetch top 6 courses
+    const topCourses = await courseModel.aggregate([
+      // Unwind the studentsOpinion array to work on individual ratings
+      { $unwind: "$studentsOpinion" },
 
-          // Convert the rating field to a number (if stored as string)
-          {
-              $addFields: {
-                  "studentsOpinion.rating": { $toDouble: "$studentsOpinion.rating" },
-              },
-          },
+      // Convert the rating field to a number (if stored as string)
+      {
+        $addFields: {
+          "studentsOpinion.rating": { $toDouble: "$studentsOpinion.rating" },
+        },
+      },
 
-          // Group by course and calculate the average rating
-          {
-              $group: {
-                  _id: "$_id",
-                  title: { $first: "$title" },
-                  banner: { $first: "$banner" },
-                  details: { $first: "$details" },
-                  averageRating: { $avg: "$studentsOpinion.rating" },
-              },
-          },
+      // Group by course and calculate the average rating
+      {
+        $group: {
+          _id: "$_id",
+          title: { $first: "$title" },
+          banner: { $first: "$banner" },
+          details: { $first: "$details" },
+          averageRating: { $avg: "$studentsOpinion.rating" },
+        },
+      },
 
-          // Sort courses by average rating in descending order
-          { $sort: { averageRating: -1 } },
+      // Sort courses by average rating in descending order
+      { $sort: { averageRating: -1 } },
 
-          // Limit the result to top 6 courses
-          { $limit: 6 },
-      ]);
+      // Limit the result to top 6 courses
+      { $limit: 6 },
+    ]);
 
-      res.status(200).json({
-          success: true,
-          data: topCourses,
-      });
+    res.status(200).json({
+      success: true,
+      data: topCourses,
+    });
   } catch (error) {
-      console.error("Error fetching top courses:", error);
-      res.status(500).json({
-          success: false,
-          message: "Failed to fetch top courses",
-      });
+    console.error("Error fetching top courses:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch top courses",
+    });
   }
 }
+
+const unlockVideo = async (req, res) => {
+  // Log the incoming request data for debugging
+  console.log('Request body:', req.body);
+  console.log('Request params:', req.params);
+
+  const courseId = req.body._id;
+  const studentId = req.params.id; // Changed from req.params.studentId to req.params.id
+
+  console.log('Parsed IDs:', { courseId, studentId });
+
+  // Validate ObjectId format
+  if (!mongoose.Types.ObjectId.isValid(courseId) || !mongoose.Types.ObjectId.isValid(studentId)) {
+    return res.status(400).json({ 
+      error: "Invalid courseId or studentId",
+      receivedCourseId: courseId,
+      receivedStudentId: studentId
+    });
+  }
+
+  try {
+    // Find the course
+    const course = await courseModel.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    // Find the specific student in the course's students array
+    const student = course.students.find(
+      (s) => s.studentsId.toString() === studentId
+    );
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found in course" });
+    }
+
+    // Check if unlockedVideo has reached the videos length
+    if (student.unlockedVideo >= course.videos.length) {
+      return res.status(400).json({
+        error: "All videos are already unlocked for this student",
+      });
+    }
+
+    // Increment unlockedVideo
+    const updatedCourse = await courseModel.findOneAndUpdate(
+      {
+        _id: courseId,
+        "students.studentsId": studentId,
+      },
+      {
+        $inc: { "students.$.unlockedVideo": 1 },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Unlocked video incremented successfully",
+      updatedCourse,
+    });
+  } catch (error) {
+    console.error('Error in unlockVideo:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 module.exports = {
   createCourse,
   getAllCourses,
@@ -374,5 +442,6 @@ module.exports = {
   courseCount,
   order,
   success,
-  topCourses
+  topCourses,
+  unlockVideo
 };

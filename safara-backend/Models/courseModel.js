@@ -60,6 +60,10 @@ const courseSchema = new mongoose.Schema({
             type: Boolean,
             default: false
         },
+        unlockedVideo: {
+            type: Number,
+            default: 1
+        },
         isCourseComplete: {
             type: Boolean,
             default: false
