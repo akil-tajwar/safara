@@ -30,6 +30,8 @@ const SingleCourse = () => {
   const [isAdminOrStudent, setIsAdminOrStudent] = useState(false);
   const [rating, setRating] = useState(null);
   const [comments, setComments] = useState("");
+  const [unlockedVideos, setUnlockedVideos] = useState(1); // Added state for unlocked videos
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const userId = user?.user?._id;
 
   useEffect(() => {
@@ -58,6 +60,27 @@ const SingleCourse = () => {
 
     // Remove the <a> element from the DOM after the click
     aTag.remove();
+  };
+
+  const unlockNextVideo = async () => { // Added unlockNextVideo function
+    if (unlockedVideos < courseData.videos.length) {
+      try {
+        const response = await fetch(`http://localhost:4000/api/course/unlockVideo/${userId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: courseData._id }),
+        });
+        if (response.ok) {
+          setUnlockedVideos(prev => prev + 1);
+        } else {
+          console.error('Failed to unlock next video');
+        }
+      } catch (error) {
+        console.error('Error unlocking video:', error);
+      }
+    }
   };
 
 
@@ -170,11 +193,12 @@ const SingleCourse = () => {
     }
   }, [courseData]); // Now this effect will run only once when courseData is set for the first time.
 
-  const handleVideoSelect = (video) => {
+  const handleVideoSelect = (video, index) => { // Updated handleVideoSelect function
     setSelectedVideo(video);
+    setCurrentVideoIndex(index);
     window.scrollTo({
       top: 0,
-      behavior: "smooth", // This adds a smooth scrolling effect
+      behavior: "smooth",
     });
   };
 
@@ -236,10 +260,6 @@ const SingleCourse = () => {
     }
 
     return stars;
-  };
-
-  const tempEnrollBtn = () => {
-    setIsAdminOrStudent(true);
   };
 
   const renderStudentOpinions = () => {
@@ -378,7 +398,7 @@ const SingleCourse = () => {
       <div className="pt-10">
         <h3 className="text-2xl font-semibold">Course Contents</h3>
         <div className="border rounded-md mt-2 py-3 px-4 max-h-72 overflow-y-scroll overflow-x-hidden">
-          {courseData?.videos?.map((video, index) => (
+          {courseData?.videos?.map((video) => (
             <div
               key={video?._id}
               className="whitespace-nowrap flex gap-2 items-center"
@@ -538,18 +558,6 @@ const SingleCourse = () => {
                     >
                       Enroll
                     </button>
-                    {/* <dialog id="my_modal_2" className="modal">
-                      <div className="modal-box">
-                        <h3 className="text-2xl font-semibold text-center">Choose a payment method</h3>
-                        <div className="grid grid-cols-2 gap-5 pt-5">
-                          <img onClick={bkashPayment} className="border rounded-md cursor-pointer hover:border-[#125ca6]" src="/bkash.png" alt="" />
-                          <img className="border rounded-md cursor-pointer hover:border-[#125ca6]" src="/nagad.png" alt="" />
-                        </div>
-                      </div>
-                      <form method="dialog" className="modal-backdrop">
-                        <button>close</button>
-                      </form>
-                    </dialog> */}
                   </div>
                 </div>
               </div>
@@ -595,23 +603,60 @@ const SingleCourse = () => {
                 <div className="py-10">{commonSections}</div>
               </div>
               <div className="col-span-2 border rounded-md h-[600px] sticky top-[20px] relative">
-                {courseData?.videos?.map((video, index) => (
+              {courseData?.videos?.map((video, index) => (
                   <p
                     key={video?._id}
-                    className={`whitespace-nowrap m-3 p-2 rounded-md border ${selectedVideo?._id === video._id
-                      ? "bg-[#125ca6] border-[#125ca6] text-white"
-                      : "text-black"
-                      } overflow-hidden cursor-pointer`}
-                    onClick={() => handleVideoSelect(video)}
+                    className={`whitespace-nowrap m-3 p-2 rounded-md border ${
+                      selectedVideo?._id === video._id
+                        ? "bg-[#125ca6] border-[#125ca6] text-white"
+                        : index < unlockedVideos
+                        ? "text-black cursor-pointer"
+                        : "text-gray-400 cursor-not-allowed"
+                    } overflow-hidden`}
+                    onClick={() => handleVideoSelect(video, index)}
                   >
                     {index + 1}. {video?.videoTitle}
+                    {index >= unlockedVideos && " 🔒"}
                   </p>
                 ))}
                 <div className="text-white bg-white p-3 flex justify-between items-center p-3 absolute bottom-0 left-0 right-0">
-                  <button className="bg-[#125ca6] py-1 px-4 rounded-md">Prev</button>
-                  <button className="bg-[#125ca6] py-1 px-4 rounded-md">Next</button>
+                  <button 
+                    className="bg-[#125ca6] py-1 px-4 rounded-md"
+                    onClick={() => {
+                      if (currentVideoIndex > 0) {
+                        handleVideoSelect(courseData.videos[currentVideoIndex - 1], currentVideoIndex - 1);
+                      }
+                    }}
+                    disabled={currentVideoIndex === 0}
+                  >
+                    Prev
+                  </button>
+                  <button 
+                    className="bg-[#125ca6] py-1 px-4 rounded-md"
+                    onClick={() => {
+                      if (currentVideoIndex < courseData.videos.length - 1) {
+                        if (currentVideoIndex + 1 < unlockedVideos) {
+                          handleVideoSelect(courseData.videos[currentVideoIndex + 1], currentVideoIndex + 1);
+                        } else {
+                          unlockNextVideo().then(() => {
+                            handleVideoSelect(courseData.videos[currentVideoIndex + 1], currentVideoIndex + 1);
+                          });
+                        }
+                      }
+                    }}
+                    disabled={currentVideoIndex === courseData.videos.length - 1}
+                  >
+                    Next
+                  </button>
                 </div>
               </div>
+              {unlockedVideos === courseData?.videos?.length && (
+                    <div className="mt-4 text-center">
+                      <button className="bg-green-500 text-white py-2 px-4 rounded-md">
+                        Course Completed!
+                      </button>
+                    </div>
+                  )}
             </div>
           </div>
         </div>
