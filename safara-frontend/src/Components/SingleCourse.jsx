@@ -5,6 +5,7 @@ import { IoMdDownload } from "react-icons/io";
 import {
   FaChevronLeft,
   FaChevronRight,
+  FaLock,
   FaRegStar,
   FaRegStarHalf,
   FaStar,
@@ -36,8 +37,18 @@ const SingleCourse = () => {
 
   useEffect(() => {
     if (courseData && courseData.students && userId) {
-      const isStudent = courseData.students.some(student => student.studentsId === userId);
-      setIsAdminOrStudent(isStudent);
+      const currentStudent = courseData.students.find(
+        (student) => student.studentsId === userId
+      );
+
+      if (currentStudent) {
+        setIsAdminOrStudent(true);
+        setUnlockedVideos(currentStudent.unlockedVideo || null);
+        console.log("unlocked", currentStudent.unlockedVideo);
+      } else {
+        setIsAdminOrStudent(false);
+        setUnlockedVideos(null);
+      }
     }
   }, [courseData, userId]);
 
@@ -62,27 +73,30 @@ const SingleCourse = () => {
     aTag.remove();
   };
 
-  const unlockNextVideo = async () => { // Added unlockNextVideo function
+  const unlockNextVideo = async () => {
+    // Added unlockNextVideo function
     if (unlockedVideos < courseData.videos.length) {
       try {
-        const response = await fetch(`http://localhost:4000/api/course/unlockVideo/${userId}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ _id: courseData._id }),
-        });
+        const response = await fetch(
+          `http://localhost:4000/api/course/unlockVideo/${userId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ _id: courseData._id }),
+          }
+        );
         if (response.ok) {
-          setUnlockedVideos(prev => prev + 1);
+          setUnlockedVideos((prev) => prev + 1);
         } else {
-          console.error('Failed to unlock next video');
+          console.error("Failed to unlock next video");
         }
       } catch (error) {
-        console.error('Error unlocking video:', error);
+        console.error("Error unlocking video:", error);
       }
     }
   };
-
 
   const handleRatingClick = (rate) => {
     setRating(rate);
@@ -193,7 +207,8 @@ const SingleCourse = () => {
     }
   }, [courseData]); // Now this effect will run only once when courseData is set for the first time.
 
-  const handleVideoSelect = (video, index) => { // Updated handleVideoSelect function
+  const handleVideoSelect = (video, index) => {
+    // Updated handleVideoSelect function
     setSelectedVideo(video);
     setCurrentVideoIndex(index);
     window.scrollTo({
@@ -263,14 +278,19 @@ const SingleCourse = () => {
   };
 
   const renderStudentOpinions = () => {
-    if (!courseData?.studentsOpinion || courseData.studentsOpinion.length === 0) {
-      return <div className="w-full h-40 flex items-center justify-center">
-        <p className="text-gray-500 text-lg">No review yet</p>
-      </div>;
+    if (
+      !courseData?.studentsOpinion ||
+      courseData.studentsOpinion.length === 0
+    ) {
+      return (
+        <div className="w-full h-40 flex items-center justify-center">
+          <p className="text-gray-500 text-lg">No review yet</p>
+        </div>
+      );
     }
 
     return courseData.studentsOpinion.map((opinion, index) => {
-      const reviewer = allUsers.find(user => user._id === opinion.reviewerId);
+      const reviewer = allUsers.find((user) => user._id === opinion.reviewerId);
       return (
         <div key={index} className="border rounded-md py-3 px-4 w-[490px]">
           <div className="flex gap-3">
@@ -306,28 +326,27 @@ const SingleCourse = () => {
 
   const makePayment = async () => {
     const paymentData = {
-      courseId: courseData._id,  // The course being enrolled in
-      studentsId: userId,        // ID of the currently logged-in user
-      price: courseData.price,   // Price of the course
+      courseId: courseData._id, // The course being enrolled in
+      studentsId: userId, // ID of the currently logged-in user
+      price: courseData.price, // Price of the course
     };
-    console.log('Payment Data before sent:', paymentData);
+    console.log("Payment Data before sent:", paymentData);
 
     // Make a POST request to the backend payment API
-    fetch('http://localhost:4000/api/course/payment/order', {
-      method: 'POST',
+    fetch("http://localhost:4000/api/course/payment/order", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(paymentData)
+      body: JSON.stringify(paymentData),
     })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((result) => {
         window.location.replace(result.url); // Redirect to payment gateway
         console.log(result);
       })
-      .catch(error => console.error('Error during payment process:', error));
+      .catch((error) => console.error("Error during payment process:", error));
   };
-
 
   const commonSections = (
     <div>
@@ -525,7 +544,12 @@ const SingleCourse = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Link to={`/dashboard/admin/schedulemeet?${id}`} className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md">Create Meet</Link>
+                    <Link
+                      to={`/dashboard/admin/schedulemeet?${id}`}
+                      className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                    >
+                      Create Meet
+                    </Link>
                     <button
                       onClick={() => downloadFiteAtURL(courseData.syllabus)}
                       className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
@@ -602,8 +626,9 @@ const SingleCourse = () => {
                 />
                 <div className="py-10">{commonSections}</div>
               </div>
+
               <div className="col-span-2 border rounded-md h-[600px] sticky top-[20px] relative">
-              {courseData?.videos?.map((video, index) => (
+                {courseData?.videos?.map((video, index) => (
                   <p
                     key={video?._id}
                     className={`whitespace-nowrap m-3 p-2 rounded-md border ${
@@ -613,50 +638,67 @@ const SingleCourse = () => {
                         ? "text-black cursor-pointer"
                         : "text-gray-400 cursor-not-allowed"
                     } overflow-hidden`}
-                    onClick={() => handleVideoSelect(video, index)}
+                    onClick={() =>
+                      index < unlockedVideos && handleVideoSelect(video, index)
+                    }
                   >
-                    {index + 1}. {video?.videoTitle}
-                    {index >= unlockedVideos && " 🔒"}
+                    {index < unlockedVideos ? (
+                      <>{index + 1}. </>
+                    ) : (
+                      <FaLock className="inline-block mr-2" />
+                    )}
+                    {video?.videoTitle}
                   </p>
                 ))}
                 <div className="text-white bg-white p-3 flex justify-between items-center p-3 absolute bottom-0 left-0 right-0">
-                  <button 
+                  <button
                     className="bg-[#125ca6] py-1 px-4 rounded-md"
                     onClick={() => {
                       if (currentVideoIndex > 0) {
-                        handleVideoSelect(courseData.videos[currentVideoIndex - 1], currentVideoIndex - 1);
+                        handleVideoSelect(
+                          courseData.videos[currentVideoIndex - 1],
+                          currentVideoIndex - 1
+                        );
                       }
                     }}
                     disabled={currentVideoIndex === 0}
                   >
                     Prev
                   </button>
-                  <button 
+                  <button
                     className="bg-[#125ca6] py-1 px-4 rounded-md"
                     onClick={() => {
                       if (currentVideoIndex < courseData.videos.length - 1) {
                         if (currentVideoIndex + 1 < unlockedVideos) {
-                          handleVideoSelect(courseData.videos[currentVideoIndex + 1], currentVideoIndex + 1);
+                          handleVideoSelect(
+                            courseData.videos[currentVideoIndex + 1],
+                            currentVideoIndex + 1
+                          );
                         } else {
                           unlockNextVideo().then(() => {
-                            handleVideoSelect(courseData.videos[currentVideoIndex + 1], currentVideoIndex + 1);
+                            handleVideoSelect(
+                              courseData.videos[currentVideoIndex + 1],
+                              currentVideoIndex + 1
+                            );
                           });
                         }
                       }
                     }}
-                    disabled={currentVideoIndex === courseData.videos.length - 1}
+                    disabled={
+                      currentVideoIndex === courseData.videos.length - 1
+                    }
                   >
                     Next
                   </button>
                 </div>
               </div>
               {unlockedVideos === courseData?.videos?.length && (
-                    <div className="mt-4 text-center">
-                      <button className="bg-green-500 text-white py-2 px-4 rounded-md">
-                        Course Completed!
-                      </button>
-                    </div>
-                  )}
+                <div className="mt-4 text-center">
+                  <button className="bg-green-500 text-white py-2 px-4 rounded-md">
+                    Course Completed!
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
