@@ -69,6 +69,51 @@ const signupUser = async (req, res) => {
   }
 };
 
+const googleLogin = async (req, res) => {
+  try {
+    const { firstname, lastname, email, phone, role, prevRole, img } = req.body;
+
+    if (!email) {
+      console.error("Missing email in request body:", req.body);
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    // Check if user exists
+    let user = await userModel.findOne({ email });
+    let isNewUser = false;
+
+    if (!user) {
+      // Create new user if doesn't exist
+      isNewUser = true;
+      user = await userModel.create({
+        firstname,
+        lastname,
+        email,
+        phone,
+        role,
+        prevRole,
+        img,
+      });
+    }
+
+    // Generate token
+    const token = createToken(user._id);
+
+    // Return user data and token
+    res.status(200).json({
+      user: {
+        ...user.toObject(),
+        isNewUser
+      },
+      token
+    });
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -301,65 +346,65 @@ const changePassword = async (req, res) => {
 };
 
 // Google Login Route
-const googleLogin = async (req, res) => {
-  const { email, firstname, lastname, img } = req.body;
+// const googleLogin = async (req, res) => {
+//   const { email, firstname, lastname, img } = req.body;
 
-  // Ensure required fields are present
-  if (!email || !firstname || !lastname) {
-    return res
-      .status(400)
-      .json({ error: "Email, firstname, and lastname are required." });
-  }
+//   // Ensure required fields are present
+//   if (!email || !firstname || !lastname) {
+//     return res
+//       .status(400)
+//       .json({ error: "Email, firstname, and lastname are required." });
+//   }
 
-  try {
-    // Check if the user already exists
-    let googleUser = await userModel.findOne({ email });
+//   try {
+//     // Check if the user already exists
+//     let googleUser = await userModel.findOne({ email });
 
-    if (googleUser) {
-      // Generate a token for the existing user
-      const token = createToken(googleUser._id);
+//     if (googleUser) {
+//       // Generate a token for the existing user
+//       const token = createToken(googleUser._id);
       
-      // Optional: Send a welcome email only on the first login if needed
-      sendWelcomeEmail(email, googleUser.firstname);
+//       // Optional: Send a welcome email only on the first login if needed
+//       sendWelcomeEmail(email, googleUser.firstname);
 
-      return res.status(200).json({
-        message: "User logged in successfully.",
-        newUser: false,
-        user: googleUser,
-        token,
-      });
-    }
+//       return res.status(200).json({
+//         message: "User logged in successfully.",
+//         newUser: false,
+//         user: googleUser,
+//         token,
+//       });
+//     }
 
-    // Create a new user if not found
-    googleUser = new userModel({
-      email,
-      firstname,
-      lastname,
-      img: img || "", // Default to an empty string if no image provided
-      phone: "N/A",   // Placeholder for phone
-      role: "user",   // Default role
-      prevRole: "user", // To maintain role history
-    });
+//     // Create a new user if not found
+//     googleUser = new userModel({
+//       email,
+//       firstname,
+//       lastname,
+//       img: img || "", // Default to an empty string if no image provided
+//       phone: "N/A",   // Placeholder for phone
+//       role: "user",   // Default role
+//       prevRole: "user", // To maintain role history
+//     });
 
-    await googleUser.save();
+//     await googleUser.save();
 
-    // Generate a token for the new user
-    const token = createToken(googleUser._id);
+//     // Generate a token for the new user
+//     const token = createToken(googleUser._id);
 
-    // Send a welcome email to the new user
-    sendWelcomeEmail(email, firstname);
+//     // Send a welcome email to the new user
+//     sendWelcomeEmail(email, firstname);
 
-    return res.status(201).json({
-      message: "New user created successfully.",
-      newUser: true,
-      user: googleUser,
-      token,
-    });
-  } catch (error) {
-    console.error("Error during Google login:", error);
-    return res.status(500).json({ error: "Server error. Please try again." });
-  }
-};
+//     return res.status(201).json({
+//       message: "New user created successfully.",
+//       newUser: true,
+//       user: googleUser,
+//       token,
+//     });
+//   } catch (error) {
+//     console.error("Error during Google login:", error);
+//     return res.status(500).json({ error: "Server error. Please try again." });
+//   }
+// };
 
 module.exports = {
   signupUser,
