@@ -6,59 +6,84 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { getAuth, signInWithPopup } from "firebase/auth";
 import axios from "axios";
 import app from "../firebase/firebase";
-
 import { GoogleAuthProvider } from "firebase/auth";
+
 const auth = getAuth(app);
+
 const Login = () => {
   const navigate = useNavigate();
   const { login, error } = useLogin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const provider = new GoogleAuthProvider();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      alert("required filed");
+      alert("Please fill in all required fields");
       return;
     }
-    const response = await login(email, password);
-    if (response) {
-      console.log(response);
-      console.log(response.message);
-      navigate("/");
+
+    try {
+      setLoading(true);
+      const response = await login(email, password);
+      if (response) {
+        console.log("Login successful:", response);
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Login error:", err.message);
+      alert("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
   const handleGoogleLogin = async () => {
     try {
+      setLoading(true);
+
       // Firebase authentication
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Send user details to backend with placeholder values for required fields
+      // Send user details to the backend
       const response = await axios.post(
         "http://localhost:4000/api/user/googleLogin",
         {
           email: user.email,
-          firstname: user.displayName.split(" ")[0],
-          lastname: user.displayName.split(" ")[1] || "N/A",
+          firstname: user.displayName?.split(" ")[0] || "Unknown",
+          lastname: user.displayName?.split(" ")[1] || "N/A",
           img: user.photoURL,
           phone: "N/A", // Placeholder value
           role: "user", // Default role
         }
       );
+         
+      console.log('response',response.data);
+      const { newUser, userRes, token } = response.data;
 
-      if (response.data.newUser) {
-        console.log("Welcome new user:", response.data.user);
+      if (newUser) {
+        console.log("New user registered:", userRes);
+        alert("Welcome! Your account has been created.");
       } else {
-        console.log("User logged in:", response.data.user);
+        console.log("User logged in:", userRes);
+        alert("Welcome back!");
       }
+
+      // Save token and user in localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userRes));
 
       // Navigate to the dashboard or home
       navigate("/");
     } catch (error) {
       console.error("Google login error:", error.message);
+      alert("Google login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,10 +127,8 @@ const Login = () => {
             className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
           />
           <label className="mt-4">
-            <Link to="/forgetPassword">
-              <a href="#" className="">
-                Forgot password?
-              </a>
+            <Link to="/forgetPassword" className="">
+              Forgot password?
             </Link>
           </label>
         </div>
@@ -114,26 +137,26 @@ const Login = () => {
           <button
             type="submit"
             className="bg-[#125ca6] py-3 rounded-md text-white"
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </div>
         <p className="text-center pt-4">
           Don't have an account?{" "}
           <Link to="/signup" className="text-[#125ca6]">
-            signup
-          </Link>{" "}
+            Sign up
+          </Link>
         </p>
         <button
           onClick={handleGoogleLogin}
           className="border border-[#125ca6] py-3 rounded-md w-full mt-4 flex items-center justify-center"
+          disabled={loading}
         >
           <FcGoogle className="text-3xl mr-3" />
-          <span>Login with Google</span>
+          <span>{loading ? "Logging in with Google..." : "Login with Google"}</span>
         </button>
       </form>
-      <div>
-      </div>
     </div>
   );
 };

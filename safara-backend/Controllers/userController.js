@@ -301,10 +301,10 @@ const changePassword = async (req, res) => {
 };
 
 // Google Login Route
-
 const googleLogin = async (req, res) => {
   const { email, firstname, lastname, img } = req.body;
 
+  // Ensure required fields are present
   if (!email || !firstname || !lastname) {
     return res
       .status(400)
@@ -312,37 +312,52 @@ const googleLogin = async (req, res) => {
   }
 
   try {
-    // Check if user already exists
-    let user = await userModel.findOne({ email });
+    // Check if the user already exists
+    let googleUser = await userModel.findOne({ email });
 
-    if (user) {
+    if (googleUser) {
+      // Generate a token for the existing user
+      const token = createToken(googleUser._id);
+      
+      // Optional: Send a welcome email only on the first login if needed
+      sendWelcomeEmail(email, googleUser.firstname);
+
       return res.status(200).json({
         message: "User logged in successfully.",
         newUser: false,
-        user,
+        user: googleUser,
+        token,
       });
     }
 
-    // Create a new user without a password
-    user = new userModel({
+    // Create a new user if not found
+    googleUser = new userModel({
       email,
       firstname,
       lastname,
-      img,
-      phone: "N/A", // or another placeholder
-      role: "user", // Default role
+      img: img || "", // Default to an empty string if no image provided
+      phone: "N/A",   // Placeholder for phone
+      role: "user",   // Default role
+      prevRole: "user", // To maintain role history
     });
 
-    await user.save();
+    await googleUser.save();
 
-    res.status(201).json({
+    // Generate a token for the new user
+    const token = createToken(googleUser._id);
+
+    // Send a welcome email to the new user
+    sendWelcomeEmail(email, firstname);
+
+    return res.status(201).json({
       message: "New user created successfully.",
       newUser: true,
-      user,
+      user: googleUser,
+      token,
     });
   } catch (error) {
     console.error("Error during Google login:", error);
-    res.status(500).json({ error: "Server error." });
+    return res.status(500).json({ error: "Server error. Please try again." });
   }
 };
 
