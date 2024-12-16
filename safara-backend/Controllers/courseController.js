@@ -430,6 +430,70 @@ const unlockVideo = async (req, res) => {
   }
 };
 
+const completeCourse = async (req, res) => {
+  // Log the incoming request data for debugging
+  console.log('Request body:', req.body);
+  console.log('Request params:', req.params);
+
+  const courseId = req.body._id;
+  const studentId = req.params.id;
+
+  console.log('Parsed IDs:', { courseId, studentId });
+
+  // Validate ObjectId format
+  if (!mongoose.Types.ObjectId.isValid(courseId) || !mongoose.Types.ObjectId.isValid(studentId)) {
+    return res.status(400).json({ 
+      error: "Invalid courseId or studentId",
+      receivedCourseId: courseId,
+      receivedStudentId: studentId
+    });
+  }
+
+  try {
+    // Find the course
+    const course = await courseModel.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    // Find the specific student in the course's students array
+    const student = course.students.find(
+      (s) => s.studentsId.toString() === studentId
+    );
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found in course" });
+    }
+
+    // Check if course is already completed
+    if (student.isCourseComplete) {
+      return res.status(400).json({
+        error: "Course is already marked as complete for this student",
+      });
+    }
+
+    // Set isCourseComplete to true
+    const updatedCourse = await courseModel.findOneAndUpdate(
+      {
+        _id: courseId,
+        "students.studentsId": studentId,
+      },
+      {
+        $set: { "students.$.isCourseComplete": true },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Course marked as complete successfully",
+      updatedCourse,
+    });
+  } catch (error) {
+    console.error('Error in completeCourse:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   createCourse,
@@ -443,5 +507,6 @@ module.exports = {
   order,
   success,
   topCourses,
-  unlockVideo
+  unlockVideo,
+  completeCourse
 };

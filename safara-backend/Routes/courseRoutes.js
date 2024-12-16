@@ -12,6 +12,7 @@ const {
   success,
   topCourses,
   unlockVideo,
+  completeCourse,
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -35,5 +36,6 @@ router.delete("/deleteCourse/:id", deleteCourse);
 //patch
 router.patch("/updateCourse/:id", updateCourse);
 router.patch("/unlockVideo/:id", unlockVideo);
+router.patch("/completeCourse/:id", completeCourse);
 
 module.exports = router;

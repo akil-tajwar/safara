@@ -33,6 +33,7 @@ const SingleCourse = () => {
   const [comments, setComments] = useState("");
   const [unlockedVideos, setUnlockedVideos] = useState(1); // Added state for unlocked videos
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [courseComplete, setCourseComplete] = useState(false);
   const userId = user?.user?._id;
 
   useEffect(() => {
@@ -44,7 +45,7 @@ const SingleCourse = () => {
       if (currentStudent) {
         setIsAdminOrStudent(true);
         setUnlockedVideos(currentStudent.unlockedVideo || null);
-        console.log("unlocked", currentStudent.unlockedVideo);
+        setCourseComplete(currentStudent.unlockedVideo === courseData.videos.length);
       } else {
         setIsAdminOrStudent(false);
         setUnlockedVideos(null);
@@ -52,8 +53,52 @@ const SingleCourse = () => {
     }
   }, [courseData, userId]);
 
-  //   syllabus dowload
+  const courseCompleteAction = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/course/completeCourse/${userId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ _id: courseData._id }),
+        }
+      );
 
+      const data = await response.json();
+    
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to complete the course");
+      }
+
+      console.log("Course completed successfully:", data);
+    
+      // Show success message using SweetAlert2
+      Swal.fire({
+        title: 'Congratulations!',
+        text: 'You have completed the course!',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+
+      // Update UI state and refresh course data
+      setCourseComplete(true);
+      fetchSingleCourse();
+    
+    } catch (error) {
+      console.error("Error completing the course:", error);
+      // Handle the error with more specific message
+      Swal.fire({
+        title: 'Error',
+        text: error.message || 'Failed to complete the course. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  };
+
+  //   syllabus dowload
   const downloadFiteAtURL = (url) => {
     // Extract the filename from the URL
     const fileName = url?.split("/").pop().split("?")[0]; // Removes query params like '?alt=media'
@@ -74,7 +119,6 @@ const SingleCourse = () => {
   };
 
   const unlockNextVideo = async () => {
-    // Added unlockNextVideo function
     if (unlockedVideos < courseData.videos.length) {
       try {
         const response = await fetch(
@@ -88,7 +132,11 @@ const SingleCourse = () => {
           }
         );
         if (response.ok) {
-          setUnlockedVideos((prev) => prev + 1);
+          const newUnlockedVideos = unlockedVideos + 1;
+          setUnlockedVideos(newUnlockedVideos);
+          if (newUnlockedVideos === courseData.videos.length) {
+            setCourseComplete(true);
+          }
         } else {
           console.error("Failed to unlock next video");
         }
@@ -627,78 +675,81 @@ const SingleCourse = () => {
                 <div className="py-10">{commonSections}</div>
               </div>
 
-              <div className="col-span-2 border rounded-md h-[600px] sticky top-[20px] relative">
-                {courseData?.videos?.map((video, index) => (
-                  <p
-                    key={video?._id}
-                    className={`whitespace-nowrap m-3 p-2 rounded-md border ${
-                      selectedVideo?._id === video._id
-                        ? "bg-[#125ca6] border-[#125ca6] text-white"
-                        : index < unlockedVideos
-                        ? "text-black cursor-pointer"
-                        : "text-gray-400 cursor-not-allowed"
-                    } overflow-hidden`}
-                    onClick={() =>
-                      index < unlockedVideos && handleVideoSelect(video, index)
-                    }
-                  >
-                    {index < unlockedVideos ? (
-                      <>{index + 1}. </>
-                    ) : (
-                      <FaLock className="inline-block mr-2" />
-                    )}
-                    {video?.videoTitle}
-                  </p>
-                ))}
-                <div className="text-white bg-white p-3 flex justify-between items-center p-3 absolute bottom-0 left-0 right-0">
-                  <button
-                    className="bg-[#125ca6] py-1 px-4 rounded-md"
-                    onClick={() => {
-                      if (currentVideoIndex > 0) {
-                        handleVideoSelect(
-                          courseData.videos[currentVideoIndex - 1],
-                          currentVideoIndex - 1
-                        );
+              <div className="col-span-2 h-[600px] z-10 sticky top-[20px]">
+                <div className="border rounded-md h-[600px]">
+                  {courseData?.videos?.map((video, index) => (
+                    <p
+                      key={video?._id}
+                      className={`whitespace-nowrap m-3 p-2 rounded-md border ${
+                        selectedVideo?._id === video._id
+                          ? "bg-[#125ca6] border-[#125ca6] text-white"
+                          : index < unlockedVideos
+                          ? "text-black cursor-pointer"
+                          : "text-gray-400 cursor-not-allowed"
+                      } overflow-hidden`}
+                      onClick={() =>
+                        index < unlockedVideos &&
+                        handleVideoSelect(video, index)
                       }
-                    }}
-                    disabled={currentVideoIndex === 0}
-                  >
-                    Prev
-                  </button>
-                  <button
-                    className="bg-[#125ca6] py-1 px-4 rounded-md"
-                    onClick={() => {
-                      if (currentVideoIndex < courseData.videos.length - 1) {
-                        if (currentVideoIndex + 1 < unlockedVideos) {
+                    >
+                      {index < unlockedVideos ? (
+                        <>{index + 1}. </>
+                      ) : (
+                        <FaLock className="inline-block mr-2" />
+                      )}
+                      {video?.videoTitle}
+                    </p>
+                  ))}
+                  <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
+                    <button
+                      className="bg-[#125ca6] py-1 px-4 rounded-md"
+                      onClick={() => {
+                        if (currentVideoIndex > 0) {
                           handleVideoSelect(
-                            courseData.videos[currentVideoIndex + 1],
-                            currentVideoIndex + 1
+                            courseData.videos[currentVideoIndex - 1],
+                            currentVideoIndex - 1
                           );
-                        } else {
-                          unlockNextVideo().then(() => {
+                        }
+                      }}
+                      disabled={currentVideoIndex === 0}
+                    >
+                      Prev
+                    </button>
+                    <button
+                      className="bg-[#125ca6] py-1 px-4 rounded-md"
+                      onClick={() => {
+                        if (currentVideoIndex < courseData.videos.length - 1) {
+                          if (currentVideoIndex + 1 < unlockedVideos) {
                             handleVideoSelect(
                               courseData.videos[currentVideoIndex + 1],
                               currentVideoIndex + 1
                             );
-                          });
+                          } else {
+                            unlockNextVideo().then(() => {
+                              handleVideoSelect(
+                                courseData.videos[currentVideoIndex + 1],
+                                currentVideoIndex + 1
+                              );
+                            });
+                          }
                         }
+                      }}
+                      disabled={
+                        currentVideoIndex === courseData.videos.length - 1
                       }
-                    }}
-                    disabled={
-                      currentVideoIndex === courseData.videos.length - 1
-                    }
-                  >
-                    Next
-                  </button>
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
+                {courseComplete === true && (
+                  <div className="text-center">
+                    <button onClick={courseCompleteAction} className="text-white bg-[#125ca6] w-full p-2 rounded-md mt-4">
+                      Complete Course
+                    </button>
+                  </div>
+                )}
               </div>
-              {unlockedVideos === courseData?.videos?.length && (
-                <div className="mt-4 text-center">
-                  <button className="bg-green-500 text-white py-2 px-4 rounded-md">
-                    Course Completed!
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -708,3 +759,4 @@ const SingleCourse = () => {
 };
 
 export default SingleCourse;
+
