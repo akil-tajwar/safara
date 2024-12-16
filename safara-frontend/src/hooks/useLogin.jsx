@@ -2,77 +2,99 @@ import { useState } from "react";
 import useAuth from "./useAuthContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-  
 
 export const useLogin = () => {
     const [error, setError] = useState(null);
-    const navigate = useNavigate;
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
     const { dispatch } = useAuth();
-    
-  // Get the user's device information
- 
+
     const login = async (email, password) => {
         setError(null);
+        setIsLoading(true);
         try {
             const response = await fetch("http://localhost:4000/api/user/login", {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email, password  })
+                body: JSON.stringify({ email, password })
             });
             const json = await response.json();
             console.log("Response from server:", json);
+            
             if (!response.ok) {
                 setError(json.error || "An error occurred during login.");
                 Swal.fire({
-                    position: "top-middle",
+                    position: "center",
                     icon: "error",
                     title: json.error || "Something went wrong. Please try again later.",
                     showConfirmButton: true,
                 });
-                return false;
+                return null;
             }
+            
             localStorage.setItem('user', JSON.stringify(json));
             dispatch({ type: 'LOGIN', payload: json });
-            return true;
-
+            return json;
         } catch (err) {
             console.error("Login error:", err);
             setError("Something went wrong. Please try again later.");
             Swal.fire({
-                position: "top-middle",
+                position: "center",
                 icon: "error",
                 title: "Something went wrong. Please try again later.",
                 showConfirmButton: true,
             });
-            return false;
+            return null;
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const googleLogin=async(firstname, lastname, email,role)=>{
+    const googleLogin = async (userData) => {
         setError(null);
-        const response=await fetch("http://localhost:4000/api/user/signup",{
-            method:'POST',
-            headers:{'content-type':'application/json'},
-            body:JSON.stringify({firstname, lastname, email,role})
-        })
-        const json=await response.json();
-        if(!response.ok){
-            return (json.error);
-            setError(json.error);
-        }
-        if(response.ok){
-            localStorage.setItem('user',JSON.stringify(json));
-
-            dispatch({type:'LOGIN',payload:json})
-            if(json?.user?.role === 'school-owner') {
-                navigate('/dashboard')
+        setIsLoading(true);
+        try {
+            const response = await fetch("http://localhost:4000/api/user/googleLogin", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(userData)
+            });
+            
+            const json = await response.json();
+            console.log("Google login response from server:", json);
+            
+            if (!response.ok) {
+                throw new Error(json.error || "An error occurred during Google login.");
             }
-            else if(json?.user?.role === 'teacher') {
-                navigate('/teacherDashboard')
+            
+            // Store user data and token
+            localStorage.setItem('user', JSON.stringify(json));
+            dispatch({ type: 'LOGIN', payload: json });
+            
+            // Handle navigation based on role
+            if (json?.user?.role === 'school-owner') {
+                navigate('/dashboard');
+            } else if (json?.user?.role === 'teacher') {
+                navigate('/teacherDashboard');
+            } else {
+                navigate('/');
             }
-
+            
+            return true;
+        } catch (err) {
+            console.error("Google login error:", err);
+            setError(err.message || "Something went wrong with Google login.");
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: err.message || "Something went wrong with Google login. Please try again later.",
+                showConfirmButton: true,
+            });
+            return false;
+        } finally {
+            setIsLoading(false);
         }
-    }
+    };
 
-    return { login, googleLogin, error };
+    return { login, googleLogin, error, isLoading };
 };
