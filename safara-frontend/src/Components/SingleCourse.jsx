@@ -23,7 +23,7 @@ import Swal from "sweetalert2";
 const SingleCourse = () => {
   const { id } = useParams();
   const { user } = useAuthContext();
-  const [fetched, setFetched] = useState(false);
+  const [isInstructor, setIsInstructor] = useState(false);
   const [courseData, setCourseData] = useState([]);
   const [reletedCourses, setreletedCourses] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
@@ -45,7 +45,9 @@ const SingleCourse = () => {
       if (currentStudent) {
         setIsAdminOrStudent(true);
         setUnlockedVideos(currentStudent.unlockedVideo || null);
-        setCourseComplete(currentStudent.unlockedVideo === courseData.videos.length);
+        setCourseComplete(
+          currentStudent.unlockedVideo === courseData.videos.length
+        );
       } else {
         setIsAdminOrStudent(false);
         setUnlockedVideos(null);
@@ -67,33 +69,33 @@ const SingleCourse = () => {
       );
 
       const data = await response.json();
-    
+
       if (!response.ok) {
         throw new Error(data.message || "Failed to complete the course");
       }
 
       console.log("Course completed successfully:", data);
-    
+
       // Show success message using SweetAlert2
       Swal.fire({
-        title: 'Congratulations!',
-        text: 'You have completed the course!',
-        icon: 'success',
-        confirmButtonText: 'OK'
+        title: "Congratulations!",
+        text: "You have completed the course!",
+        icon: "success",
+        confirmButtonText: "OK",
       });
 
       // Update UI state and refresh course data
       setCourseComplete(true);
       fetchSingleCourse();
-    
     } catch (error) {
       console.error("Error completing the course:", error);
       // Handle the error with more specific message
       Swal.fire({
-        title: 'Error',
-        text: error.message || 'Failed to complete the course. Please try again.',
-        icon: 'error',
-        confirmButtonText: 'OK'
+        title: "Error",
+        text:
+          error.message || "Failed to complete the course. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
       });
     }
   };
@@ -436,8 +438,8 @@ const SingleCourse = () => {
                     <h3 className="text-xl font-semibold pb-2">
                       {instructor?.firstname} {instructor?.lastname}
                     </h3>
-                    <p>Teacher, Businessman</p>
-                    <p>Former Lecturer at IIUC</p>
+                    <p>{instructor?.profession[0]?.position || "N/A"}</p>
+                    <p>{instructor?.profession[0]?.institution || "N/A"}</p>
                   </div>
                 </div>
               </div>
@@ -592,12 +594,22 @@ const SingleCourse = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Link
-                      to={`/dashboard/admin/schedulemeet?${id}`}
-                      className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
-                    >
-                      Create Meet
-                    </Link>
+                    {courseData?.instructorsId?.map((instructorId, index) => {
+                      const instructor = allUsers.find(
+                        () => userId === instructorId
+                      );
+                      return (
+                        (instructor || user?.user?.role === "admin") && (
+                          <Link
+                            key={index}
+                            to={`/dashboard/admin/schedulemeet?${instructorId}`}
+                            className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                          >
+                            Create Meet
+                          </Link>
+                        )
+                      );
+                    })}
                     <button
                       onClick={() => downloadFiteAtURL(courseData.syllabus)}
                       className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
@@ -656,10 +668,31 @@ const SingleCourse = () => {
                     </p>
                   </div>
                 </div>
-                <button className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md">
-                  <IoMdDownload className="text-xl" />
-                  <p className="">Syllabus</p>
-                </button>
+                <div className="flex gap-2">
+                  {courseData?.instructorsId?.map((instructorId, index) => {
+                    const instructor = allUsers.find(
+                      () => userId === instructorId
+                    );
+                    return (
+                      instructor && (
+                        <Link
+                          key={index}
+                          to={`/dashboard/admin/schedulemeet?${instructorId}`}
+                          className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                        >
+                          Create Meet
+                        </Link>
+                      )
+                    );
+                  })}
+                  <button
+                    onClick={() => downloadFiteAtURL(courseData.syllabus)}
+                    className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                  >
+                    <IoMdDownload className="text-xl" />
+                    <p className="">Syllabus</p>
+                  </button>
+                </div>
               </div>
               <div>
                 <p className="pt-5 w-2/3">{courseData?.magnetLine}</p>
@@ -744,7 +777,10 @@ const SingleCourse = () => {
                 </div>
                 {courseComplete === true && (
                   <div className="text-center">
-                    <button onClick={courseCompleteAction} className="text-white bg-[#125ca6] w-full p-2 rounded-md mt-4">
+                    <button
+                      onClick={courseCompleteAction}
+                      className="text-white bg-[#125ca6] w-full p-2 rounded-md mt-4"
+                    >
                       Complete Course
                     </button>
                   </div>
@@ -759,4 +795,3 @@ const SingleCourse = () => {
 };
 
 export default SingleCourse;
-

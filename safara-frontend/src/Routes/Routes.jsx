@@ -51,7 +51,7 @@ export const router = createBrowserRouter([
         element: <ResetPassword/>,
       },
       {
-        path: "/AllCourses",
+        path: "/allCourses",
         element: <AllCourses/>,
       },
       {
@@ -103,7 +103,7 @@ export const router = createBrowserRouter([
         element: <ScheduleMeet/>,
       },
       {
-        path: "/dashboard/admin/manageBookings",
+        path: "/dashboard/admin/transactionHistory",
         element: <ManageCourseBooking/>,
       },
       {
