@@ -22,16 +22,15 @@ const AllCourses = () => {
   }, []);
 
   return (
-    <div>
+    <div className="w-3/4 mx-auto pb-20">
       <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-5 w-fit">
         {courses?.map((course) => (
           <div key={course._id} className="border rounded-xl relative">
             <Link to={`/singleCourse/${course?._id}`}>
               <div className="">
-                <img className="w-80 h-80 object-cover rounded-xl" src={course?.banner} alt={course?.title} />
+                <img className="w-[265px] h-[265px] object-cover rounded-xl" src={course?.banner} alt={course?.title} />
               </div>
             </Link>
-          
           </div>
         ))}
       </div>

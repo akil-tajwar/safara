@@ -67,7 +67,7 @@ const Sidebar = () => {
             <li>
               <NavLink
                 style={navLinkStyle}
-                to={"/dashboard/admin/manageBookings"}
+                to={"/dashboard/admin/transactionHistory"}
               >
                <GrDocumentConfig />
                 Transaction History

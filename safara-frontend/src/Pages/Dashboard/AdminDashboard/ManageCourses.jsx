@@ -92,7 +92,7 @@ const ManageCourses = () => {
           <div key={course._id} className="border rounded-xl relative">
             <Link to={`/singleCourse/${course?._id}`}>
               <div className="">
-                <img className="w-80 h-80 object-cover rounded-xl" src={course?.banner} alt={course?.title} />
+                <img className="w-[295px] h-[295px] object-cover rounded-xl" src={course?.banner} alt={course?.title} />
               </div>
             </Link>
             <div className="absolute right-4 top-4 dropdown-container">
