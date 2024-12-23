@@ -75,6 +75,36 @@ const getSingleCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const getAllEnrolledCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
+
+    // Find courses where the user is enrolled
+    const enrolledCourses = await courseModel.find({
+      "students.studentsId": id,
+    }).select("title category subCategory banner students");
+
+    if (!enrolledCourses.length) {
+      return res
+        .status(404)
+        .json({ message: "No enrolled courses found for this user." });
+    }
+
+    res.status(200).json({
+      message: "Enrolled courses retrieved successfully.",
+      courses: enrolledCourses,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching courses." });
+  }
+};
 
 const getReletedCourses = async (req, res) => {
   const { id } = req.params; // Expecting the course ID as a parameter
@@ -312,11 +342,9 @@ const success = async (req, res) => {
     res.redirect(`http://localhost:5173`);
   } catch (err) {
     console.log("Error updating course or student:", err);
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while updating the payment information.",
-      });
+    res.status(500).json({
+      message: "An error occurred while updating the payment information.",
+    });
   }
 };
 
@@ -363,24 +391,27 @@ const topCourses = async (req, res) => {
       message: "Failed to fetch top courses",
     });
   }
-}
+};
 
 const unlockVideo = async (req, res) => {
   // Log the incoming request data for debugging
-  console.log('Request body:', req.body);
-  console.log('Request params:', req.params);
+  console.log("Request body:", req.body);
+  console.log("Request params:", req.params);
 
   const courseId = req.body._id;
   const studentId = req.params.id; // Changed from req.params.studentId to req.params.id
 
-  console.log('Parsed IDs:', { courseId, studentId });
+  console.log("Parsed IDs:", { courseId, studentId });
 
   // Validate ObjectId format
-  if (!mongoose.Types.ObjectId.isValid(courseId) || !mongoose.Types.ObjectId.isValid(studentId)) {
-    return res.status(400).json({ 
+  if (
+    !mongoose.Types.ObjectId.isValid(courseId) ||
+    !mongoose.Types.ObjectId.isValid(studentId)
+  ) {
+    return res.status(400).json({
       error: "Invalid courseId or studentId",
       receivedCourseId: courseId,
-      receivedStudentId: studentId
+      receivedStudentId: studentId,
     });
   }
 
@@ -425,27 +456,30 @@ const unlockVideo = async (req, res) => {
       updatedCourse,
     });
   } catch (error) {
-    console.error('Error in unlockVideo:', error);
+    console.error("Error in unlockVideo:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
 const completeCourse = async (req, res) => {
   // Log the incoming request data for debugging
-  console.log('Request body:', req.body);
-  console.log('Request params:', req.params);
+  console.log("Request body:", req.body);
+  console.log("Request params:", req.params);
 
   const courseId = req.body._id;
   const studentId = req.params.id;
 
-  console.log('Parsed IDs:', { courseId, studentId });
+  console.log("Parsed IDs:", { courseId, studentId });
 
   // Validate ObjectId format
-  if (!mongoose.Types.ObjectId.isValid(courseId) || !mongoose.Types.ObjectId.isValid(studentId)) {
-    return res.status(400).json({ 
+  if (
+    !mongoose.Types.ObjectId.isValid(courseId) ||
+    !mongoose.Types.ObjectId.isValid(studentId)
+  ) {
+    return res.status(400).json({
       error: "Invalid courseId or studentId",
       receivedCourseId: courseId,
-      receivedStudentId: studentId
+      receivedStudentId: studentId,
     });
   }
 
@@ -490,7 +524,7 @@ const completeCourse = async (req, res) => {
       updatedCourse,
     });
   } catch (error) {
-    console.error('Error in completeCourse:', error);
+    console.error("Error in completeCourse:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -499,6 +533,7 @@ module.exports = {
   createCourse,
   getAllCourses,
   getSingleCourse,
+  getAllEnrolledCourse,
   getReletedCourses,
   updateCourse,
   deleteCourse,
@@ -508,5 +543,5 @@ module.exports = {
   success,
   topCourses,
   unlockVideo,
-  completeCourse
+  completeCourse,
 };
