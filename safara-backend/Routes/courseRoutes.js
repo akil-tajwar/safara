@@ -13,6 +13,7 @@ const {
   topCourses,
   unlockVideo,
   completeCourse,
+  getAllEnrolledCourse,
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -27,6 +28,7 @@ router.post("/payment/success/:tran_id", success);
 router.get("/getAllCourses", getAllCourses);
 router.get("/getCourseCount", courseCount);
 router.get("/getSingleCourse/:id", getSingleCourse);
+router.get("/getAllEnrolledCourse/:id", getAllEnrolledCourse);
 router.get("/getReletedCourse", getReletedCourses);
 router.get("/topCourses", topCourses);
 

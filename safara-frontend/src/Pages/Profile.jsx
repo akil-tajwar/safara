@@ -8,57 +8,30 @@ const Profile = () => {
   const { user } = useAuthContext();
   const [activeTab, setActiveTab] = useState(0);
   const [userData, setUserData] = useState(null);
-  const [isEnrolled, setIsEnrolled] = useState(false);
-  const [courses, setCourses] = useState([]);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
   const fetchSingleUser = () => {
     const url = `http://localhost:4000/api/user/singleUser/${user?.user?._id}`;
     fetch(url)
       .then((res) => res.json())
-      .then((data) => {
-        setUserData(data);
-
-        checkEnrollment(data._id); // Check enrollment after fetching user data
-      })
+      .then((data) => setUserData(data))
       .catch((error) => console.log(error));
   };
-  console.log("user", user?.user?._id);
-  // console.log("course", courses);
-  const fetchCourses = () => {
-    const url = `http://localhost:4000/api/course/getAllCourses`; // Your courses endpoint
+
+  const fetchEnrolledCourses = () => {
+    const url = `http://localhost:4000/api/course/getAllEnrolledCourse/${user?.user?._id}`;
     fetch(url)
       .then((res) => res.json())
-      .then((data) => {
-        setCourses(data);
-
-        checkEnrollment(user?.user?._id, data); // Check enrollment with the fetched courses
-      })
+      .then((data) => setEnrolledCourses(data.courses))
       .catch((error) => console.log(error));
   };
 
-  // check enrollment if set by default false  eita fix korte parle hobe
-  const checkEnrollment = (userId, courses) => {
-    if (!courses || courses.length === 0) return;
-
-    // Check if userId exists in any of the courses' students
-    const enrolled = courses.some((course) =>
-      course.students.some((student) => {
-        const match = student.studentsId.toString() === userId;
-        if (match) {
-          console.log("Matched studentsId:", student.studentsId); // Log the matching studentsId
-        }
-        return match; // Return the result of the comparison
-      })
-    );
-
-    console.log("Is Enrolled:", enrolled);
-    setIsEnrolled(enrolled); // Update state based on enrollment check
-  };
+    console.log("enrolledCourses", enrolledCourses); // enrolledCourses.map(courses=> courses.students.map(student=> if(studentsId===user.user._id && isCourseComplete===true)))
 
   useEffect(() => {
     if (user?.user?._id) {
       fetchSingleUser();
-      fetchCourses();
+      fetchEnrolledCourses();
     }
   }, [user?.user?._id]);
 
@@ -155,19 +128,52 @@ const Profile = () => {
             </div>
           )}
           {activeTab === 1 && (
-            <div>
-              {isEnrolled ? (
-                <Link to={"/certificate"} className="btn btn-primary">
-                  Download Certificate
-                </Link>
+  <div>
+    {enrolledCourses.length > 0 ? (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
+        {enrolledCourses.map((course) => {
+          // Check if the logged-in user has completed the course
+          const isUserCompleted = course.students.some(
+            (student) =>
+              student.studentsId === user.user._id && student.isCourseComplete
+          );
+
+          return (
+            <div
+              key={course._id}
+              className="bg-white border border-gray-200 rounded-lg shadow-md p-4"
+            >
+              <img src={course.banner} className="h-32 min-w-full" alt="" />
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                {course.title}
+              </h3>
+              <p className="text-gray-600 mb-4">
+                <strong>Category:</strong> {course.category}
+              </p>
+              {isUserCompleted  ? (
+               <Link
+               to={{
+                 pathname: "/dashboard/user/userCertificate",
+               }}
+               state={{ courseTitle: course.title }}
+               className="btn bg-[#125ca6] text-white"
+             >
+               Download Certificate
+             </Link>
               ) : (
-                <h4 className="text-xl flex justify-center items-center pt-32">
-                  You are not enrolled in any course; thus, no certificate is
-                  available.
-                </h4>
+                <p className="text-gray-500">Complete Your Course!.</p>
               )}
             </div>
-          )}
+          );
+        })}
+      </div>
+    ) : (
+      <h4 className="text-xl flex justify-center items-center pt-32">
+        You are not enrolled in any course; thus, no certificate is available.
+      </h4>
+    )}
+  </div>
+)}
         </div>
       </div>
     </div>
