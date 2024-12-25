@@ -30,7 +30,11 @@ const courseSchema = new mongoose.Schema({
         },
         videoLink: {
             type: String,
-        }
+        },
+        views: {
+            type: Number,
+            default: 0,
+        },
     }],
     quiz: [{
         ques: {

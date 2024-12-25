@@ -33,10 +33,11 @@ const createCourse = async (req, res) => {
       instructorsId,
       banner,
       videos,
-      quiz: quizzes.map(q => ({ // Transform incoming quizzes to match schema
+      quiz: quizzes.map((q) => ({
+        // Transform incoming quizzes to match schema
         ques: q.question,
         options: q.options,
-        ans: parseInt(q.answer)
+        ans: parseInt(q.answer),
       })),
       category,
       subCategory,
@@ -44,7 +45,7 @@ const createCourse = async (req, res) => {
       keywords,
       price,
       discount,
-      students: studentsId ? studentsId.map(id => ({ studentsId: id })) : [], // Initialize students array if provided
+      students: studentsId ? studentsId.map((id) => ({ studentsId: id })) : [], // Initialize students array if provided
       studentsOpinion,
     });
 
@@ -90,9 +91,11 @@ const getAllEnrolledCourse = async (req, res) => {
     }
 
     // Find courses where the user is enrolled
-    const enrolledCourses = await courseModel.find({
-      "students.studentsId": id,
-    }).select("title category subCategory banner students");
+    const enrolledCourses = await courseModel
+      .find({
+        "students.studentsId": id,
+      })
+      .select("title category subCategory banner students");
 
     if (!enrolledCourses.length) {
       return res
@@ -534,6 +537,245 @@ const completeCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const getEnrolledUsersCourses = async (req, res) => {
+  try {
+    // Aggregate query to count total enrolled students across all courses
+    const result = await courseModel.aggregate([
+      {
+        $project: {
+          enrolledStudentsCount: { $size: { $ifNull: ["$students", []] } }, // Count students in each course
+        },
+      },
+      {
+        $group: {
+          _id: null, // Group all courses together
+          totalEnrolledStudents: { $sum: "$enrolledStudentsCount" }, // Sum all student counts
+        },
+      },
+    ]);
+
+    // Extract the total count from the aggregation result
+    const totalEnrolledStudents =
+      result.length > 0 ? result[0].totalEnrolledStudents : 0;
+
+    return res.status(200).json({
+      totalEnrolledStudents,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
+
+// Endpoint to calculate total revenue
+const getTotalRevenue = async (req, res) => {
+  try {
+    const result = await courseModel.aggregate([
+      {
+        $project: {
+          price: { $toDouble: "$price" }, // Convert price to a number
+          students: {
+            $ifNull: ["$students", []], // Ensure students is always an array (defaults to empty array if null)
+          },
+        },
+      },
+      {
+        $addFields: {
+          paidStudents: {
+            $filter: {
+              input: "$students",
+              as: "student",
+              cond: { $eq: ["$$student.paymentComplete", true] }, // Filter for paid students
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          paidStudentsCount: {
+            $size: {
+              $ifNull: ["$paidStudents", []], // Default to an empty array if paidStudents is null or missing
+            },
+          },
+          price: 1, // Pass the price to the next stage
+        },
+      },
+      {
+        $addFields: {
+          revenue: {
+            $multiply: [
+              { $size: { $ifNull: ["$paidStudents", []] } }, // Safe size calculation for paidStudents
+              { $ifNull: [{ $toDouble: "$price" }, 0] }, // Course price (ensure it's a number)
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$revenue" }, // Sum up all revenue
+        },
+      },
+    ]);
+
+    const totalRevenue = result.length > 0 ? result[0].totalRevenue : 0;
+
+    res.status(200).json({
+      totalRevenue,
+    });
+  } catch (error) {
+    console.error("Error calculating total revenue:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+const getCourseCategories = async (req, res) => {
+  try {
+    // Fetching unique course categories with their count
+    const categories = await courseModel.aggregate([
+      {
+        $group: {
+          _id: "$category", // Group by category
+          count: { $sum: 1 }, // Count the number of courses in each category
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Don't include the _id field
+          name: "$_id", // Rename _id to name
+          count: 1, // Include the count field
+        },
+      },
+    ]);
+
+    console.log("Categories fetched:", categories);
+
+    // If no categories found, send empty array
+    if (!categories || categories.length === 0) {
+      return res.status(404).json({ message: "No categories found" });
+    }
+
+    // Return the list of categories with their counts
+    res.status(200).json({
+      categories: categories, // Categories with counts only
+    });
+  } catch (error) {
+    console.error("Error fetching course categories:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+const getTotalAverageRating = async (req, res) => {
+  try {
+    // Aggregation pipeline to calculate the total average rating across all courses
+    const totalAverageRating = await courseModel.aggregate([
+      {
+        $unwind: "$studentsOpinion", // Unwind the studentsOpinion array to access individual ratings
+      },
+      {
+        $group: {
+          _id: null, // Grouping all reviews into one group
+          totalRating: { $sum: { $toDouble: "$studentsOpinion.rating" } }, // Sum all the ratings (convert from string to number)
+          totalReviews: { $sum: 1 }, // Count the total number of reviews
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Don't include the _id field
+          avgRating: {
+            $round: [{ $divide: ["$totalRating", "$totalReviews"] }, 1],
+          }, // Calculate the average rating
+        },
+      },
+    ]);
+
+    // If no ratings found, return a message indicating no reviews
+    if (!totalAverageRating || totalAverageRating.length === 0) {
+      return res.status(404).json({ message: "No reviews or ratings found" });
+    }
+
+    // Return the total average rating
+    res.status(200).json({
+      avgRating: totalAverageRating[0].avgRating, // Return the calculated average rating
+    });
+  } catch (error) {
+    console.error("Error calculating total average rating:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+const getCompletedCoursesCount = async (req, res) => {
+  try {
+    // Aggregation pipeline to count the number of completed courses across all users
+    const completedCoursesCount = await courseModel.aggregate([
+      {
+        $unwind: "$students",
+      },
+      {
+        $match: {
+          "students.isCourseComplete": true,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id", // Group by course ID
+          completedStudentsCount: { $sum: 1 }, // Count the number of students who completed the course
+        },
+      },
+      {
+        $count: "totalCompletedCourses", // Count the total number of courses that have been completed
+      },
+    ]);
+
+    // If no completed courses found, return a message indicating no completed courses
+    if (!completedCoursesCount || completedCoursesCount.length === 0) {
+      return res.status(404).json({ message: "No completed courses found" });
+    }
+
+    // Return the completed courses count
+    res.status(200).json({
+      totalCompletedCourses: completedCoursesCount[0].totalCompletedCourses, // Return the count of completed courses
+    });
+  } catch (error) {
+    console.error("Error fetching completed courses count:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+
+// Function to get total views across all courses
+const getTotalWebsiteViews = async (req, res) => {
+  try {
+      // Aggregate the total views from all videos in all courses
+      const totalViews = await courseModel.aggregate([
+          { $unwind: "$videos" }, // Unwind the videos array to count each video separately
+          { $group: { _id: null, totalViews: { $sum: "$videos.views" } } } // Sum up the views
+      ]);
+
+      // If no data is returned, totalViews will be undefined, so set to 0
+      const total = totalViews.length > 0 ? totalViews[0].totalViews : 0;
+
+      // Return the total views in the response
+      res.status(200).json({ totalViews: total });
+  } catch (error) {
+      // If an error occurs, send a 500 error response
+      console.error("Error calculating total views:", error);
+      res.status(500).json({ message: "An error occurred while fetching total views" });
+  }
+};
+
 
 module.exports = {
   createCourse,
@@ -550,4 +792,10 @@ module.exports = {
   topCourses,
   unlockVideo,
   completeCourse,
+  getEnrolledUsersCourses,
+  getTotalRevenue,
+  getCourseCategories,
+  getTotalAverageRating,
+  getCompletedCoursesCount,
+  getTotalWebsiteViews
 };
