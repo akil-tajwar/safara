@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import JoditEditor from 'jodit-react';
+import JoditEditor from "jodit-react";
 import { RxCross2 } from "react-icons/rx";
-import { storage } from '../../../firebase/firebase'; // Import the initialized Firebase storage
+import { storage } from "../../../firebase/firebase"; // Import the initialized Firebase storage
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import useAuthContext from "../../../hooks/useAuthContext";
 
@@ -17,7 +17,7 @@ const AddCourses = () => {
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [requirements, setRequirements] = useState("");
-  const [content, setContent] = useState(''); // For course details
+  const [content, setContent] = useState(""); // For course details
   const [searchTerm, setSearchTerm] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectInstructors, setSelectInstructors] = useState([]);
@@ -29,7 +29,9 @@ const AddCourses = () => {
   const [keywordInput, setKeywordInput] = useState("");
   const [loading, setLoading] = useState(false); // Loading state for upload process
   const [uploadProgress, setUploadProgress] = useState(0); // Track the overall upload progress
-
+  const [quizzes, setQuizzes] = useState([
+    { question: "", options: ["", "", "", ""], answer: "", selectedAnswer: "" },
+  ]);
 
   // Fetch instructors data
   const fetchAllUsers = () => {
@@ -55,7 +57,9 @@ const AddCourses = () => {
 
   // Handle suggestion click for instructors
   const handleSuggestionClick = (instructor) => {
-    if (!selectedInstructors.find((selected) => selected._id === instructor._id)) {
+    if (
+      !selectedInstructors.find((selected) => selected._id === instructor._id)
+    ) {
       setSelectedInstructors([...selectedInstructors, instructor]);
     }
     setSearchTerm("");
@@ -64,14 +68,19 @@ const AddCourses = () => {
 
   // Handle removing instructor from selected instructors
   const handleRemoveInstructor = (id) => {
-    setSelectedInstructors(selectedInstructors.filter((instructor) => instructor._id !== id));
+    setSelectedInstructors(
+      selectedInstructors.filter((instructor) => instructor._id !== id)
+    );
   };
 
   // Handle video addition
   const handleAddVideo = (e) => {
     const videoFile = e.target.files[0];
     if (videoFile) {
-      setSelectedVideos([...selectedVideos, { videoTitle: videoFile.name, videoFile }]);
+      setSelectedVideos([
+        ...selectedVideos,
+        { videoTitle: videoFile.name, videoFile },
+      ]);
     }
   };
 
@@ -93,9 +102,10 @@ const AddCourses = () => {
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setUploadProgress((prevProgress) => {
-            const newProgress = prevProgress + (progress / totalFiles); // Adjust total progress
+            const newProgress = prevProgress + progress / totalFiles; // Adjust total progress
             return Math.min(newProgress, 100); // Ensure it doesn't exceed 100%
           });
         },
@@ -108,6 +118,30 @@ const AddCourses = () => {
     });
   };
 
+  const handleAddQuiz = () => {
+    setQuizzes([
+      ...quizzes,
+      {
+        question: "",
+        options: ["", "", "", ""],
+        answer: "",
+        selectedAnswer: "",
+      },
+    ]);
+  };
+
+  const handleQuizChange = (index, field, value, optionIndex = null) => {
+    const newQuizzes = [...quizzes];
+    if (field === "option") {
+      newQuizzes[index].options[optionIndex] = value;
+    } else if (field === "selectedAnswer") {
+      newQuizzes[index].selectedAnswer = value;
+      newQuizzes[index].answer = optionIndex.toString();
+    } else {
+      newQuizzes[index][field] = value;
+    }
+    setQuizzes(newQuizzes);
+  };
 
   // Handle form submission
   let totalFiles = 0;
@@ -115,7 +149,8 @@ const AddCourses = () => {
     e.preventDefault();
     setLoading(true); // Set loading to true to show the loading screen
 
-    totalFiles = selectedVideos.length + (bannerFile ? 1 : 0) + (pdfFile ? 1 : 0);
+    totalFiles =
+      selectedVideos.length + (bannerFile ? 1 : 0) + (pdfFile ? 1 : 0);
     setUploadProgress(0); // Reset progress to 0
 
     try {
@@ -125,17 +160,17 @@ const AddCourses = () => {
 
       // Upload banner to Firebase
       if (bannerFile) {
-        bannerURL = await uploadFileToFirebase(bannerFile, 'images');
+        bannerURL = await uploadFileToFirebase(bannerFile, "images");
       }
 
       // Upload PDF to Firebase
       if (pdfFile) {
-        pdfURL = await uploadFileToFirebase(pdfFile, 'pdfs');
+        pdfURL = await uploadFileToFirebase(pdfFile, "pdfs");
       }
 
       // Upload each video to Firebase
       for (const video of selectedVideos) {
-        const videoURL = await uploadFileToFirebase(video.videoFile, 'videos');
+        const videoURL = await uploadFileToFirebase(video.videoFile, "videos");
         videoURLs.push({ videoTitle: video.videoTitle, videoLink: videoURL });
       }
 
@@ -155,16 +190,24 @@ const AddCourses = () => {
         keywords: selectedKeywords,
         price, // Actual price from the form
         discount, // Actual discount from the form
+        quizzes: quizzes.map((quiz) => ({
+          question: quiz.question,
+          options: quiz.options,
+          answer: parseInt(quiz.answer),
+        })),
       };
 
       // Make a POST request to the backend API
-      const response = await fetch("http://localhost:4000/api/course/createCourse", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(courseData),
-      });
+      const response = await fetch(
+        "http://localhost:4000/api/course/createCourse",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(courseData),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -172,7 +215,6 @@ const AddCourses = () => {
       } else {
         console.error("Failed to create course:", await response.text());
       }
-
     } catch (error) {
       console.error("Error uploading files:", error);
     } finally {
@@ -180,7 +222,6 @@ const AddCourses = () => {
       setUploadProgress(100); // Ensure it reaches 100% after upload is done
     }
   };
-
 
   return (
     <div>
@@ -303,7 +344,11 @@ const AddCourses = () => {
               <span className="label-text">Course Details*</span>
             </label>
             <div className="custom-class no-tailwind custom-ul custom-ol">
-              <JoditEditor ref={editor} value={content} onChange={newContent => setContent(newContent)} />
+              <JoditEditor
+                ref={editor}
+                value={content}
+                onChange={(newContent) => setContent(newContent)}
+              />
             </div>
           </div>
 
@@ -312,14 +357,24 @@ const AddCourses = () => {
               <label className="label">
                 <span className="label-text">Banner</span>
               </label>
-              <input type="file" onChange={(e) => setBannerFile(e.target.files[0])} accept="image/*" className="file-input w-full file-input-bordered" />
+              <input
+                type="file"
+                onChange={(e) => setBannerFile(e.target.files[0])}
+                accept="image/*"
+                className="file-input w-full file-input-bordered"
+              />
             </div>
 
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Syllabus</span>
               </label>
-              <input type="file" onChange={(e) => setPdfFile(e.target.files[0])} accept="application/pdf" className="file-input w-full file-input-bordered" />
+              <input
+                type="file"
+                onChange={(e) => setPdfFile(e.target.files[0])}
+                accept="application/pdf"
+                className="file-input w-full file-input-bordered"
+              />
             </div>
           </div>
 
@@ -329,15 +384,25 @@ const AddCourses = () => {
                 <label className="label">
                   <span className="label-text">Videos</span>
                 </label>
-                <input type="file" onChange={handleAddVideo} accept="video/*" className="file-input w-full file-input-bordered" />
+                <input
+                  type="file"
+                  onChange={handleAddVideo}
+                  accept="video/*"
+                  className="file-input w-full file-input-bordered"
+                />
               </div>
 
-              <p className="border h-fit text-center rounded-md py-[11px] cursor-pointer bg-slate-200 mt-9">Add Video</p>
+              <p className="border h-fit text-center rounded-md py-[11px] cursor-pointer bg-slate-200 mt-9">
+                Add Video
+              </p>
 
               <div className="border mt-3 h-44 col-span-4 overflow-y-scroll rounded-md p-3">
                 <p className="text-center pb-3">Your selected videos</p>
                 {selectedVideos.map((video, index) => (
-                  <div key={index} className="flex justify-between items-center gap-5 bg-slate-200 p-2 rounded-md mb-2">
+                  <div
+                    key={index}
+                    className="flex justify-between items-center gap-5 bg-slate-200 p-2 rounded-md mb-2"
+                  >
                     <div className="flex gap-3">
                       <p>{index + 1}.</p>
                       <p>
@@ -345,7 +410,14 @@ const AddCourses = () => {
                         {video.videoTitle.slice(-8)}
                       </p>
                     </div>
-                    <RxCross2 className="text-red-600 cursor-pointer" onClick={() => setSelectedVideos(selectedVideos.filter((_, i) => i !== index))} />
+                    <RxCross2
+                      className="text-red-600 cursor-pointer"
+                      onClick={() =>
+                        setSelectedVideos(
+                          selectedVideos.filter((_, i) => i !== index)
+                        )
+                      }
+                    />
                   </div>
                 ))}
               </div>
@@ -369,7 +441,9 @@ const AddCourses = () => {
                 <ul className="absolute top-24 right-0 w-full bg-white text-black border border-gray-200 mt-1 z-10 rounded-md">
                   {selectInstructors
                     .filter((instructor) =>
-                      `${instructor.firstname} ${instructor.lastname}`.toLowerCase().includes(searchTerm.toLowerCase())
+                      `${instructor.firstname} ${instructor.lastname}`
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
                     )
                     .map((instructor) => (
                       <li
@@ -397,12 +471,20 @@ const AddCourses = () => {
               <div className="border mt-6 h-44 col-span-4 overflow-y-scroll rounded-md p-3">
                 <p className="text-center pb-3">Your selected instructors</p>
                 {selectedInstructors.map((instructor, index) => (
-                  <div key={index} className="flex justify-between items-center gap-5 bg-slate-200 p-2 rounded-md mb-2">
+                  <div
+                    key={index}
+                    className="flex justify-between items-center gap-5 bg-slate-200 p-2 rounded-md mb-2"
+                  >
                     <div className="flex gap-3">
                       <p>{index + 1}.</p>
-                      <p>{instructor.firstname} {instructor.lastname}</p>
+                      <p>
+                        {instructor.firstname} {instructor.lastname}
+                      </p>
                     </div>
-                    <RxCross2 className="text-red-600 cursor-pointer" onClick={() => handleRemoveInstructor(instructor._id)} />
+                    <RxCross2
+                      className="text-red-600 cursor-pointer"
+                      onClick={() => handleRemoveInstructor(instructor._id)}
+                    />
                   </div>
                 ))}
               </div>
@@ -423,7 +505,10 @@ const AddCourses = () => {
                   className="px-3 py-[11px] rounded-md border border-slate-200"
                 />
               </div>
-              <p onClick={handleAddKeyword} className="border h-fit text-center rounded-md py-[11px] cursor-pointer bg-slate-200 mt-9">
+              <p
+                onClick={handleAddKeyword}
+                className="border h-fit text-center rounded-md py-[11px] cursor-pointer bg-slate-200 mt-9"
+              >
                 Add Keyword
               </p>
 
@@ -431,9 +516,19 @@ const AddCourses = () => {
                 <p className="text-center pb-3">Your selected keywords</p>
                 <div className="flex gap-3 flex-wrap">
                   {selectedKeywords.map((keyword, index) => (
-                    <div key={index} className="flex gap-5 w-fit items-center bg-slate-200 p-2 rounded-md mb-2">
+                    <div
+                      key={index}
+                      className="flex gap-5 w-fit items-center bg-slate-200 p-2 rounded-md mb-2"
+                    >
                       <p>{keyword}</p>
-                      <RxCross2 className="text-red-600 cursor-pointer" onClick={() => setSelectedKeywords(selectedKeywords.filter((_, i) => i !== index))} />
+                      <RxCross2
+                        className="text-red-600 cursor-pointer"
+                        onClick={() =>
+                          setSelectedKeywords(
+                            selectedKeywords.filter((_, i) => i !== index)
+                          )
+                        }
+                      />
                     </div>
                   ))}
                 </div>
@@ -444,12 +539,97 @@ const AddCourses = () => {
               <label className="label">
                 <span className="label-text">Requirements</span>
               </label>
-              <input type="text" value={requirements} onChange={(e) => setRequirements(e.target.value)} placeholder="Requirements" className="px-3 py-[11px] rounded-md border border-slate-200" />
+              <input
+                type="text"
+                value={requirements}
+                onChange={(e) => setRequirements(e.target.value)}
+                placeholder="Requirements"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+              />
+            </div>
+            {/* Quiz Section */}
+            <div className="col-span-2 mt-4">
+              <h3 className="mb-2">Quizzes</h3>
+              {quizzes.map((quiz, quizIndex) => (
+                <div key={quizIndex} className="rounded-md pb-5">
+                  <div className="flex gap-2 items-center">
+                    <p>{quizIndex + 1}.</p>
+                    <input
+                      type="text"
+                      value={quiz.question}
+                      onChange={(e) =>
+                        handleQuizChange(quizIndex, "question", e.target.value)
+                      }
+                      placeholder="Question"
+                      className="w-full px-3 py-2 mb-2 rounded-md border border-slate-200"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 pt-2">
+                    {quiz.options.map((option, optionIndex) => (
+                      <div
+                        key={optionIndex}
+                        className="flex items-center gap-2"
+                      >
+                        <input
+                          type="radio"
+                          id={`quiz-${quizIndex}-option-${optionIndex}`}
+                          name={`quiz-${quizIndex}-answer`}
+                          value={optionIndex}
+                          checked={
+                            quiz.selectedAnswer === optionIndex.toString()
+                          }
+                          onChange={(e) =>
+                            handleQuizChange(
+                              quizIndex,
+                              "selectedAnswer",
+                              e.target.value,
+                              optionIndex
+                            )
+                          }
+                          className="radio"
+                        />
+                        <label
+                          htmlFor={`quiz-${quizIndex}-option-${optionIndex}`}
+                          className="flex items-center gap-2 w-full"
+                        >
+                          <span>{String.fromCharCode(97 + optionIndex)}.</span>
+                          <input
+                            type="text"
+                            value={option}
+                            onChange={(e) =>
+                              handleQuizChange(
+                                quizIndex,
+                                "option",
+                                e.target.value,
+                                optionIndex
+                              )
+                            }
+                            placeholder={`Option ${String.fromCharCode(
+                              97 + optionIndex
+                            )}`}
+                            className="w-full px-3 py-2 rounded-md border border-slate-200"
+                          />
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={handleAddQuiz}
+                className="px-4 py-2 bg-slate-200 rounded-md mt-4"
+              >
+                Add More Quiz
+              </button>
             </div>
           </div>
 
           <div className="pt-8 text-center">
-            <button type="submit" className="rounded-md py-[11px] px-4 bg-[#125ca6] text-white">
+            <button
+              type="submit"
+              className="rounded-md py-[11px] px-4 bg-[#125ca6] text-white"
+            >
               Add Course
             </button>
           </div>

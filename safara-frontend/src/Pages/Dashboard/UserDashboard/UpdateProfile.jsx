@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import useAuthContext from "../../../hooks/useAuthContext";
 import { storage } from '../../../firebase/firebase'; // Firebase import
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { useNavigate } from "react-router-dom";
 
 const UpdateProfile = () => {
   const { user } = useAuthContext();
   const [loading, setLoading] = useState(false); // State for loader visibility
   const [uploadPerc, setUploadPerc] = useState(0); // Upload percentage for image
   const [selectedImage, setSelectedImage] = useState(null); // State to handle image selection
+  const navigate = useNavigate();
 
   const [userData, setUserData] = useState({
     firstname: "",
@@ -99,6 +101,7 @@ const UpdateProfile = () => {
               { withCredentials: true }
             );
             setLoading(false);
+            navigate("/profile");
           }
         );
       } else {
@@ -108,6 +111,7 @@ const UpdateProfile = () => {
           { withCredentials: true }
         );
         setLoading(false);
+        navigate("/profile");
       }
     } catch (error) {
       console.error("There was an error updating the profile!", error);

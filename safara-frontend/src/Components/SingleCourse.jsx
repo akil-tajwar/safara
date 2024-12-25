@@ -327,6 +327,55 @@ const SingleCourse = () => {
     return stars;
   };
 
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [score, setScore] = useState(0);
+
+  const questions = [
+    {
+      id: 1,
+      text: "What is the capital of France?",
+      options: ["London", "Berlin", "Paris", "Madrid"],
+      correctAnswer: 2,
+    },
+    {
+      id: 2,
+      text: "Which planet is known as the Red Planet?",
+      options: ["Venus", "Mars", "Jupiter", "Saturn"],
+      correctAnswer: 1,
+    },
+    {
+      id: 3,
+      text: "Who painted the Mona Lisa?",
+      options: [
+        "Vincent van Gogh",
+        "Pablo Picasso",
+        "Leonardo da Vinci",
+        "Michelangelo",
+      ],
+      correctAnswer: 2,
+    },
+  ];
+
+  const handleAnswerChange = (questionId, answerIndex) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: answerIndex }));
+  };
+
+  const handleSubmit = () => {
+    let newScore = 0;
+    questions.forEach((question) => {
+      if (answers[question.id] === question.correctAnswer) {
+        newScore++;
+      }
+    });
+    setScore(newScore);
+    setSubmitted(true);
+  };
+
+  const openQuiz = () => {
+    document.getElementById("quiz-modal").showModal();
+  };
+
   const renderStudentOpinions = () => {
     if (
       !courseData?.studentsOpinion ||
@@ -561,7 +610,7 @@ const SingleCourse = () => {
               >
                 <img
                   src={reletedCourse?.banner}
-                  className="rounded-md w-32 h-auto object-cover"
+                  className="rounded-md w-32 h-32 object-cover border"
                   alt={reletedCourse?.title}
                 />
               </Link>
@@ -733,6 +782,88 @@ const SingleCourse = () => {
                       {video?.videoTitle}
                     </p>
                   ))}
+                  {courseComplete === true ? (
+                    <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
+                      <p>Quiz</p>
+                      <button
+                        onClick={openQuiz}
+                        className="bg-[#125ca6] text-white px-4 rounded-md"
+                      >
+                        Open
+                      </button>
+                      <dialog id="quiz-modal" className="modal">
+                        <div className="modal-box w-11/12 max-w-5xl">
+                          <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                              ✕
+                            </button>
+                          </form>
+                          <div className="container mx-auto p-4 max-w-2xl">
+                            <h1 className="text-3xl font-bold mb-6 text-center">
+                              Quiz
+                            </h1>
+                            {questions.map((question) => (
+                              <div
+                                key={question.id}
+                                className="mb-6 bg-white border rounded-lg p-6"
+                              >
+                                <h2 className="text-xl font-semibold mb-4">
+                                  {question.text}
+                                </h2>
+                                <div className="space-y-2">
+                                  {question.options.map((option, index) => (
+                                    <label
+                                      key={index}
+                                      className="flex items-center space-x-2 cursor-pointer"
+                                    >
+                                      <input
+                                        type="radio"
+                                        name={`question-${question.id}`}
+                                        value={index}
+                                        checked={answers[question.id] === index}
+                                        onChange={() =>
+                                          handleAnswerChange(question.id, index)
+                                        }
+                                        className="form-radio h-5 w-5 text-blue-600"
+                                      />
+                                      <span className="text-gray-700">
+                                        {option}
+                                      </span>
+                                    </label>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                            <button
+                              onClick={handleSubmit}
+                              disabled={submitted}
+                              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              Submit
+                            </button>
+                            {submitted && (
+                              <div className="mt-6 text-center">
+                                <h2 className="text-2xl font-bold">
+                                  Your Score: {score}/{questions.length}
+                                </h2>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </dialog>
+                    </div>
+                  ) : (
+                    <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
+                      <p className="text-gray-400">Quiz</p>
+                      <button
+                        disabled
+                        className="bg-[#d0d0d0] text-white px-4 rounded-md"
+                      >
+                        Open
+                      </button>
+                    </div>
+                  )}
                   <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
                     <button
                       className="bg-[#125ca6] py-1 px-4 rounded-md"
