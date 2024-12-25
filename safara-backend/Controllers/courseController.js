@@ -12,6 +12,7 @@ const createCourse = async (req, res) => {
     instructorsId,
     banner,
     videos,
+    quizzes, // Changed from 'quiz' to 'quizzes' to match frontend
     category,
     subCategory,
     syllabus,
@@ -32,13 +33,18 @@ const createCourse = async (req, res) => {
       instructorsId,
       banner,
       videos,
+      quiz: quizzes.map(q => ({ // Transform incoming quizzes to match schema
+        ques: q.question,
+        options: q.options,
+        ans: parseInt(q.answer)
+      })),
       category,
       subCategory,
       syllabus,
       keywords,
       price,
       discount,
-      studentsId,
+      students: studentsId ? studentsId.map(id => ({ studentsId: id })) : [], // Initialize students array if provided
       studentsOpinion,
     });
 

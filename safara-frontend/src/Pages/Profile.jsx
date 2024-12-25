@@ -143,7 +143,7 @@ const Profile = () => {
               key={course._id}
               className="bg-white border border-gray-200 rounded-lg shadow-md p-4"
             >
-              <img src={course.banner} className="h-32 min-w-full" alt="" />
+              <img src={course.banner} className="h-32 min-w-full object-cover" alt="" />
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 {course.title}
               </h3>
@@ -161,7 +161,7 @@ const Profile = () => {
                Download Certificate
              </Link>
               ) : (
-                <p className="text-gray-500">Complete Your Course!.</p>
+                <p className="text-gray-500">Please Complete Your Course</p>
               )}
             </div>
           );
