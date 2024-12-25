@@ -1,6 +1,6 @@
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { useState, useEffect, useRef } from "react";
 import { IoMdDownload } from "react-icons/io";
 import {
   FaChevronLeft,
@@ -24,17 +24,25 @@ const SingleCourse = () => {
   const { id } = useParams();
   const { user } = useAuthContext();
   const [isInstructor, setIsInstructor] = useState(false);
-  const [courseData, setCourseData] = useState([]);
+  const [courseData, setCourseData] = useState(null);
   const [reletedCourses, setreletedCourses] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-  const [selectedVideo, setSelectedVideo] = useState(null); // State to track selected video
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const [isAdminOrStudent, setIsAdminOrStudent] = useState(false);
   const [rating, setRating] = useState(null);
   const [comments, setComments] = useState("");
-  const [unlockedVideos, setUnlockedVideos] = useState(1); // Added state for unlocked videos
+  const [unlockedVideos, setUnlockedVideos] = useState(1);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [courseComplete, setCourseComplete] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [answers, setAnswers] = useState({});
+  const [score, setScore] = useState(0);
+  const [quizzes, setQuizzes] = useState([]);
   const userId = user?.user?._id;
+
+  const studentsOpinionCarouselRef = useRef(null);
+  const reletedCoursesCarouselRef = useRef(null);
 
   useEffect(() => {
     if (courseData && courseData.students && userId) {
@@ -44,13 +52,13 @@ const SingleCourse = () => {
 
       if (currentStudent) {
         setIsAdminOrStudent(true);
-        setUnlockedVideos(currentStudent.unlockedVideo || null);
+        setUnlockedVideos(currentStudent.unlockedVideo || 1);
         setCourseComplete(
           currentStudent.unlockedVideo === courseData.videos.length
         );
       } else {
         setIsAdminOrStudent(false);
-        setUnlockedVideos(null);
+        setUnlockedVideos(1);
       }
     }
   }, [courseData, userId]);
@@ -76,7 +84,6 @@ const SingleCourse = () => {
 
       console.log("Course completed successfully:", data);
 
-      // Show success message using SweetAlert2
       Swal.fire({
         title: "Congratulations!",
         text: "You have completed the course!",
@@ -84,12 +91,10 @@ const SingleCourse = () => {
         confirmButtonText: "OK",
       });
 
-      // Update UI state and refresh course data
       setCourseComplete(true);
       fetchSingleCourse();
     } catch (error) {
       console.error("Error completing the course:", error);
-      // Handle the error with more specific message
       Swal.fire({
         title: "Error",
         text:
@@ -100,23 +105,13 @@ const SingleCourse = () => {
     }
   };
 
-  //   syllabus dowload
   const downloadFiteAtURL = (url) => {
-    // Extract the filename from the URL
-    const fileName = url?.split("/").pop().split("?")[0]; // Removes query params like '?alt=media'
-
-    // Create an invisible <a> element
+    const fileName = url?.split("/").pop().split("?")[0];
     const aTag = document.createElement("a");
     aTag.href = url;
-
-    // Set the download attribute to force download
     aTag.setAttribute("download", fileName);
-
-    // Programmatically trigger a click on the <a> element
     document.body.appendChild(aTag);
     aTag.click();
-
-    // Remove the <a> element from the DOM after the click
     aTag.remove();
   };
 
@@ -162,14 +157,13 @@ const SingleCourse = () => {
         },
         body: JSON.stringify({
           reviewerId: userId,
-          rating: rating.toString(), // Ensure the rating is a string as per your model
+          rating: rating.toString(),
           comments,
         }),
       });
 
       if (!response.ok) {
         const data = await response.json();
-        // Check if the error is due to multiple reviews
         if (data.message === "An user cannot give multiple reviews") {
           Swal.fire({
             icon: "error",
@@ -188,7 +182,6 @@ const SingleCourse = () => {
           text: "Your review is submitted successfully",
         });
         fetchSingleCourse();
-        // Optionally, update the local state or re-fetch course data to reflect the new rating
       }
     } catch (error) {
       console.error("Error submitting rating:", error);
@@ -205,20 +198,23 @@ const SingleCourse = () => {
       }
       const data = await response.json();
       setCourseData(data);
-      setSelectedVideo(data.videos[0]); // Set the first video as default
+      setSelectedVideo(data.videos[0]);
+      setQuizzes(
+        data.quiz?.map((q) => ({
+          ...q,
+          selectedAnswer: null,
+        })) || []
+      );
     } catch (error) {
       console.error("Error fetching course:", error);
     }
   };
-  console.log("pdf link", courseData.syllabus);
 
   const fetchreletedCourses = () => {
     const url = `http://localhost:4000/api/course/getAllCourses`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched All Courses:", data);
-        console.log("Current Course Keywords:", courseData?.keywords);
         const courseKeywords = courseData?.keywords?.map((keyword) =>
           keyword?.toLowerCase().trim()
         );
@@ -228,7 +224,6 @@ const SingleCourse = () => {
           )
         );
         setreletedCourses(filteredCourses);
-        console.log("Filtered Courses:", filteredCourses);
       })
       .catch((error) => console.log(error));
   };
@@ -245,20 +240,19 @@ const SingleCourse = () => {
 
   useEffect(() => {
     fetchSingleCourse();
-    fetchAllUsers(); // You can fetch users as well if needed.
-  }, [id]); // Add `id` as a dependency
+    fetchAllUsers();
+  }, [id]);
 
   useEffect(() => {
     if (courseData && courseData.videos && !selectedVideo) {
-      setSelectedVideo(courseData.videos[0]); // Set the first video only if no video is currently selected
+      setSelectedVideo(courseData.videos[0]);
     }
     if (courseData && courseData.keywords) {
       fetchreletedCourses();
     }
-  }, [courseData]); // Now this effect will run only once when courseData is set for the first time.
+  }, [courseData]);
 
   const handleVideoSelect = (video, index) => {
-    // Updated handleVideoSelect function
     setSelectedVideo(video);
     setCurrentVideoIndex(index);
     window.scrollTo({
@@ -267,15 +261,10 @@ const SingleCourse = () => {
     });
   };
 
-  // Refs for the carousels
-  const studentsOpinionCarouselRef = useRef(null);
-  const reletedCoursesCarouselRef = useRef(null);
-
-  // Function to handle scroll for any carousel
   const scrollCarousel = (ref, direction) => {
     if (ref.current) {
       ref.current.scrollBy({
-        left: direction === "left" ? -200 : 200, // Adjust scroll amount as needed
+        left: direction === "left" ? -200 : 200,
         behavior: "smooth",
       });
     }
@@ -293,31 +282,26 @@ const SingleCourse = () => {
       (acc, opinion) => acc + parseInt(opinion.rating),
       0
     );
-    console.log("🚀 ~ calculateAverageRating ~ totalRating:", totalRating);
 
     const averageRating = totalRating / courseData.studentsOpinion.length;
-    console.log("🚀 ~ calculateAverageRating ~ averageRating:", averageRating);
 
     return parseFloat(averageRating.toFixed(1));
   };
 
   const renderStars = (averageRating) => {
     const stars = [];
-    const fullStars = Math.floor(averageRating); // Number of full stars
-    const halfStar = averageRating % 1 >= 0.25 && averageRating % 1 < 0.75; // Check for half star between 0.25 and 0.75
-    const emptyStars = 5 - Math.ceil(averageRating); // Remaining empty stars
+    const fullStars = Math.floor(averageRating);
+    const halfStar = averageRating % 1 >= 0.25 && averageRating % 1 < 0.75;
+    const emptyStars = 5 - Math.ceil(averageRating);
 
-    // Render full stars
     for (let i = 0; i < fullStars; i++) {
       stars.push(<FaStar key={i} className="text-yellow-400" />);
     }
 
-    // Render half star if applicable
     if (halfStar) {
       stars.push(<FaStarHalfAlt key={fullStars} className="text-yellow-400" />);
     }
 
-    // Render empty stars
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
         <FaRegStar key={fullStars + i + 1} className="text-yellow-400" />
@@ -327,54 +311,90 @@ const SingleCourse = () => {
     return stars;
   };
 
-  const [answers, setAnswers] = useState({});
-  const [submitted, setSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
-
-  const questions = [
-    {
-      id: 1,
-      text: "What is the capital of France?",
-      options: ["London", "Berlin", "Paris", "Madrid"],
-      correctAnswer: 2,
-    },
-    {
-      id: 2,
-      text: "Which planet is known as the Red Planet?",
-      options: ["Venus", "Mars", "Jupiter", "Saturn"],
-      correctAnswer: 1,
-    },
-    {
-      id: 3,
-      text: "Who painted the Mona Lisa?",
-      options: [
-        "Vincent van Gogh",
-        "Pablo Picasso",
-        "Leonardo da Vinci",
-        "Michelangelo",
-      ],
-      correctAnswer: 2,
-    },
-  ];
-
-  const handleAnswerChange = (questionId, answerIndex) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: answerIndex }));
+  const handleQuizChange = (quizIndex, value) => {
+    const updatedQuizzes = [...quizzes];
+    updatedQuizzes[quizIndex].selectedAnswer = value;
+    setQuizzes(updatedQuizzes);
   };
 
-  const handleSubmit = () => {
+  const handleQuizOpen = () => {
+    setShowQuiz(true);
+    setSelectedVideo(null);
+  };
+
+  const handleQuizSubmit = () => {
     let newScore = 0;
-    questions.forEach((question) => {
-      if (answers[question.id] === question.correctAnswer) {
+    quizzes.forEach((quiz) => {
+      if (quiz.selectedAnswer === quiz.ans.toString()) {
         newScore++;
       }
     });
     setScore(newScore);
-    setSubmitted(true);
+    setQuizSubmitted(true);
   };
 
-  const openQuiz = () => {
-    document.getElementById("quiz-modal").showModal();
-  };
+  const renderQuizContent = () => (
+    <div className="container mx-auto p-4 w-full px-6 border rounded-md">
+      <h1 className="text-3xl font-bold mb-6 text-center">Quiz</h1>
+      {quizzes.map((quiz, quizIndex) => (
+        <div key={quiz.id} className="mb-6 bg-white border rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">{quiz.text}</h2>
+          <div className="space-y-2">
+            <p className="font-semibold">
+              {quizIndex + 1}. {quiz.ques}
+            </p>
+            {quiz.options.map((option, optionIndex) => (
+              <div key={optionIndex} className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  id={`quiz-${quizIndex}-option-${optionIndex}`}
+                  name={`quiz-${quizIndex}-answer`}
+                  value={optionIndex.toString()}
+                  checked={quiz.selectedAnswer === optionIndex.toString()}
+                  onChange={(e) => handleQuizChange(quizIndex, e.target.value)}
+                  className="radio"
+                  disabled={quizSubmitted}
+                />
+                <label
+                  htmlFor={`quiz-${quizIndex}-option-${optionIndex}`}
+                  className={`${
+                    quizSubmitted
+                      ? optionIndex.toString() === quiz.ans.toString()
+                        ? "text-green-600 font-bold"
+                        : quiz.selectedAnswer === optionIndex.toString()
+                        ? "text-red-600 font-bold"
+                        : "text-gray-700"
+                      : "text-gray-700"
+                  }`}
+                >
+                  {option}
+                </label>
+                {quizSubmitted &&
+                  optionIndex.toString() === quiz.ans.toString() && (
+                    <span className="text-green-600 ml-2">✓</span>
+                  )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+      {!quizSubmitted && (
+        <button
+          onClick={handleQuizSubmit}
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Submit
+        </button>
+      )}
+      {quizSubmitted && (
+        <div className="mt-6 text-center">
+          <h2 className="text-2xl font-bold">
+            Your Score: {score}/{quizzes.length}
+          </h2>
+        </div>
+      )}
+    </div>
+  );
 
   const renderStudentOpinions = () => {
     if (
@@ -425,13 +445,12 @@ const SingleCourse = () => {
 
   const makePayment = async () => {
     const paymentData = {
-      courseId: courseData._id, // The course being enrolled in
-      studentsId: userId, // ID of the currently logged-in user
-      price: courseData.price, // Price of the course
+      courseId: courseData._id,
+      studentsId: userId,
+      price: courseData.price,
     };
     console.log("Payment Data before sent:", paymentData);
 
-    // Make a POST request to the backend payment API
     fetch("http://localhost:4000/api/course/payment/order", {
       method: "POST",
       headers: {
@@ -441,7 +460,7 @@ const SingleCourse = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        window.location.replace(result.url); // Redirect to payment gateway
+        window.location.replace(result.url);
         console.log(result);
       })
       .catch((error) => console.error("Error during payment process:", error));
@@ -500,16 +519,7 @@ const SingleCourse = () => {
         <h3 className="text-2xl font-semibold">Course Details</h3>
         <div className="border rounded-md mt-2 py-3 px-4">
           <p className="text-justify">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-            Reprehenderit rerum eaque unde autem soluta? Dolorum porro fuga
-            quasi, laboriosam soluta eum, aspernatur, illum laborum mollitia
-            consequuntur reprehenderit voluptatem veniam delectus quo?
-            Repellendus, et ut non cum quis officia vel, aspernatur quod
-            nesciunt consequuntur, minus aliquid doloribus voluptatem ipsum.
-            Nobis totam dolores at, aut necessitatibus libero obcaecati
-            laboriosam autem eveniet cum labore ipsa deserunt quidem rerum
-            beatae asperiores sunt nostrum odio? Aut voluptate dicta nesciunt
-            iusto. Necessitatibus omnis dolorem quasi aut.
+            {courseData?.details || "No course details available."}
           </p>
         </div>
       </div>
@@ -568,8 +578,6 @@ const SingleCourse = () => {
         </div>
       )}
       <div className="pt-10">
-        {" "}
-        {/*other students opinion. now user should see others opinion. if database  has 1, user should see one star. if database has 2 user should see 2 star. if database has 3, user should see 3 star. if database has 4, user should see 4 star. if database has 5, user should see 5 star. i has reviewer id. now show me dynamic data. */}
         <div className="flex gap-2 items-center justify-between">
           <h3 className="text-2xl font-semibold">Students Opinion</h3>
           <div className="flex gap-2 text-2xl text-white">
@@ -594,28 +602,35 @@ const SingleCourse = () => {
       </div>
       <div className="pt-10">
         <div className="flex gap-2 justify-between items-center">
-          <h3 className="text-2xl font-semibold">Releted Courses</h3>
+          <h3 className="text-2xl font-semibold">Related Courses</h3>
           <div className="flex gap-2 text-2xl text-white">
-            <FaChevronLeft className="bg-[#125ca6] rounded-md p-1 cursor-pointer" />
-            <FaChevronRight className="bg-[#125ca6] rounded-md p-1 cursor-pointer" />
+            <FaChevronLeft
+              onClick={() => scrollCarousel(reletedCoursesCarouselRef, "left")}
+              className="bg-[#125ca6] rounded-md p-1 cursor-pointer"
+            />
+            <FaChevronRight
+              onClick={() => scrollCarousel(reletedCoursesCarouselRef, "right")}
+              className="bg-[#125ca6] rounded-md p-1 cursor-pointer"
+            />
           </div>
         </div>
-        <div className="border rounded-md mt-2 py-3 px-4">
-          <div className="carousel carousel-center max-w-md space-x-4">
-            {reletedCourses?.map((reletedCourse) => (
-              <Link
-                to={`/singleCourse/${reletedCourse?._id}`}
-                key={reletedCourse._id}
-                className="carousel-item"
-              >
-                <img
-                  src={reletedCourse?.banner}
-                  className="rounded-md w-32 h-32 object-cover border"
-                  alt={reletedCourse?.title}
-                />
-              </Link>
-            ))}
-          </div>
+        <div
+          ref={reletedCoursesCarouselRef}
+          className="carousel carousel-center max-w-md space-x-4 p-4 mt-2 border rounded-md"
+        >
+          {reletedCourses?.map((reletedCourse) => (
+            <Link
+              to={`/singleCourse/${reletedCourse?._id}`}
+              key={reletedCourse._id}
+              className="carousel-item"
+            >
+              <img
+                src={reletedCourse?.banner}
+                className="rounded-md w-32 h-32 object-cover border"
+                alt={reletedCourse?.title}
+              />
+            </Link>
+          ))}
         </div>
       </div>
     </div>
@@ -636,7 +651,6 @@ const SingleCourse = () => {
                     </h3>
                     <div className="flex gap-1 text-xl mt-2 items-center">
                       {renderStars(calculateAverageRating())}
-                      {/* <p>{calculateAverageRating()}</p> */}
                       <p className="ml-3">
                         {courseData?.studentsOpinion?.length || 0} Ratings
                       </p>
@@ -660,7 +674,7 @@ const SingleCourse = () => {
                       );
                     })}
                     <button
-                      onClick={() => downloadFiteAtURL(courseData.syllabus)}
+                      onClick={() => downloadFiteAtURL(courseData?.syllabus)}
                       className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                     >
                       <IoMdDownload className="text-xl" />
@@ -684,9 +698,7 @@ const SingleCourse = () => {
                       ৳{courseData?.price}
                     </h3>
                     <button
-                      // onClick={tempEnrollBtn}
                       onClick={makePayment}
-                      target="_blank"
                       className="bg-[#125ca6] text-white w-full text-xl py-2 mt-2 rounded-md"
                     >
                       Enroll
@@ -711,7 +723,6 @@ const SingleCourse = () => {
                   <h3 className="text-3xl">{courseData?.title}</h3>
                   <div className="flex gap-1 text-xl mt-2 items-center">
                     {renderStars(calculateAverageRating())}
-                    {/* <p>{calculateAverageRating()}</p> */}
                     <p className="ml-3">
                       {courseData?.studentsOpinion?.length || 0} Ratings
                     </p>
@@ -735,7 +746,7 @@ const SingleCourse = () => {
                     );
                   })}
                   <button
-                    onClick={() => downloadFiteAtURL(courseData.syllabus)}
+                    onClick={() => downloadFiteAtURL(courseData?.syllabus)}
                     className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                   >
                     <IoMdDownload className="text-xl" />
@@ -749,11 +760,15 @@ const SingleCourse = () => {
             </div>
             <div className=" grid grid-cols-7 gap-8">
               <div className="col-span-5 w-full">
-                <video
-                  className="border rounded-md col-span-5 w-full h-[600px]"
-                  src={selectedVideo?.videoLink} // Display the selected video
-                  controls // Add controls for play/pause
-                />
+                {showQuiz ? (
+                  renderQuizContent()
+                ) : (
+                  <video
+                    className="border rounded-md col-span-5 w-full h-[600px]"
+                    src={selectedVideo?.videoLink}
+                    controls
+                  />
+                )}
                 <div className="py-10">{commonSections}</div>
               </div>
 
@@ -786,72 +801,11 @@ const SingleCourse = () => {
                     <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
                       <p>Quiz</p>
                       <button
-                        onClick={openQuiz}
+                        onClick={() => setShowQuiz(true)}
                         className="bg-[#125ca6] text-white px-4 rounded-md"
                       >
                         Open
                       </button>
-                      <dialog id="quiz-modal" className="modal">
-                        <div className="modal-box w-11/12 max-w-5xl">
-                          <form method="dialog">
-                            {/* if there is a button in form, it will close the modal */}
-                            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                              ✕
-                            </button>
-                          </form>
-                          <div className="container mx-auto p-4 max-w-2xl">
-                            <h1 className="text-3xl font-bold mb-6 text-center">
-                              Quiz
-                            </h1>
-                            {questions.map((question) => (
-                              <div
-                                key={question.id}
-                                className="mb-6 bg-white border rounded-lg p-6"
-                              >
-                                <h2 className="text-xl font-semibold mb-4">
-                                  {question.text}
-                                </h2>
-                                <div className="space-y-2">
-                                  {question.options.map((option, index) => (
-                                    <label
-                                      key={index}
-                                      className="flex items-center space-x-2 cursor-pointer"
-                                    >
-                                      <input
-                                        type="radio"
-                                        name={`question-${question.id}`}
-                                        value={index}
-                                        checked={answers[question.id] === index}
-                                        onChange={() =>
-                                          handleAnswerChange(question.id, index)
-                                        }
-                                        className="form-radio h-5 w-5 text-blue-600"
-                                      />
-                                      <span className="text-gray-700">
-                                        {option}
-                                      </span>
-                                    </label>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                            <button
-                              onClick={handleSubmit}
-                              disabled={submitted}
-                              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              Submit
-                            </button>
-                            {submitted && (
-                              <div className="mt-6 text-center">
-                                <h2 className="text-2xl font-bold">
-                                  Your Score: {score}/{questions.length}
-                                </h2>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </dialog>
                     </div>
                   ) : (
                     <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">

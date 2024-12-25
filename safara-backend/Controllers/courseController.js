@@ -345,7 +345,7 @@ const success = async (req, res) => {
     await PaymentSession.deleteOne({ tranId: req.params.tran_id });
 
     // Return success message or course object as confirmation
-    res.redirect(`http://localhost:5173`);
+    res.redirect(`http://localhost:5173/singleCourse/${courseId}`);
   } catch (err) {
     console.log("Error updating course or student:", err);
     res.status(500).json({
