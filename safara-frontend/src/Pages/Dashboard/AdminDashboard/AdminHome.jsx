@@ -1,148 +1,164 @@
-import React from 'react';
-import { FaUsers, FaBookOpen, FaUserGraduate, FaChartLine, FaStar, FaEye, FaCheckCircle, FaClock, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
-import { MdEdit } from 'react-icons/md';
-import { RiDeleteBin5Line } from 'react-icons/ri';
+import React, { useEffect, useState } from "react";
+import { FaUsers, FaBookOpen, FaUserGraduate, FaChartLine, FaStar, FaEye, FaCheckCircle, FaClock } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
+import { RiDeleteBin5Line } from "react-icons/ri";
 
 const AdminDashboard = () => {
-  const courseCategories = [
-    { name: 'Development', count: 150, color: 'bg-blue-500' },
-    { name: 'Business', count: 120, color: 'bg-green-500' },
-    { name: 'Design', count: 100, color: 'bg-yellow-500' },
-    { name: 'Marketing', count: 80, color: 'bg-red-500' },
-    { name: 'IT & Software', count: 70, color: 'bg-purple-500' },
-  ];
+  // State variables for storing various counts and data
+  const [countUsers, setCountUsers] = useState([]);
+  const [enrolledUsers, setEnrolledUsers] = useState([]);
+  const [courseCount, setCourseCount] = useState([]);
+  const [totalRevenue, setTotalRevenue] = useState([]);
+  const [totalAvgRating, setTotalAvgRating] = useState([]);
+  const [courseCategories, setCoursesCategories] = useState([]);
+  const [completedCoursesCount, setCompletedCoursesCount] = useState(0);
 
-  const recentEnrollments = [
-    { id: 1, user: 'John Doe', course: 'Advanced React Patterns', date: '2023-05-15' },
-    { id: 2, user: 'Jane Smith', course: 'Machine Learning Fundamentals', date: '2023-05-14' },
-    { id: 3, user: 'Bob Johnson', course: 'Digital Marketing Strategies', date: '2023-05-13' },
-    { id: 4, user: 'Alice Brown', course: 'UX/UI Design Principles', date: '2023-05-12' },
-  ];
+  // Fetching the total number of users
+  const fetchCountUsers = () => {
+    fetch(`http://localhost:4000/api/user/allUsersCount`)
+      .then((res) => res.json())
+      .then((data) => setCountUsers(data))
+      .catch((error) => console.log(error));
+  };
 
-  const topPerformingCourses = [
-    { id: 1, name: 'Advanced Machine Learning', enrolled: 1234, rating: 4.9, revenue: '$12,345' },
-    { id: 2, name: 'Full-Stack Web Development', enrolled: 987, rating: 4.8, revenue: '$9,870' },
-    { id: 3, name: 'Data Science Fundamentals', enrolled: 876, rating: 4.7, revenue: '$8,760' },
-    { id: 4, name: 'Digital Marketing Mastery', enrolled: 765, rating: 4.6, revenue: '$7,650' },
+  useEffect(() => {
+    fetchCountUsers(); // Fetch users count when component mounts
+  }, []);
+
+  // Fetching the total number of courses
+  const fetchCourseCount = () => {
+    fetch(`http://localhost:4000/api/course/getCourseCount`)
+      .then((res) => res.json())
+      .then((data) => setCourseCount(data))
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchCourseCount(); // Fetch course count when component mounts
+  }, []);
+
+  // Fetching the total number of enrolled users
+  const fetchEnrolledUsers = () => {
+    fetch(`http://localhost:4000/api/course/enrolledUsersCourses`)
+      .then((res) => res.json())
+      .then((data) => setEnrolledUsers(data))
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchEnrolledUsers(); // Fetch enrolled users when component mounts
+  }, []);
+
+  // Fetching total revenue
+  const fetchTotalRevenue = () => {
+    fetch(`http://localhost:4000/api/course/getTotalRevenue`)
+      .then((res) => res.json())
+      .then((data) => setTotalRevenue(data))
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchTotalRevenue(); // Fetch total revenue when component mounts
+  }, []);
+
+  // Fetching course categories and their counts
+  const fetchCourseCategories = () => {
+    fetch(`http://localhost:4000/api/course/getCourseCategories`)
+      .then((res) => res.json())
+      .then((data) => setCoursesCategories(data.categories))
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchCourseCategories(); // Fetch course categories when component mounts
+  }, []);
+
+  // Fetching the total average rating
+  const fetchTotalAverageRating = () => {
+    fetch(`http://localhost:4000/api/course/getAvgRating`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Total average rating:", data.avgRating); // Debugging the fetched data
+        setTotalAvgRating(data.avgRating); // Update the state with the fetched average rating
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchTotalAverageRating(); // Fetch total average rating when component mounts
+  }, []);
+
+  // Fetching the completed courses count
+  const fetchCompletedCoursesCount = () => {
+    fetch(`http://localhost:4000/api/course/getCompletedCoursesCount`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCompletedCoursesCount(data.totalCompletedCourses); // Set the completed courses count
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    fetchCompletedCoursesCount(); // Fetch completed courses count when component mounts
+  }, []);
+  
+
+  console.log(completedCoursesCount);
+  // Array of colors to dynamically assign to categories
+  const categoryColors = [
+    "bg-red-200",
+    "bg-yellow-200",
+    "bg-green-200",
+    "bg-blue-200",
+    "bg-purple-200",
+    "bg-pink-200",
+    "bg-indigo-200",
+    "bg-teal-200",
   ];
 
   return (
-    <div className="min-h-screen  p-8">
+    <div className="min-h-screen p-8">
       <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Admin Dashboard</h1>
 
+      {/* Dashboard Stats */}
       <div className="grid gap-6 md:grid-cols-4 mb-8">
-        <StatCard icon={<FaUsers />} title="Total Users" value="1,234" change="+5.2%" />
-        <StatCard icon={<FaBookOpen />} title="Total Courses" value="42" change="+2.1%" />
-        <StatCard icon={<FaUserGraduate />} title="Enrolled Users" value="789" change="+3.7%" />
-        <StatCard icon={<FaChartLine />} title="Revenue" value="$12,345" change="+7.8%" />
+        <StatCard icon={<FaUsers />} title="Total Users" value={countUsers.usersCount} change="+5.2%" />
+        <StatCard icon={<FaBookOpen />} title="Total Courses" value={courseCount.courseCount} change="+2.1%" />
+        <StatCard icon={<FaUserGraduate />} title="Enrolled Users" value={enrolledUsers.totalEnrolledStudents} change="+3.7%" />
+        <StatCard icon={<FaChartLine />} title="Revenue" value={totalRevenue.totalRevenue} change="+7.8%" />
       </div>
 
+      {/* Course Categories and Platform Overview */}
       <div className="grid gap-6 md:grid-cols-2 mb-8">
+        {/* Course Categories Section */}
         <div className="bg-white rounded-lg border p-6">
           <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Course Categories</h2>
           <div className="space-y-4">
             {courseCategories.map((category, index) => (
-              <div key={index} className="flex items-center">
-                <div className={`w-2 h-2 ${category.color} rounded-full mr-2`}></div>
-                <span className="flex-grow">{category.name}</span>
-                <span className="font-semibold">{category.count}</span>
+              <div key={index} className={`flex items-center ${categoryColors[index % categoryColors.length]}`}>
+                <span className="flex-grow">{category.name || category.category}</span>
+                <span className="font-semibold">{category.count || 0}</span> {/* Displaying course count */}
               </div>
             ))}
           </div>
         </div>
 
+        {/* Platform Overview Section */}
         <div className="bg-white rounded-lg border p-6">
           <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Platform Overview</h2>
           <div className="grid grid-cols-2 gap-4">
-            <MetricCard icon={<FaStar className="text-yellow-400" />} title="Average Rating" value="4.8" />
+            <MetricCard icon={<FaStar className="text-yellow-400" />} title="Average Rating" value={totalAvgRating} />
             <MetricCard icon={<FaEye className="text-blue-400" />} title="Total Views" value="250K" />
-            <MetricCard icon={<FaCheckCircle className="text-green-400" />} title="Completed Courses" value="5,678" />
+            <MetricCard icon={<FaCheckCircle className="text-green-400" />} title="Completed Courses" value={completedCoursesCount} />
             <MetricCard icon={<FaClock className="text-red-400" />} title="Avg. Completion Time" value="4.2 weeks" />
           </div>
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-3 mb-8">
-        <div className="bg-white rounded-lg md:col-span-2">
-          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Recent Enrollments</h2>
-          <div className="overflow-x-auto border rounded-md">
-            <table className="table table-zebra w-full">
-              <thead>
-                <tr className="grid grid-cols-6">
-                  <th className="col-span-2">User</th>
-                  <th className="col-span-3">Course</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentEnrollments.map((enrollment, index) => (
-                  <tr key={enrollment.id} className="grid grid-cols-6">
-                    <td className="col-span-2">{enrollment.user}</td>
-                    <td className="col-span-3">{enrollment.course}</td>
-                    <td>{enrollment.date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg">
-          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">User Activity</h2>
-          <div className="h-[222px] flex items-center justify-center border rounded-md">
-            {/* Placeholder for user activity chart */}
-            <span className="text-gray-400">User Activity Chart</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg">
-        <div>
-          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Top Performing Courses</h2>
-        </div>
-        <div className="overflow-x-hidden border rounded-md">
-          <table className="table table-zebra w-full">
-            <thead>
-              <tr className="grid grid-cols-8">
-                <th className="col-span-3">Course Name</th>
-                <th>Enrolled</th>
-                <th>Rating</th>
-                <th>Revenue</th>
-                <th className="col-span-2 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {topPerformingCourses.map((course, index) => (
-                <tr key={course.id} className="grid grid-cols-8">
-                  <td className="col-span-3">{course.name}</td>
-                  <td>{course.enrolled}</td>
-                  <td>
-                    <div className="flex items-center">
-                      <FaStar className="text-yellow-400 mr-1" />
-                      {course.rating}
-                    </div>
-                  </td>
-                  <td>{course.revenue}</td>
-                  <td className="col-span-2 flex gap-2 items-center justify-end">
-                    <div className="tooltip" data-tip="Delete User">
-                      <MdEdit className="bg-[#125ca6] cursor-pointer tooltip p-1 text-2xl text-white rounded"/>
-                    </div>
-                    <div className="tooltip" data-tip="Delete User">
-                      <RiDeleteBin5Line
-                        className="bg-error cursor-pointer tooltip p-1 text-2xl text-white rounded"
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
   );
 };
 
+// StatCard Component
 const StatCard = ({ icon, title, value, change }) => (
   <div className="bg-white rounded-lg border p-6">
     <div className="flex justify-between items-center mb-4">
@@ -153,6 +169,7 @@ const StatCard = ({ icon, title, value, change }) => (
   </div>
 );
 
+// MetricCard Component
 const MetricCard = ({ icon, title, value }) => (
   <div className="bg-gray-50 rounded-lg p-4">
     <div className="flex items-center mb-2">
@@ -164,4 +181,3 @@ const MetricCard = ({ icon, title, value }) => (
 );
 
 export default AdminDashboard;
-
