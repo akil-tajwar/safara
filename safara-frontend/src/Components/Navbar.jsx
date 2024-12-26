@@ -14,6 +14,7 @@ const Navbar = () => {
     console.log("🚀 ~ Home ~ user:", user);
 
     
+    console.log(user?.user?._id);
 
     const fetchUser = () => {
         const url = `http://localhost:4000/api/user/singleUser/${user?.user?._id}`;

@@ -30,7 +30,8 @@ const courseSchema = new mongoose.Schema({
         },
         videoLink: {
             type: String,
-        }
+        },
+
     }],
     quiz: [{
         ques: {
@@ -54,6 +55,12 @@ const courseSchema = new mongoose.Schema({
             required: true,
         },
     }],
+    startTime: {
+        type: Date, // Timestamp for when the student starts the course
+    },
+    completionTime: {
+        type: Date, // Timestamp for when the student completes the course
+    },
     category: {
         type: String,
     },
