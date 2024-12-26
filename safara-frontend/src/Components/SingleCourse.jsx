@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { IoMdDownload } from "react-icons/io";
@@ -19,6 +19,7 @@ import Footer from "./Footer";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import useAuthContext from "../hooks/useAuthContext";
 import Swal from "sweetalert2";
+import ReactHtmlParser from 'react-html-parser';
 
 const SingleCourse = () => {
   const { id } = useParams();
@@ -39,6 +40,7 @@ const SingleCourse = () => {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [quizzes, setQuizzes] = useState([]);
+  const [quizComplete, setQuizComplete] = useState(false); // Added state for quiz completion
   const userId = user?.user?._id;
 
   const studentsOpinionCarouselRef = useRef(null);
@@ -97,8 +99,7 @@ const SingleCourse = () => {
       console.error("Error completing the course:", error);
       Swal.fire({
         title: "Error",
-        text:
-          error.message || "Failed to complete the course. Please try again.",
+        text: error.message || "Failed to complete the course. Please try again.",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -331,18 +332,55 @@ const SingleCourse = () => {
     });
     setScore(newScore);
     setQuizSubmitted(true);
+    // Store current quiz state before API call
+    const currentQuizState = [...quizzes];
+    quizCompleteAction().then(() => {
+      // Restore quiz state after API call
+      setQuizzes(currentQuizState);
+    });
+  };
+
+  const quizCompleteAction = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/course/completeQuiz/${userId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ _id: courseData._id }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to complete the quiz");
+      }
+
+      console.log("quiz completed successfully:", data);
+      setQuizComplete(true);
+      // Remove fetchSingleCourse() to preserve quiz state
+    } catch (error) {
+      console.error("Error completing the quiz:", error);
+      Swal.fire({
+        title: "Error",
+        text: error.message || "Failed to complete the quiz. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
   };
 
   const renderQuizContent = () => (
-    <div className="container mx-auto p-4 w-full px-6 border rounded-md">
+    <div className="container mx-auto p-8 rounded border w-full">
       <h1 className="text-3xl font-bold mb-6 text-center">Quiz</h1>
       {quizzes.map((quiz, quizIndex) => (
         <div key={quiz.id} className="mb-6 bg-white border rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">{quiz.text}</h2>
           <div className="space-y-2">
-            <p className="font-semibold">
-              {quizIndex + 1}. {quiz.ques}
-            </p>
+            <p className='font-semibold'>{quizIndex + 1}. {quiz.ques}</p>
             {quiz.options.map((option, optionIndex) => (
               <div key={optionIndex} className="flex items-center space-x-2">
                 <input
@@ -360,19 +398,18 @@ const SingleCourse = () => {
                   className={`${
                     quizSubmitted
                       ? optionIndex.toString() === quiz.ans.toString()
-                        ? "text-green-600 font-bold"
+                        ? 'text-green-600 font-bold'
                         : quiz.selectedAnswer === optionIndex.toString()
-                        ? "text-red-600 font-bold"
-                        : "text-gray-700"
-                      : "text-gray-700"
+                        ? 'text-red-600 font-bold'
+                        : 'text-gray-700'
+                      : 'text-gray-700'
                   }`}
                 >
                   {option}
                 </label>
-                {quizSubmitted &&
-                  optionIndex.toString() === quiz.ans.toString() && (
-                    <span className="text-green-600 ml-2">✓</span>
-                  )}
+                {quizSubmitted && optionIndex.toString() === quiz.ans.toString() && (
+                  <span className="text-green-600 ml-2">✓</span>
+                )}
               </div>
             ))}
           </div>
@@ -381,16 +418,14 @@ const SingleCourse = () => {
       {!quizSubmitted && (
         <button
           onClick={handleQuizSubmit}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          className="w-full bg-[#125ca6] text-white font-bold py-2 px-4 rounded"
         >
           Submit
         </button>
       )}
       {quizSubmitted && (
         <div className="mt-6 text-center">
-          <h2 className="text-2xl font-bold">
-            Your Score: {score}/{quizzes.length}
-          </h2>
+          <h2 className="text-2xl font-bold">Your Score: {score}/{quizzes.length}</h2>
         </div>
       )}
     </div>
@@ -519,7 +554,7 @@ const SingleCourse = () => {
         <h3 className="text-2xl font-semibold">Course Details</h3>
         <div className="border rounded-md mt-2 py-3 px-4">
           <p className="text-justify">
-            {courseData?.details || "No course details available."}
+            {ReactHtmlParser(courseData?.details || "No course details available.")}
           </p>
         </div>
       </div>
@@ -616,7 +651,7 @@ const SingleCourse = () => {
         </div>
         <div
           ref={reletedCoursesCarouselRef}
-          className="carousel carousel-center max-w-md space-x-4 p-4 mt-2 border rounded-md"
+          className="carousel carousel-center space-x-4 p-4 mt-2 border w-full min-h-36  rounded-md"
         >
           {reletedCourses?.map((reletedCourse) => (
             <Link
@@ -797,27 +832,18 @@ const SingleCourse = () => {
                       {video?.videoTitle}
                     </p>
                   ))}
-                  {courseComplete === true ? (
+                  {courseComplete === true  && ( 
                     <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
                       <p>Quiz</p>
                       <button
-                        onClick={() => setShowQuiz(true)}
+                        onClick={handleQuizOpen}
                         className="bg-[#125ca6] text-white px-4 rounded-md"
                       >
                         Open
                       </button>
                     </div>
-                  ) : (
-                    <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
-                      <p className="text-gray-400">Quiz</p>
-                      <button
-                        disabled
-                        className="bg-[#d0d0d0] text-white px-4 rounded-md"
-                      >
-                        Open
-                      </button>
-                    </div>
                   )}
+                  
                   <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
                     <button
                       className="bg-[#125ca6] py-1 px-4 rounded-md"
@@ -860,7 +886,7 @@ const SingleCourse = () => {
                     </button>
                   </div>
                 </div>
-                {courseComplete === true && (
+                {courseComplete === true && quizComplete && (
                   <div className="text-center">
                     <button
                       onClick={courseCompleteAction}
@@ -880,3 +906,4 @@ const SingleCourse = () => {
 };
 
 export default SingleCourse;
+

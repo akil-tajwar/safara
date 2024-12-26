@@ -81,6 +81,7 @@ const getSingleCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 const getAllEnrolledCourse = async (req, res) => {
   try {
     const { id } = req.params;
@@ -254,7 +255,7 @@ const order = async (req, res) => {
   await paymentSession.save();
 
   const data = {
-    total_amount: 1,
+    total_amount: req.body.price,
     currency: "BDT",
     tran_id: tran_id, // use unique tran_id for each api call
     success_url: `http://localhost:4000/api/course/payment/success/${tran_id}`,
@@ -535,6 +536,74 @@ const completeCourse = async (req, res) => {
   }
 };
 
+const completeQuiz = async (req, res) => {
+  // Log the incoming request data for debugging
+  console.log("Request body:", req.body);
+  console.log("Request params:", req.params);
+
+  const courseId = req.body._id;
+  const studentId = req.params.id;
+
+  console.log("Parsed IDs:", { courseId, studentId });
+
+  // Validate ObjectId format
+  if (
+    !mongoose.Types.ObjectId.isValid(courseId) ||
+    !mongoose.Types.ObjectId.isValid(studentId)
+  ) {
+    return res.status(400).json({
+      error: "Invalid courseId or studentId",
+      receivedCourseId: courseId,
+      receivedStudentId: studentId,
+    });
+  }
+
+  try {
+    // Find the course
+    const course = await courseModel.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    // Find the specific student in the course's students array
+    const student = course.students.find(
+      (s) => s.studentsId.toString() === studentId
+    );
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found in course" });
+    }
+
+    // Check if course is already completed
+    if (student.isQuizComplete) {
+      return res.status(400).json({
+        error: "Quiz is already marked as complete for this student",
+      });
+    }
+
+    // Set isCourseComplete to true
+    const updatedCourse = await courseModel.findOneAndUpdate(
+      {
+        _id: courseId,
+        "students.studentsId": studentId,
+      },
+      {
+        $set: { "students.$.isQuizComplete": true },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Quiz marked as complete successfully",
+      updatedCourse,
+    });
+  } catch (error) {
+    console.error("Error in complete quiz:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createCourse,
   getAllCourses,
@@ -550,4 +619,5 @@ module.exports = {
   topCourses,
   unlockVideo,
   completeCourse,
+  completeQuiz,
 };

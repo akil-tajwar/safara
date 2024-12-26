@@ -14,6 +14,7 @@ const {
   unlockVideo,
   completeCourse,
   getAllEnrolledCourse,
+  completeQuiz,
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -38,6 +39,7 @@ router.delete("/deleteCourse/:id", deleteCourse);
 //patch
 router.patch("/updateCourse/:id", updateCourse);
 router.patch("/unlockVideo/:id", unlockVideo);
-router.patch("/completeCourse/:id", completeCourse);
+router.patch("/completeCourse/:id", completeCourse); //id == user's id, not course id
+router.patch("/completeQuiz/:id", completeQuiz); //id == user's id, not course id
 
 module.exports = router;
