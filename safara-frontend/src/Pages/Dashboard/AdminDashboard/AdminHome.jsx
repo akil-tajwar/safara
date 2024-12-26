@@ -11,6 +11,7 @@ const AdminDashboard = () => {
   const [totalRevenue, setTotalRevenue] = useState([]);
   const [totalAvgRating, setTotalAvgRating] = useState([]);
   const [courseCategories, setCoursesCategories] = useState([]);
+  const [avgCourseCompleteTime, setAvgCourseCompleteTime] = useState([]);
   const [completedCoursesCount, setCompletedCoursesCount] = useState(0);
 
   // Fetching the total number of users
@@ -102,8 +103,23 @@ const AdminDashboard = () => {
     fetchCompletedCoursesCount(); // Fetch completed courses count when component mounts
   }, []);
   
+  // Fetching the completed courses count
+  const fetchAvgCompletedCourseTime = () => {
+    fetch(`http://localhost:4000/api/course//getAverageCompletionTime`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAvgCourseCompleteTime(data.averageCompletionTimeInDays
+        ); // Set the completed courses count
+      })
+      .catch((error) => console.log(error));
+  };
 
-  console.log(completedCoursesCount);
+  useEffect(() => {
+    fetchAvgCompletedCourseTime(); // Fetch completed courses count when component mounts
+  }, []);
+  
+
+  console.log(avgCourseCompleteTime);
   // Array of colors to dynamically assign to categories
   const categoryColors = [
     "bg-red-200",
@@ -150,7 +166,7 @@ const AdminDashboard = () => {
             <MetricCard icon={<FaStar className="text-yellow-400" />} title="Average Rating" value={totalAvgRating} />
             <MetricCard icon={<FaEye className="text-blue-400" />} title="Total Views" value="250K" />
             <MetricCard icon={<FaCheckCircle className="text-green-400" />} title="Completed Courses" value={completedCoursesCount} />
-            <MetricCard icon={<FaClock className="text-red-400" />} title="Avg. Completion Time" value="4.2 weeks" />
+            <MetricCard icon={<FaClock className="text-red-400" />} title="Avg. Completion Time" value={avgCourseCompleteTime} />
           </div>
         </div>
       </div>

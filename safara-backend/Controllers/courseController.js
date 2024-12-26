@@ -568,7 +568,6 @@ const getEnrolledUsersCourses = async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 };
-
 // Endpoint to calculate total revenue
 const getTotalRevenue = async (req, res) => {
   try {
@@ -576,9 +575,7 @@ const getTotalRevenue = async (req, res) => {
       {
         $project: {
           price: { $toDouble: "$price" }, // Convert price to a number
-          students: {
-            $ifNull: ["$students", []], // Ensure students is always an array (defaults to empty array if null)
-          },
+          students: { $ifNull: ["$students", []] }, // Ensure students is always an array
         },
       },
       {
@@ -587,35 +584,20 @@ const getTotalRevenue = async (req, res) => {
             $filter: {
               input: "$students",
               as: "student",
-              cond: { $eq: ["$$student.paymentComplete", true] }, // Filter for paid students
+              cond: { $eq: ["$$student.paymentComplete", true] }, // Filter for students with paymentComplete = true
             },
           },
-        },
-      },
-      {
-        $project: {
-          paidStudentsCount: {
-            $size: {
-              $ifNull: ["$paidStudents", []], // Default to an empty array if paidStudents is null or missing
-            },
-          },
-          price: 1, // Pass the price to the next stage
         },
       },
       {
         $addFields: {
-          revenue: {
-            $multiply: [
-              { $size: { $ifNull: ["$paidStudents", []] } }, // Safe size calculation for paidStudents
-              { $ifNull: [{ $toDouble: "$price" }, 0] }, // Course price (ensure it's a number)
-            ],
-          },
+          revenue: { $multiply: [{ $size: "$paidStudents" }, "$price"] }, // Calculate revenue as price * number of paid students
         },
       },
       {
         $group: {
           _id: null,
-          totalRevenue: { $sum: "$revenue" }, // Sum up all revenue
+          totalRevenue: { $sum: "$revenue" }, // Sum up the revenue from all courses
         },
       },
     ]);
@@ -623,6 +605,7 @@ const getTotalRevenue = async (req, res) => {
     const totalRevenue = result.length > 0 ? result[0].totalRevenue : 0;
 
     res.status(200).json({
+      message: "Total revenue calculated successfully",
       totalRevenue,
     });
   } catch (error) {
@@ -633,6 +616,7 @@ const getTotalRevenue = async (req, res) => {
     });
   }
 };
+
 const getCourseCategories = async (req, res) => {
   try {
     // Fetching unique course categories with their count
@@ -754,28 +738,58 @@ const getCompletedCoursesCount = async (req, res) => {
   }
 };
 
-
-// Function to get total views across all courses
-const getTotalWebsiteViews = async (req, res) => {
+const getAverageCompletionTime = async (req, res) => {
   try {
-      // Aggregate the total views from all videos in all courses
-      const totalViews = await courseModel.aggregate([
-          { $unwind: "$videos" }, // Unwind the videos array to count each video separately
-          { $group: { _id: null, totalViews: { $sum: "$videos.views" } } } // Sum up the views
-      ]);
+    // Find all courses with students who completed the course
+    const courses = await courseModel.find(
+      {
+        "students.isCourseComplete": true,
+      },
+      {
+        "students.$": 1, // Only fetch students array
+      }
+    );
 
-      // If no data is returned, totalViews will be undefined, so set to 0
-      const total = totalViews.length > 0 ? totalViews[0].totalViews : 0;
+    let totalCompletionTime = 0; // Total time taken by all students
+    let completedCoursesCount = 0; // Number of students who completed courses
 
-      // Return the total views in the response
-      res.status(200).json({ totalViews: total });
+    courses.forEach((course) => {
+      course.students.forEach((student) => {
+        if (
+          student.isCourseComplete &&
+          student.startTime &&
+          student.completionTime
+        ) {
+          const timeTaken =
+            new Date(student.completionTime) - new Date(student.startTime);
+          totalCompletionTime += timeTaken;
+          completedCoursesCount++;
+        }
+      });
+    });
+
+    // Calculate the average completion time in milliseconds
+    const averageCompletionTime =
+      completedCoursesCount > 0
+        ? totalCompletionTime / completedCoursesCount
+        : 0;
+
+    // Convert milliseconds to days
+    const averageTimeInDays = Math.floor(
+      averageCompletionTime / (1000 * 60 * 60 * 24)
+    );
+
+    res.status(200).json({
+      message: "Average completion time retrieved successfully",
+      averageCompletionTimeInDays: averageTimeInDays,
+    });
   } catch (error) {
-      // If an error occurs, send a 500 error response
-      console.error("Error calculating total views:", error);
-      res.status(500).json({ message: "An error occurred while fetching total views" });
+    console.error("Error calculating average completion time:", error);
+    res
+      .status(500)
+      .json({ message: "Error calculating average completion time" });
   }
 };
-
 
 module.exports = {
   createCourse,
@@ -797,5 +811,6 @@ module.exports = {
   getCourseCategories,
   getTotalAverageRating,
   getCompletedCoursesCount,
-  getTotalWebsiteViews
+
+  getAverageCompletionTime,
 };
