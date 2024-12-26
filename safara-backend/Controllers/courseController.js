@@ -569,13 +569,20 @@ const getEnrolledUsersCourses = async (req, res) => {
   }
 };
 // Endpoint to calculate total revenue
+// Endpoint to calculate total revenue
 const getTotalRevenue = async (req, res) => {
   try {
     const result = await courseModel.aggregate([
       {
         $project: {
           price: { $toDouble: "$price" }, // Convert price to a number
+          discount: { $toDouble: { $ifNull: ["$discount", 0] } }, // Convert discount to a number, default to 0
           students: { $ifNull: ["$students", []] }, // Ensure students is always an array
+        },
+      },
+      {
+        $addFields: {
+          effectivePrice: { $subtract: ["$price", "$discount"] }, // Subtract discount from price
         },
       },
       {
@@ -591,13 +598,18 @@ const getTotalRevenue = async (req, res) => {
       },
       {
         $addFields: {
-          revenue: { $multiply: [{ $size: "$paidStudents" }, "$price"] }, // Calculate revenue as price * number of paid students
+          revenue: {
+            $multiply: [
+              { $size: "$paidStudents" }, // Count of paid students
+              { $max: ["$effectivePrice", 0] }, // Ensure no negative prices due to discount
+            ],
+          },
         },
       },
       {
         $group: {
           _id: null,
-          totalRevenue: { $sum: "$revenue" }, // Sum up the revenue from all courses
+          totalRevenue: { $sum: "$revenue" }, // Sum up revenue from all courses
         },
       },
     ]);
