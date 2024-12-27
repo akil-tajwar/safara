@@ -746,7 +746,7 @@ const SingleCourse = () => {
               <div className=" grid grid-cols-7 gap-8 relative">
                 <div className="col-span-5">{commonSections}</div>
                 <div className="col-span-2 border rounded-md h-fit sticky top-[73px]">
-                  <img className="" src={courseData?.banner} alt="" />
+                  <img className="rounded-t-md" src={courseData?.banner} alt="" />
                   {courseData?.discount > 0 ? (
                     <div className="p-3">
                       <div className="flex gap-4">
