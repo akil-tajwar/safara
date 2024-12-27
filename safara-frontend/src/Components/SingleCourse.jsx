@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { IoMdDownload } from "react-icons/io";
@@ -7,24 +7,24 @@ import {
   FaChevronRight,
   FaLock,
   FaRegStar,
-  FaRegStarHalf,
   FaStar,
   FaStarHalfAlt,
 } from "react-icons/fa";
+import { PiExam } from "react-icons/pi";
 import Navbar from "./Navbar";
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
 import { GoNote } from "react-icons/go";
-import { TbLivePhoto } from "react-icons/tb";
+import { TbCurrencyTaka, TbLivePhoto } from "react-icons/tb";
 import Footer from "./Footer";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import useAuthContext from "../hooks/useAuthContext";
 import Swal from "sweetalert2";
-import ReactHtmlParser from 'react-html-parser';
+import ReactHtmlParser from "react-html-parser";
 
 const SingleCourse = () => {
   const { id } = useParams();
   const { user } = useAuthContext();
-  const [isInstructor, setIsInstructor] = useState(false);
+  // const [isInstructor, setIsInstructor] = useState(false);
   const [courseData, setCourseData] = useState(null);
   const [reletedCourses, setreletedCourses] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
@@ -37,14 +37,22 @@ const SingleCourse = () => {
   const [courseComplete, setCourseComplete] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [answers, setAnswers] = useState({});
+  // const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [quizzes, setQuizzes] = useState([]);
-  const [quizComplete, setQuizComplete] = useState(false); // Added state for quiz completion
+  const [quizComplete, setQuizComplete] = useState(false);
   const userId = user?.user?._id;
 
   const studentsOpinionCarouselRef = useRef(null);
   const reletedCoursesCarouselRef = useRef(null);
+
+  const discountAmount =
+    courseData?.price && courseData?.discount
+      ? (parseInt(courseData.price) * parseInt(courseData.discount)) / 100
+      : 0;
+  const finalPrice = courseData?.price
+    ? parseInt(courseData.price) - discountAmount
+    : null;
 
   useEffect(() => {
     if (courseData && courseData.students && userId) {
@@ -99,7 +107,8 @@ const SingleCourse = () => {
       console.error("Error completing the course:", error);
       Swal.fire({
         title: "Error",
-        text: error.message || "Failed to complete the course. Please try again.",
+        text:
+          error.message || "Failed to complete the course. Please try again.",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -380,7 +389,9 @@ const SingleCourse = () => {
         <div key={quiz.id} className="mb-6 bg-white border rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">{quiz.text}</h2>
           <div className="space-y-2">
-            <p className='font-semibold'>{quizIndex + 1}. {quiz.ques}</p>
+            <p className="font-semibold">
+              {quizIndex + 1}. {quiz.ques}
+            </p>
             {quiz.options.map((option, optionIndex) => (
               <div key={optionIndex} className="flex items-center space-x-2">
                 <input
@@ -398,18 +409,19 @@ const SingleCourse = () => {
                   className={`${
                     quizSubmitted
                       ? optionIndex.toString() === quiz.ans.toString()
-                        ? 'text-green-600 font-bold'
+                        ? "text-green-600 font-bold"
                         : quiz.selectedAnswer === optionIndex.toString()
-                        ? 'text-red-600 font-bold'
-                        : 'text-gray-700'
-                      : 'text-gray-700'
+                        ? "text-red-600 font-bold"
+                        : "text-gray-700"
+                      : "text-gray-700"
                   }`}
                 >
                   {option}
                 </label>
-                {quizSubmitted && optionIndex.toString() === quiz.ans.toString() && (
-                  <span className="text-green-600 ml-2">✓</span>
-                )}
+                {quizSubmitted &&
+                  optionIndex.toString() === quiz.ans.toString() && (
+                    <span className="text-green-600 ml-2">✓</span>
+                  )}
               </div>
             ))}
           </div>
@@ -425,7 +437,9 @@ const SingleCourse = () => {
       )}
       {quizSubmitted && (
         <div className="mt-6 text-center">
-          <h2 className="text-2xl font-bold">Your Score: {score}/{quizzes.length}</h2>
+          <h2 className="text-2xl font-bold">
+            Your Score: {score}/{quizzes.length}
+          </h2>
         </div>
       )}
     </div>
@@ -482,7 +496,7 @@ const SingleCourse = () => {
     const paymentData = {
       courseId: courseData._id,
       studentsId: userId,
-      price: courseData.price,
+      price: finalPrice,
     };
     console.log("Payment Data before sent:", paymentData);
 
@@ -511,12 +525,16 @@ const SingleCourse = () => {
             <p>{courseData?.videos?.length} videos</p>
           </div>
           <div className="flex gap-3 items-center">
-            <GoNote />
-            <p>Free certificate after completing the course</p>
+            <TbLivePhoto />
+            <p>Regular live classes</p>
           </div>
           <div className="flex gap-3 items-center">
-            <TbLivePhoto />
-            <p>Live classes</p>
+            <PiExam />
+            <p>Quiz after completing all lectures</p>
+          </div>
+          <div className="flex gap-3 items-center">
+            <GoNote />
+            <p>Free certificate after completing the course</p>
           </div>
         </div>
       </div>
@@ -554,7 +572,9 @@ const SingleCourse = () => {
         <h3 className="text-2xl font-semibold">Course Details</h3>
         <div className="border rounded-md mt-2 py-3 px-4">
           <p className="text-justify">
-            {ReactHtmlParser(courseData?.details || "No course details available.")}
+            {ReactHtmlParser(
+              courseData?.details || "No course details available."
+            )}
           </p>
         </div>
       </div>
@@ -727,11 +747,33 @@ const SingleCourse = () => {
                 <div className="col-span-5">{commonSections}</div>
                 <div className="col-span-2 border rounded-md h-fit sticky top-[73px]">
                   <img className="" src={courseData?.banner} alt="" />
-                  <div className="p-3">
-                    <del className="font-semibold">৳{courseData?.price}</del>
-                    <h3 className="text-2xl font-semibold">
-                      ৳{courseData?.price}
-                    </h3>
+                  {courseData?.discount > 0 ? (
+                    <div className="p-3">
+                      <div className="flex gap-4">
+                        <del className="font-semibold text-gray-400 flex items-center">
+                          {courseData?.price}
+                          <TbCurrencyTaka />
+                        </del>
+                        <p className="bg-[#125ca6] bg-opacity-25 font-semibold text-[#125ca6] rounded-full py-1 px-3 w-fit text-sm">
+                          {courseData?.discount}% OFF
+                        </p>
+                      </div>
+                      <div className="text-2xl font-semibold flex items-center">
+                        <h3>
+                          {finalPrice !== null
+                            ? `${Math.round(finalPrice)}`
+                            : "Price not available"}
+                        </h3>
+                        <TbCurrencyTaka />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-2xl p-3 font-semibold flex items-center">
+                      <h3>{courseData?.price}</h3>
+                      <TbCurrencyTaka />
+                    </div>
+                  )}
+                  <div className="p-3 pt-0">
                     <button
                       onClick={makePayment}
                       className="bg-[#125ca6] text-white w-full text-xl py-2 mt-2 rounded-md"
@@ -832,7 +874,7 @@ const SingleCourse = () => {
                       {video?.videoTitle}
                     </p>
                   ))}
-                  {courseComplete === true  && ( 
+                  {courseComplete === true && (
                     <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
                       <p>Quiz</p>
                       <button
@@ -843,7 +885,6 @@ const SingleCourse = () => {
                       </button>
                     </div>
                   )}
-                  
                   <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
                     <button
                       className="bg-[#125ca6] py-1 px-4 rounded-md"
@@ -906,4 +947,3 @@ const SingleCourse = () => {
 };
 
 export default SingleCourse;
-
