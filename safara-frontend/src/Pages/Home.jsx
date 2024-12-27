@@ -1,15 +1,13 @@
 import useAuthContext from "../hooks/useAuthContext";
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-
+import "swiper/css";
+import "swiper/css/pagination";
 
 // import required modules
-import { Pagination } from 'swiper/modules';
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { FaStar } from "react-icons/fa";
 
 const Home = () => {
   const { user } = useAuthContext();
@@ -19,18 +17,17 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
-
   useEffect(() => {
-    // Fetch top courses from the API
     const fetchTopCourses = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/course/topCourses");
+        const response = await fetch(
+          "http://localhost:4000/api/course/topCourses"
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch top courses");
         }
         const data = await response.json();
-        setCourses(data.data); // Assuming the API returns a "data" field with the courses
+        setCourses(data.data);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -44,26 +41,9 @@ const Home = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
   return (
-    <div className="w-3/4 mx-auto">
-
-      <div className="grid grid-cols-2 gap-5 items-center">
+    <div className="lg:w-3/4 w-11/12 mx-auto">
+      <div className="lg:grid lg:grid-cols-2 flex flex-col-reverse gap-5 items-center">
         <div>
           <div>
             <h3 className="text-6xl font-semibold">Best learning Platform</h3>
@@ -78,21 +58,21 @@ const Home = () => {
             praesentium, exercitationem optio nisi dicta ea?
           </p>
           {user?.user ? (
-            user?.user?.role === 'admin' ? (
-              <Link to={'/dashboard/admin/adminHome'}>
+            user?.user?.role === "admin" ? (
+              <Link to={"/dashboard/admin/adminHome"}>
                 <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
                   Get Started
                 </button>
               </Link>
             ) : (
-              <Link to={'/dashboard/user/userHome'}>
+              <Link to={"/dashboard/user/userHome"}>
                 <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
                   Get Started
                 </button>
               </Link>
             )
           ) : (
-            <Link to={'/login'}>
+            <Link to={"/login"}>
               <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
                 Get Started
               </button>
@@ -104,14 +84,70 @@ const Home = () => {
         </div>
       </div>
 
+      <div className="relative pt-32">
+        <div className="absolute top-[96px] left-0 right-0 flex justify-center">
+          <div>
+            <div className="flex gap-2 justify-center mb-2">
+              <FaStar className="text-yellow-400" />
+              <FaStar className="text-yellow-400" />
+              <FaStar className="text-yellow-400" />
+              <FaStar className="text-yellow-400" />
+              <FaStar className="text-yellow-400" />
+            </div>
+            <h4 className="text-2xl font-semibold text-center bg-[#125ca6] text-white rounded-full px-5 py-1 border-4 border-white">
+              Top Rated Courses
+            </h4>
+          </div>
+        </div>
+        <div className="mb-20 mt-5 bg-[#125ca6] w-full mx-auto rounded-xl p-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 w-fit gap-5">
+            {courses.map((course) => (
+              <Link
+                to={`/singleCourse/${course._id}`}
+                key={course._id}
+                className="relative"
+              >
+                <img
+                  src={course.banner}
+                  alt={course.title}
+                  className="rounded-md md:w-52 h-52 w-full object-cover"
+                />
+                <div className="flex gap-2 items-center border border-gray-500 bg-black bg-opacity-60 w-fit px-1 rounded-full absolute top-2 right-2">
+                  <FaStar className="text-yellow-400" />
+                  <p className="text-sm text-white">
+                    {course.averageRating.toFixed(1)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* learn more started  */}
-      <div className="grid grid-cols-2 gap-5 mt-20">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 my-20">
         <div className="">
           <div className="grid grid-cols-2 gap-5 w-fit">
-            <img src="/learn1.jpg" alt="" className="w-[350px] h-[220px] object-cover" />
-            <img src="/learn2.jpg" alt="" className="w-[350px] h-[220px] object-cover" />
-            <img src="/learn3.jpg" alt="" className="w-[350px] h-[220px] object-cover" />
-            <img src="/learn4.jpg" alt="" className="w-[350px] h-[220px] object-cover" />
+            <img
+              src="/learn1.jpg"
+              alt=""
+              className="w-[350px] h-[220px] object-cover"
+            />
+            <img
+              src="/learn2.jpg"
+              alt=""
+              className="w-[350px] h-[220px] object-cover"
+            />
+            <img
+              src="/learn3.jpg"
+              alt=""
+              className="w-[350px] h-[220px] object-cover"
+            />
+            <img
+              src="/learn4.jpg"
+              alt=""
+              className="w-[350px] h-[220px] object-cover"
+            />
           </div>
         </div>
         <div className="">
@@ -137,9 +173,7 @@ const Home = () => {
         </div>
       </div>
       {/* lear more ended  */}
-
-      {/* stat of user  */}
-      <div className="mt-20 w-full ">
+      {/* <div className="mt-20 w-full ">
         <div className="stats shadow mx-auto w-full bg-[#125ca6] text-white">
           <div className="stat place-items-center">
             <div className="stat-title text-white">Users</div>
@@ -156,27 +190,7 @@ const Home = () => {
             <div className="stat-value">1,200</div>
           </div>
         </div>
-      </div>
-
-      {/* stat ended    */}
-
-      {/* top 6 course according top 6 rating */}
-
-      <div className="mt-20 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-y-10 mb-20">
-      {courses.map((course) => (
-        <div key={course._id}>
-          <img
-            src={course.banner || "/placeholder.jpg"} // Fallback image if banner is not available
-            alt={course.title}
-            className="w-[100px] h-[100px] rounded-xl"
-          />
-          <h3 className="font-medium text-2xl text-[#125ca6]">{course.title}</h3>
-          <p className="font-bold">{course.details || "No details available."}</p>
-          <p className="text-sm text-gray-500">Rating: {course.averageRating.toFixed(1)}</p>
-        </div>
-      ))}
-    </div>
-
+      </div> */}
     </div>
   );
 };
