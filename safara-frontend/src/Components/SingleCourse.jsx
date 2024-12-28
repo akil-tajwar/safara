@@ -712,22 +712,14 @@ const SingleCourse = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    {courseData?.instructorsId?.map((instructorId, index) => {
-                      const instructor = allUsers.find(
-                        () => userId === instructorId
-                      );
-                      return (
-                        (instructor || user?.user?.role === "admin") && (
-                          <Link
-                            key={index}
-                            to={`/dashboard/admin/schedulemeet?${instructorId}`}
-                            className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
-                          >
-                            Create Meet
-                          </Link>
-                        )
-                      );
-                    })}
+                    {(user?.user?.role === "admin" || courseData?.instructorsId?.includes(userId)) && (
+                      <Link
+                        to={`/dashboard/admin/schedulemeet?${userId}`}
+                        className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                      >
+                        Create Meet
+                      </Link>
+                    )}
                     <button
                       onClick={() => downloadFiteAtURL(courseData?.syllabus)}
                       className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
@@ -746,7 +738,7 @@ const SingleCourse = () => {
               <div className=" grid grid-cols-7 gap-8 relative">
                 <div className="col-span-5">{commonSections}</div>
                 <div className="col-span-2 border rounded-md h-fit sticky top-[73px]">
-                  <img className="" src={courseData?.banner} alt="" />
+                  <img className="rounded-t-md" src={courseData?.banner} alt="" />
                   {courseData?.discount > 0 ? (
                     <div className="p-3">
                       <div className="flex gap-4">
@@ -806,22 +798,14 @@ const SingleCourse = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {courseData?.instructorsId?.map((instructorId, index) => {
-                    const instructor = allUsers.find(
-                      () => userId === instructorId
-                    );
-                    return (
-                      instructor && (
-                        <Link
-                          key={index}
-                          to={`/dashboard/admin/schedulemeet?${instructorId}`}
-                          className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
-                        >
-                          Create Meet
-                        </Link>
-                      )
-                    );
-                  })}
+                  {(user?.user?.role === "admin" || courseData?.instructorsId?.includes(userId)) && (
+                    <Link
+                      to={`/dashboard/admin/schedulemeet?${userId}`}
+                      className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                    >
+                      Create Meet
+                    </Link>
+                  )}
                   <button
                     onClick={() => downloadFiteAtURL(courseData?.syllabus)}
                     className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
@@ -947,3 +931,4 @@ const SingleCourse = () => {
 };
 
 export default SingleCourse;
+

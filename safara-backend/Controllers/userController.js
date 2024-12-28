@@ -103,16 +103,15 @@ const googleLogin = async (req, res) => {
     res.status(200).json({
       user: {
         ...user.toObject(),
-        isNewUser
+        isNewUser,
       },
-      token
+      token,
     });
   } catch (error) {
-    console.error('Google login error:', error);
+    console.error("Google login error:", error);
     res.status(400).json({ error: error.message });
   }
 };
-
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -345,66 +344,42 @@ const changePassword = async (req, res) => {
   res.status(200).json({ message: "Password updated successfully." });
 };
 
-// Google Login Route
-// const googleLogin = async (req, res) => {
-//   const { email, firstname, lastname, img } = req.body;
+const deleteMyAccount = async (req, res) => {
+  try {
+    console.log("Delete account API hit");
 
-//   // Ensure required fields are present
-//   if (!email || !firstname || !lastname) {
-//     return res
-//       .status(400)
-//       .json({ error: "Email, firstname, and lastname are required." });
-//   }
+    const { password, id } = req.body;
 
-//   try {
-//     // Check if the user already exists
-//     let googleUser = await userModel.findOne({ email });
+    if (!password || !id) {
+      return res.status(400).json({
+        error: "Password and user ID are required to perform this operation.",
+      });
+    }
 
-//     if (googleUser) {
-//       // Generate a token for the existing user
-//       const token = createToken(googleUser._id);
-      
-//       // Optional: Send a welcome email only on the first login if needed
-//       sendWelcomeEmail(email, googleUser.firstname);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid user ID." });
+    }
 
-//       return res.status(200).json({
-//         message: "User logged in successfully.",
-//         newUser: false,
-//         user: googleUser,
-//         token,
-//       });
-//     }
+    // Find user by ID
+    const user = await userModel.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
 
-//     // Create a new user if not found
-//     googleUser = new userModel({
-//       email,
-//       firstname,
-//       lastname,
-//       img: img || "", // Default to an empty string if no image provided
-//       phone: "N/A",   // Placeholder for phone
-//       role: "user",   // Default role
-//       prevRole: "user", // To maintain role history
-//     });
+    // Check if the password is correct
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Incorrect password." });
+    }
 
-//     await googleUser.save();
-
-//     // Generate a token for the new user
-//     const token = createToken(googleUser._id);
-
-//     // Send a welcome email to the new user
-//     sendWelcomeEmail(email, firstname);
-
-//     return res.status(201).json({
-//       message: "New user created successfully.",
-//       newUser: true,
-//       user: googleUser,
-//       token,
-//     });
-//   } catch (error) {
-//     console.error("Error during Google login:", error);
-//     return res.status(500).json({ error: "Server error. Please try again." });
-//   }
-// };
+    // Delete the user
+    await userModel.findByIdAndDelete(id);
+    res.status(200).json({ message: "User account deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "An error occurred. Please try again later." });
+  }
+};
 
 module.exports = {
   signupUser,
@@ -420,4 +395,5 @@ module.exports = {
   getAllUsersCount,
   changePassword,
   googleLogin,
+  deleteMyAccount,
 };

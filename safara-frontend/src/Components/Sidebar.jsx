@@ -1,5 +1,5 @@
 import { FaAd, FaBuilding, FaHome, FaMoneyBill, FaRegBuilding, FaSearch, FaTachometerAlt, FaUsers } from "react-icons/fa";
-import {  MdOutlineNoteAdd} from "react-icons/md";
+import {  MdOutlineFeaturedVideo, MdOutlineNoteAdd} from "react-icons/md";
 import { VscPreview } from "react-icons/vsc";
 import { GrDocumentConfig, GrDocumentDownload, GrDocumentUpdate } from "react-icons/gr";
 import { FcDepartment } from "react-icons/fc";
@@ -94,29 +94,14 @@ const Sidebar = () => {
                 style={navLinkStyle}
                 to={"/dashboard/user/userPaymentHistory"}
               >
-                <FaMoneyBill />
-                Payment History
+                <GrDocumentConfig />
+                Transaction History
               </NavLink>
             </li>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userCourses"}>
-                <FcDepartment />
+              <MdOutlineFeaturedVideo />
                 My Classes
-              </NavLink>
-            </li>
-            <li>
-              <NavLink style={navLinkStyle} to={"/dashboard/user/userReview"}>
-              <VscPreview />
-                Add a Review
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                style={navLinkStyle}
-                to={"/dashboard/user/userCertificate"}
-              >
-              <GrDocumentDownload />
-                Certificate
               </NavLink>
             </li>
           </>
