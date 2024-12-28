@@ -637,8 +637,7 @@ const getEnrolledUsersCourses = async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 };
-// Endpoint to calculate total revenue
-// Endpoint to calculate total revenue
+
 const getTotalRevenue = async (req, res) => {
   try {
     const result = await courseModel.aggregate([
