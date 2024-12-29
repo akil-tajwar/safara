@@ -10,34 +10,34 @@ const Settings = () => {
   const { logout } = useLogout();
   const id = user?.user?._id;
 
-  const handleDeleteAccount = async (e) => {
+  const handleDeleteMyAccount = async (e) => {
     e.preventDefault();
-
+  
     // Reset messages
     setMessage("");
     setError("");
-
+  
     if (!password) {
       setError("Password is required.");
       return;
     }
-
+  
     try {
-      const response = await axios.delete(
-        `http://localhost:4000/api/user/deleteUser/${id}`
-      );
-
+      // Send request to delete the account
+      const response = await axios.delete("http://localhost:4000/api/user/deleteMyAccount", {
+        data: { password, id },
+      });
+  
       setMessage(response.data.message || "Account deleted successfully.");
       // Optionally, log the user out and redirect
       localStorage.removeItem("token");
-
       logout();
     } catch (err) {
       setError(
         err.response?.data?.error || "An error occurred. Please try again."
       );
     }
-  };
+  };  
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -85,6 +85,7 @@ const Settings = () => {
       );
     }
   };
+
   return (
     <div className="w-3/4 mx-auto">
       <div>
@@ -173,7 +174,7 @@ const Settings = () => {
           </button>
           <dialog id="delete-account" className="modal">
             <div className="modal-box">
-              <form method="dialog" onSubmit={handleDeleteAccount}>
+              <form method="dialog" onSubmit={handleDeleteMyAccount}>
                 <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                   ✕
                 </button>
