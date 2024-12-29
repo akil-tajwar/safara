@@ -26,7 +26,7 @@ const Profile = () => {
       .catch((error) => console.log(error));
   };
 
-    console.log("enrolledCourses", enrolledCourses); // enrolledCourses.map(courses=> courses.students.map(student=> if(studentsId===user.user._id && isCourseComplete===true)))
+  console.log("enrolledCourses", enrolledCourses); // enrolledCourses.map(courses=> courses.students.map(student=> if(studentsId===user.user._id && isCourseComplete===true)))
 
   useEffect(() => {
     if (user?.user?._id) {
@@ -44,7 +44,7 @@ const Profile = () => {
       <div className="grid grid-cols-7 gap-8">
         <div className="col-span-2">
           <img
-            className="h-[400px] rounded-md w-full object-cover object-top"
+            className="h-[400px] rounded-md w-full object-cover object-top border"
             src={userData.img}
             alt=""
           />
@@ -128,52 +128,60 @@ const Profile = () => {
             </div>
           )}
           {activeTab === 1 && (
-  <div>
-    {enrolledCourses.length > 0 ? (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
-        {enrolledCourses.map((course) => {
-          // Check if the logged-in user has completed the course
-          const isUserCompleted = course.students.some(
-            (student) =>
-              student.studentsId === user.user._id && student.isCourseComplete
-          );
+            <div>
+              {enrolledCourses?.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
+                  {enrolledCourses.map((course) => {
+                    // Check if the logged-in user has completed the course
+                    const isUserCompleted = course.students.some(
+                      (student) =>
+                        student.studentsId === user.user._id &&
+                        student.isCourseComplete
+                    );
 
-          return (
-            <div
-              key={course._id}
-              className="bg-white border border-gray-200 rounded-lg shadow-md p-4"
-            >
-              <img src={course.banner} className="h-32 min-w-full object-cover" alt="" />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                {course.title}
-              </h3>
-              <p className="text-gray-600 mb-4">
-                <strong>Category:</strong> {course.category}
-              </p>
-              {isUserCompleted  ? (
-               <Link
-               to={{
-                 pathname: "/dashboard/user/userCertificate",
-               }}
-               state={{ courseTitle: course.title }}
-               className="btn bg-[#125ca6] text-white"
-             >
-               Download Certificate
-             </Link>
+                    return (
+                      <div
+                        key={course._id}
+                        className="bg-white border border-gray-200 rounded-lg shadow-md p-4"
+                      >
+                        <img
+                          src={course.banner}
+                          className="h-32 min-w-full object-cover"
+                          alt=""
+                        />
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                          {course.title}
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                          <strong>Category:</strong> {course.category}
+                        </p>
+                        {isUserCompleted ? (
+                          <Link
+                            to={{
+                              pathname: "/dashboard/user/userCertificate",
+                            }}
+                            state={{ courseTitle: course.title }}
+                            className="btn bg-[#125ca6] text-white"
+                          >
+                            Download Certificate
+                          </Link>
+                        ) : (
+                          <p className="text-gray-500">
+                            Please Complete Your Course
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               ) : (
-                <p className="text-gray-500">Please Complete Your Course</p>
+                <h4 className="text-xl flex justify-center items-center pt-32">
+                  You are not enrolled in any course; thus, no certificate is
+                  available.
+                </h4>
               )}
             </div>
-          );
-        })}
-      </div>
-    ) : (
-      <h4 className="text-xl flex justify-center items-center pt-32">
-        You are not enrolled in any course; thus, no certificate is available.
-      </h4>
-    )}
-  </div>
-)}
+          )}
         </div>
       </div>
     </div>

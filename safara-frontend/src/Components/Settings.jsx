@@ -12,22 +12,25 @@ const Settings = () => {
 
   const handleDeleteMyAccount = async (e) => {
     e.preventDefault();
-  
+
     // Reset messages
     setMessage("");
     setError("");
-  
+
     if (!password) {
       setError("Password is required.");
       return;
     }
-  
+
     try {
       // Send request to delete the account
-      const response = await axios.delete("http://localhost:4000/api/user/deleteMyAccount", {
-        data: { password, id },
-      });
-  
+      const response = await axios.delete(
+        "http://localhost:4000/api/user/deleteMyAccount",
+        {
+          data: { password, id },
+        }
+      );
+
       setMessage(response.data.message || "Account deleted successfully.");
       // Optionally, log the user out and redirect
       localStorage.removeItem("token");
@@ -37,7 +40,7 @@ const Settings = () => {
         err.response?.data?.error || "An error occurred. Please try again."
       );
     }
-  };  
+  };
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -174,10 +177,13 @@ const Settings = () => {
           </button>
           <dialog id="delete-account" className="modal">
             <div className="modal-box">
-              <form method="dialog" onSubmit={handleDeleteMyAccount}>
+              <form method="dialog">
+                {/* Modal close button */}
                 <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                   ✕
                 </button>
+              </form>
+              <form method="dialog" onSubmit={handleDeleteMyAccount}>
                 <h3 className="font-semibold text-lg pb-3">
                   Delete your account
                 </h3>
