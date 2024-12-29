@@ -12,7 +12,8 @@ const {
     resetPassword,
     updateUser,
     changePassword,
-    googleLogin
+    googleLogin,
+    deleteMyAccount
 } = require('../Controllers/userController.js');
 
 const router = express.Router();
@@ -32,6 +33,7 @@ router.get('/singleUser/:id', getSingleUser);
 
 //delete
 router.delete('/deleteUser/:id', deleteUser);
+router.delete('/deleteMyAccount', deleteMyAccount);
 
 //patch
 router.patch('/makeAdmin/:id', makeAdmin);
