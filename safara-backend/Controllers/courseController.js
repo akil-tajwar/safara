@@ -235,11 +235,21 @@ const PaymentSession = mongoose.model(
       tranId: String,
       courseId: mongoose.Schema.Types.ObjectId,
       studentsId: mongoose.Schema.Types.ObjectId,
+      payment: String,
       paymentComplete: { type: Boolean, default: false },
     },
     { timestamps: true }
   )
 );
+
+const getAllTransactions = async (req, res) => {
+  try {
+    const courses = await PaymentSession.find({});
+    res.status(200).json(courses);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const order = async (req, res) => {
   // console.log('Course ID:', req.body.courseId);
@@ -253,7 +263,9 @@ const order = async (req, res) => {
     tranId: tran_id,
     courseId: req.body.courseId,
     studentsId: req.body.studentsId,
+    payment: req.body.price
   });
+  console.log("🚀 ~ order ~ paymentSession:", paymentSession)
 
   await paymentSession.save();
 
@@ -298,13 +310,14 @@ const order = async (req, res) => {
 };
 
 const success = async (req, res) => {
-  console.log("Transaction ID received:", req.params.tran_id);
+  // console.log("Transaction ID received:", req.params.tran_id);
 
   try {
     // Assuming sessionData has already been retrieved from PaymentSession
     const sessionData = await PaymentSession.findOne({
       tranId: req.params.tran_id,
     });
+    console.log("🚀 ~ success ~ sessionData:", sessionData)
 
     if (!sessionData) {
       return res
@@ -313,6 +326,7 @@ const success = async (req, res) => {
     }
 
     const courseId = sessionData.courseId.toString(); // Get the course ID
+    console.log("🚀 ~ success ~ sessionData:", sessionData)
     const studentsId = sessionData.studentsId.toString(); // Get the student ID
 
     console.log("Course ID:", courseId, "Student ID:", studentsId);
@@ -346,7 +360,7 @@ const success = async (req, res) => {
     }
 
     // Clean up the session data
-    await PaymentSession.deleteOne({ tranId: req.params.tran_id });
+    // await PaymentSession.deleteOne({ tranId: req.params.tran_id });
 
     // Return success message or course object as confirmation
     res.redirect(`http://localhost:5173/singleCourse/${courseId}`);
@@ -881,6 +895,7 @@ module.exports = {
   deleteCourse,
   giveRating,
   courseCount,
+  getAllTransactions,
   order,
   success,
   topCourses,
