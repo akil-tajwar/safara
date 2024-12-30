@@ -21,6 +21,7 @@ const {
   getTotalAverageRating,
   getCompletedCoursesCount,
   getAverageCompletionTime,
+  getAllTransactions,
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -44,6 +45,7 @@ router.get("/getCourseCategories", getCourseCategories);
 router.get("/getAvgRating", getTotalAverageRating);
 router.get("/getCompletedCoursesCount", getCompletedCoursesCount);
 router.get("/getAverageCompletionTime", getAverageCompletionTime);
+router.get("/getAllTransactions", getAllTransactions);
 
 //delete
 router.delete("/deleteCourse/:id", deleteCourse);
