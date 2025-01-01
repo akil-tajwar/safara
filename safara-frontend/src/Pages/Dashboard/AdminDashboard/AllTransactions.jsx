@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
 import { TbCurrencyTaka } from "react-icons/tb";
 
-const TransactionPage = () => {
+const AllTransactions = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [transactions, setTransactions] = useState([]);
@@ -202,4 +202,4 @@ const TransactionPage = () => {
   );
 };
 
-export default TransactionPage;
+export default AllTransactions;
