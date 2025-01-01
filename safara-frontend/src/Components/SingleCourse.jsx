@@ -496,7 +496,7 @@ const SingleCourse = () => {
     const paymentData = {
       courseId: courseData._id,
       studentsId: userId,
-      price: finalPrice,
+      price: Math.round(finalPrice),
     };
     console.log("Payment Data before sent:", paymentData);
 

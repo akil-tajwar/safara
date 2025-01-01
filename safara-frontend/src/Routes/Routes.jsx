@@ -15,7 +15,7 @@ import ForgetPassword from "../Components/ForgetPassword";
 import ResetPassword from "../Components/ResetPassword";
 import MyClasses from "../Pages/Dashboard/UserDashboard/MyClasses";
 import ManageCourses from "../Pages/Dashboard/AdminDashboard/ManageCourses";
-import ManageCourseBooking from "../Pages/Dashboard/AdminDashboard/ManageCourseBooking";
+import AllTransactions from "../Pages/Dashboard/AdminDashboard/AllTransactions";
 import AddCourses from "../Pages/Dashboard/AdminDashboard/AddCourses";
 import SingleCourse from "../Components/SingleCourse";
 import UpdateProfile from "../Pages/Dashboard/UserDashboard/UpdateProfile";
@@ -104,7 +104,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/admin/transactionHistory",
-        element: <ManageCourseBooking/>,
+        element: <AllTransactions/>,
       },
       {
         path: "/dashboard/admin/allUsers",
