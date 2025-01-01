@@ -62,6 +62,11 @@ const PaymentHistory = () => {
     );
   });
 
+  useEffect(() => {
+    console.log("Filtered Transactions:", filteredTransactions.length);
+    console.log("User ID:", user?.user?._id);
+  }, [filteredTransactions, user]);
+
   // Pagination logic
   const indexOfLastTransaction = currentPage * transactionsPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
@@ -90,14 +95,15 @@ const PaymentHistory = () => {
     );
   }
 
-  if (currentTransactions.length === 0) {
+  if (filteredTransactions.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-[#125ca6]">There are no transactions yet</div>
+        <div className="text-xl text-[#125ca6]">You have no transactions yet</div>
       </div>
     );
   }
 
+  console.log("Rendering transactions:", currentTransactions.length);
   return (
     <div className="min-h-screen p-6">
       <h1 className="text-3xl font-bold text-[#125ca6] mb-8">

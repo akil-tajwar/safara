@@ -492,6 +492,10 @@ const SingleCourse = () => {
     });
   };
 
+  useEffect(() => {}, [finalPrice])
+
+  // console.log('final price',finalPrice, Math.round(finalPrice));
+
   const makePayment = async () => {
     const paymentData = {
       courseId: courseData._id,

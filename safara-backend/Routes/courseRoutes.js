@@ -30,7 +30,7 @@ const router = express.Router();
 router.post("/createCourse", createCourse);
 router.post("/giveRating/:courseId", giveRating);
 router.post("/payment/order", order);
-router.post("/payment/success/:tran_id", success);
+router.post("/payment/success/:tran_id/:encodedData", success);
 
 //get
 router.get("/getAllCourses", getAllCourses);
