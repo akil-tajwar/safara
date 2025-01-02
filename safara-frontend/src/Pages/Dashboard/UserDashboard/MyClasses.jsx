@@ -39,7 +39,6 @@ const MyClasses = () => {
 
   useEffect(() => {
     if (user?.user?._id) {
-     
       fetchCourses();
     } else {
       console.log("User is not authenticated.");
@@ -52,35 +51,20 @@ const MyClasses = () => {
   }
 
   return (
-    <>
-      <Tabs defaultIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
-        <TabList>
-          <Tab selectedClassName="bg-[#125ca6] text-white rounded">
-            My Classes
-          </Tab>
-          <Tab selectedClassName="bg-[#125ca6] text-white rounded">Explore</Tab>
-          <Tab selectedClassName="bg-[#125ca6] text-white rounded">
-            Incoming
-          </Tab>
-          <Tab selectedClassName="bg-[#125ca6] text-white rounded">
-            Course Details
-          </Tab>
-        </TabList>
-        <TabPanel>
-          <div className="p-6">
-            <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-5 w-fit">
-              {courses?.map((course) => (
-                <div key={course._id} className="border rounded-xl relative">
-                  <Link to={`/singleCourse/${course?._id}`}>
-                    <div className="">
-                      <img
-                        className="w-[295px] h-[295px] object-cover rounded-xl"
-                        src={course?.banner}
-                        alt={course?.title}
-                      />
-                    </div>
-                  </Link>
-                  {/* <div className="absolute right-4 top-4 dropdown-container">
+    <div className="p-6">
+      <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-5 w-fit">
+        {courses?.map((course) => (
+          <div key={course._id} className="border rounded-xl relative">
+            <Link to={`/singleCourse/${course?._id}`}>
+              <div className="">
+                <img
+                  className="w-[295px] h-[295px] object-cover rounded-xl"
+                  src={course?.banner}
+                  alt={course?.title}
+                />
+              </div>
+            </Link>
+            {/* <div className="absolute right-4 top-4 dropdown-container">
                     <BsThreeDots
                       className="bg-[#125ca6] border cursor-pointer text-white absolute right-0 p-1 text-3xl rounded-full"
                       onClick={(e) => toggleDropdown(course._id, e)} // Toggle dropdown on click
@@ -104,18 +88,10 @@ const MyClasses = () => {
                       </div>
                     )}
                   </div> */}
-                </div>
-              ))}
-            </div>
           </div>
-        </TabPanel>
-        <TabPanel>
-          <AllCourses />
-        </TabPanel>
-        <TabPanel>Upcoming</TabPanel>
-        <TabPanel>My courses details</TabPanel>
-      </Tabs>
-    </>
+        ))}
+      </div>
+    </div>
   );
 };
 

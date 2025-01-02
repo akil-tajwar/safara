@@ -252,29 +252,24 @@ const getAllTransactions = async (req, res) => {
 };
 
 const order = async (req, res) => {
-  // console.log('Course ID:', req.body.courseId);
-  // console.log('Student ID:', req.body.studentsId);
-  // console.log('Price:', req.body.price);
+  const tran_id = new mongoose.Types.ObjectId().toString();
 
-  const tran_id = new mongoose.Types.ObjectId().toString(); // Generate unique transaction ID
-
-  // Save transaction details in a temporary collection
-  const paymentSession = new PaymentSession({
-    tranId: tran_id,
+  // Create the payment session data but don't save it yet
+  const paymentData = {
     courseId: req.body.courseId,
     studentsId: req.body.studentsId,
     payment: req.body.price
-  });
-  console.log("🚀 ~ order ~ paymentSession:", paymentSession)
+  };
 
-  await paymentSession.save();
+  // Encode the payment data to pass through URL
+  const encodedData = Buffer.from(JSON.stringify(paymentData)).toString('base64');
 
   const data = {
     total_amount: req.body.price,
     currency: "BDT",
-    tran_id: tran_id, // use unique tran_id for each api call
-    success_url: `http://localhost:4000/api/course/payment/success/${tran_id}`,
-    fail_url: "http://localhost:4000/api/course/payment/fail",
+    tran_id: tran_id,
+    success_url: `http://localhost:4000/api/course/payment/success/${tran_id}/${encodedData}`,
+    fail_url: `http://localhost:4000/api/course/payment/fail/${req.body.courseId}`,
     cancel_url: "http://localhost:3030/cancel",
     ipn_url: "http://localhost:3030/ipn",
     shipping_method: "Courier",
@@ -299,78 +294,75 @@ const order = async (req, res) => {
     ship_postcode: 1000,
     ship_country: "Bangladesh",
   };
-  // console.log(data);
+
   const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
   sslcz.init(data).then((apiResponse) => {
-    // Redirect the user to payment gateway
     let GatewayPageURL = apiResponse.GatewayPageURL;
     res.send({ url: GatewayPageURL });
-    // console.log('Redirecting to: ', GatewayPageURL)
   });
 };
 
 const success = async (req, res) => {
-  // console.log("Transaction ID received:", req.params.tran_id);
-
   try {
-    // Assuming sessionData has already been retrieved from PaymentSession
-    const sessionData = await PaymentSession.findOne({
-      tranId: req.params.tran_id,
+    const { tran_id, encodedData } = req.params;
+    
+    // Decode the payment data from URL
+    const paymentData = JSON.parse(Buffer.from(encodedData, 'base64').toString());
+
+    // Now save the payment session since payment was successful
+    const paymentSession = new PaymentSession({
+      tranId: tran_id,
+      courseId: paymentData.courseId,
+      studentsId: paymentData.studentsId,
+      payment: paymentData.payment
     });
-    console.log("🚀 ~ success ~ sessionData:", sessionData)
 
-    if (!sessionData) {
-      return res
-        .status(404)
-        .json({ message: "No payment session found for this transaction!" });
-    }
+    await paymentSession.save();
 
-    const courseId = sessionData.courseId.toString(); // Get the course ID
-    console.log("🚀 ~ success ~ sessionData:", sessionData)
-    const studentsId = sessionData.studentsId.toString(); // Get the student ID
-
-    console.log("Course ID:", courseId, "Student ID:", studentsId);
+    const courseId = paymentData.courseId.toString();
+    const studentsId = paymentData.studentsId.toString();
 
     // Update the course document in the students array
     const course = await courseModel.findOneAndUpdate(
       {
         _id: courseId,
-        "students.studentsId": studentsId, // Check if the student already exists in the array
+        "students.studentsId": studentsId,
       },
       {
         $set: {
-          "students.$.paymentComplete": true, // Update payment status if student exists
-          "students.$.paymentId": req.params.tran_id, // Add the transaction ID
+          "students.$.paymentComplete": true,
+          "students.$.paymentId": tran_id,
         },
       },
       { new: true }
     );
 
-    // If the student is not already present, push a new entry into the students array
     if (!course) {
       await courseModel.findByIdAndUpdate(courseId, {
         $push: {
           students: {
             studentsId: studentsId,
-            paymentId: req.params.tran_id, // Add transaction ID
-            paymentComplete: true, // Mark payment as complete
+            paymentId: tran_id,
+            paymentComplete: true,
           },
         },
       });
     }
 
-    // Clean up the session data
-    // await PaymentSession.deleteOne({ tranId: req.params.tran_id });
-
-    // Return success message or course object as confirmation
     res.redirect(`http://localhost:5173/singleCourse/${courseId}`);
   } catch (err) {
-    console.log("Error updating course or student:", err);
+    console.error("Error in success handler:", err);
     res.status(500).json({
       message: "An error occurred while updating the payment information.",
     });
   }
 };
+
+const fail = async (req, res) => {
+  const { courseId } = req.params;
+  console.log("🚀 ~ fail ~ courseId:", courseId)
+  res.redirect(`http://localhost:5173/singleCourse/${courseId}`);
+}
 
 const topCourses = async (req, res) => {
   try {
@@ -898,6 +890,7 @@ module.exports = {
   getAllTransactions,
   order,
   success,
+  fail,
   topCourses,
   unlockVideo,
   completeCourse,
