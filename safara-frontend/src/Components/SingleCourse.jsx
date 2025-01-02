@@ -862,12 +862,21 @@ const SingleCourse = () => {
                       {video?.videoTitle}
                     </p>
                   ))}
-                  {courseComplete === true && (
+                  {courseData?.videos?.length > 0 && (
                     <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
-                      <p>Quiz</p>
+                      <p className={`px-4 rounded-md ${
+                          courseComplete
+                            ? "text-black"
+                            : "text-gray-400 cursor-not-allowed"
+                        }`}>Quiz</p>
                       <button
-                        onClick={handleQuizOpen}
-                        className="bg-[#125ca6] text-white px-4 rounded-md"
+                        onClick={courseComplete ? handleQuizOpen : undefined}
+                        className={`px-4 rounded-md ${
+                          courseComplete
+                            ? "bg-[#125ca6] text-white"
+                            : "bg-gray-300 text-gray-400 cursor-not-allowed"
+                        }`}
+                        disabled={!courseComplete}
                       >
                         Open
                       </button>
