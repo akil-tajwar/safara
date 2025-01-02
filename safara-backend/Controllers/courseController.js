@@ -269,7 +269,7 @@ const order = async (req, res) => {
     currency: "BDT",
     tran_id: tran_id,
     success_url: `http://localhost:4000/api/course/payment/success/${tran_id}/${encodedData}`,
-    fail_url: "http://localhost:4000/api/course/payment/fail",
+    fail_url: `http://localhost:4000/api/course/payment/fail/${req.body.courseId}`,
     cancel_url: "http://localhost:3030/cancel",
     ipn_url: "http://localhost:3030/ipn",
     shipping_method: "Courier",
@@ -357,6 +357,12 @@ const success = async (req, res) => {
     });
   }
 };
+
+const fail = async (req, res) => {
+  const { courseId } = req.params;
+  console.log("🚀 ~ fail ~ courseId:", courseId)
+  res.redirect(`http://localhost:5173/singleCourse/${courseId}`);
+}
 
 const topCourses = async (req, res) => {
   try {
@@ -884,6 +890,7 @@ module.exports = {
   getAllTransactions,
   order,
   success,
+  fail,
   topCourses,
   unlockVideo,
   completeCourse,

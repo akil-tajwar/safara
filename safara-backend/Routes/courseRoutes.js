@@ -22,6 +22,7 @@ const {
   getCompletedCoursesCount,
   getAverageCompletionTime,
   getAllTransactions,
+  fail,
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -31,6 +32,7 @@ router.post("/createCourse", createCourse);
 router.post("/giveRating/:courseId", giveRating);
 router.post("/payment/order", order);
 router.post("/payment/success/:tran_id/:encodedData", success);
+router.post("/payment/fail/:courseId", fail);
 
 //get
 router.get("/getAllCourses", getAllCourses);
