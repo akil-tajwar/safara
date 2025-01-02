@@ -911,7 +911,7 @@ const SingleCourse = () => {
                   )}
                   <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
                     <button
-                      className="bg-[#125ca6] py-1 px-4 rounded-md"
+                      className={`bg-[#125ca6] py-1 px-4 rounded-md ${currentVideoIndex === 0 && 'text-gray-400 bg-gray-300 cursor-not-allowed'}`}
                       onClick={() => {
                         if (currentVideoIndex > 0) {
                           handleVideoSelect(
@@ -925,7 +925,7 @@ const SingleCourse = () => {
                       Prev
                     </button>
                     <button
-                      className="bg-[#125ca6] py-1 px-4 rounded-md"
+                      className={`bg-[#125ca6] py-1 px-4 rounded-md ${currentVideoIndex === courseData.videos.length - 1 && 'text-gray-400 bg-gray-300 cursor-not-allowed'}`}
                       onClick={() => {
                         if (currentVideoIndex < courseData.videos.length - 1) {
                           if (currentVideoIndex + 1 < unlockedVideos) {
