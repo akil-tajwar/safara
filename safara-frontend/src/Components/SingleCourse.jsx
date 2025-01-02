@@ -263,12 +263,14 @@ const SingleCourse = () => {
   }, [courseData]);
 
   const handleVideoSelect = (video, index) => {
-    setSelectedVideo(video);
-    setCurrentVideoIndex(index);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (!showQuiz) {
+      setSelectedVideo(video);
+      setCurrentVideoIndex(index);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   const scrollCarousel = (ref, direction) => {
@@ -341,12 +343,18 @@ const SingleCourse = () => {
     });
     setScore(newScore);
     setQuizSubmitted(true);
+    setUnlockedVideos(courseData.videos.length);
     // Store current quiz state before API call
     const currentQuizState = [...quizzes];
     quizCompleteAction().then(() => {
       // Restore quiz state after API call
       setQuizzes(currentQuizState);
     });
+  };
+
+  const handleCloseQuiz = () => {
+    setShowQuiz(false);
+    setSelectedVideo(courseData.videos[0]);
   };
 
   const quizCompleteAction = async () => {
@@ -440,6 +448,12 @@ const SingleCourse = () => {
           <h2 className="text-2xl font-bold">
             Your Score: {score}/{quizzes.length}
           </h2>
+          <button
+            onClick={handleCloseQuiz}
+            className="mt-4 w-full bg-[#125ca6] text-white font-bold py-2 px-4 rounded"
+          >
+            Return to Videos
+          </button>
         </div>
       )}
     </div>
@@ -492,7 +506,7 @@ const SingleCourse = () => {
     });
   };
 
-  useEffect(() => {}, [finalPrice])
+  useEffect(() => {}, [finalPrice]);
 
   // console.log('final price',finalPrice, Math.round(finalPrice));
 
@@ -716,7 +730,8 @@ const SingleCourse = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    {(user?.user?.role === "admin" || courseData?.instructorsId?.includes(userId)) && (
+                    {(user?.user?.role === "admin" ||
+                      courseData?.instructorsId?.includes(userId)) && (
                       <Link
                         to={`/dashboard/admin/schedulemeet?${userId}`}
                         className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
@@ -742,7 +757,11 @@ const SingleCourse = () => {
               <div className=" grid grid-cols-7 gap-8 relative">
                 <div className="col-span-5">{commonSections}</div>
                 <div className="col-span-2 border rounded-md h-fit sticky top-[73px]">
-                  <img className="rounded-t-md" src={courseData?.banner} alt="" />
+                  <img
+                    className="rounded-t-md"
+                    src={courseData?.banner}
+                    alt=""
+                  />
                   {courseData?.discount > 0 ? (
                     <div className="p-3">
                       <div className="flex gap-4">
@@ -802,7 +821,8 @@ const SingleCourse = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {(user?.user?.role === "admin" || courseData?.instructorsId?.includes(userId)) && (
+                  {(user?.user?.role === "admin" ||
+                    courseData?.instructorsId?.includes(userId)) && (
                     <Link
                       to={`/dashboard/admin/schedulemeet?${userId}`}
                       className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
@@ -843,13 +863,16 @@ const SingleCourse = () => {
                     <p
                       key={video?._id}
                       className={`whitespace-nowrap m-3 p-2 rounded-md border ${
-                        selectedVideo?._id === video._id
+                        showQuiz
+                          ? "text-gray-400 cursor-not-allowed"
+                          : selectedVideo?._id === video._id
                           ? "bg-[#125ca6] border-[#125ca6] text-white"
                           : index < unlockedVideos
                           ? "text-black cursor-pointer"
                           : "text-gray-400 cursor-not-allowed"
                       } overflow-hidden`}
                       onClick={() =>
+                        !showQuiz &&
                         index < unlockedVideos &&
                         handleVideoSelect(video, index)
                       }
@@ -864,11 +887,15 @@ const SingleCourse = () => {
                   ))}
                   {courseData?.videos?.length > 0 && (
                     <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
-                      <p className={`px-4 rounded-md ${
+                      <p
+                        className={`px-4 rounded-md ${
                           courseComplete
                             ? "text-black"
                             : "text-gray-400 cursor-not-allowed"
-                        }`}>Quiz</p>
+                        }`}
+                      >
+                        Quiz
+                      </p>
                       <button
                         onClick={courseComplete ? handleQuizOpen : undefined}
                         className={`px-4 rounded-md ${
@@ -944,4 +971,3 @@ const SingleCourse = () => {
 };
 
 export default SingleCourse;
-
