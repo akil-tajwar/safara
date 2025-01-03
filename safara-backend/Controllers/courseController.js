@@ -258,11 +258,13 @@ const order = async (req, res) => {
   const paymentData = {
     courseId: req.body.courseId,
     studentsId: req.body.studentsId,
-    payment: req.body.price
+    payment: req.body.price,
   };
 
   // Encode the payment data to pass through URL
-  const encodedData = Buffer.from(JSON.stringify(paymentData)).toString('base64');
+  const encodedData = Buffer.from(JSON.stringify(paymentData)).toString(
+    "base64"
+  );
 
   const data = {
     total_amount: req.body.price,
@@ -305,16 +307,18 @@ const order = async (req, res) => {
 const success = async (req, res) => {
   try {
     const { tran_id, encodedData } = req.params;
-    
+
     // Decode the payment data from URL
-    const paymentData = JSON.parse(Buffer.from(encodedData, 'base64').toString());
+    const paymentData = JSON.parse(
+      Buffer.from(encodedData, "base64").toString()
+    );
 
     // Now save the payment session since payment was successful
     const paymentSession = new PaymentSession({
       tranId: tran_id,
       courseId: paymentData.courseId,
       studentsId: paymentData.studentsId,
-      payment: paymentData.payment
+      payment: paymentData.payment,
     });
 
     await paymentSession.save();
@@ -360,9 +364,9 @@ const success = async (req, res) => {
 
 const fail = async (req, res) => {
   const { courseId } = req.params;
-  console.log("🚀 ~ fail ~ courseId:", courseId)
+  console.log("🚀 ~ fail ~ courseId:", courseId);
   res.redirect(`http://localhost:5173/singleCourse/${courseId}`);
-}
+};
 
 const topCourses = async (req, res) => {
   try {
@@ -643,14 +647,26 @@ const getEnrolledUsersCourses = async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 };
-
 const getTotalRevenue = async (req, res) => {
   try {
     const result = await courseModel.aggregate([
       {
         $project: {
           price: { $toDouble: "$price" }, // Convert price to a number
-          discount: { $toDouble: { $ifNull: ["$discount", 0] } }, // Convert discount to a number, default to 0
+          discount: {
+            $toDouble: {
+              $cond: {
+                if: {
+                  $or: [
+                    { $eq: ["$discount", ""] },
+                    { $eq: ["$discount", null] },
+                  ],
+                }, // Check for empty string or null
+                then: 0, // Default to 0
+                else: "$discount", // Use the actual discount value
+              },
+            },
+          },
           students: { $ifNull: ["$students", []] }, // Ensure students is always an array
         },
       },
@@ -675,7 +691,7 @@ const getTotalRevenue = async (req, res) => {
           revenue: {
             $multiply: [
               { $size: "$paidStudents" }, // Count of paid students
-              { $max: ["$effectivePrice", 0] }, // Ensure no negative prices due to discount
+              { $max: ["$effectivePrice", 0] }, // Ensure no negative prices due to discounts
             ],
           },
         },

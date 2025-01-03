@@ -105,7 +105,7 @@ const AdminDashboard = () => {
   
   // Fetching the completed courses count
   const fetchAvgCompletedCourseTime = () => {
-    fetch(`http://localhost:4000/api/course//getAverageCompletionTime`)
+    fetch(`http://localhost:4000/api/course/getAverageCompletionTime`)
       .then((res) => res.json())
       .then((data) => {
         setAvgCourseCompleteTime(data.averageCompletionTimeInDays
@@ -118,19 +118,9 @@ const AdminDashboard = () => {
     fetchAvgCompletedCourseTime(); // Fetch completed courses count when component mounts
   }, []);
   
-
+    console.log(courseCategories);
   console.log(avgCourseCompleteTime);
   // Array of colors to dynamically assign to categories
-  const categoryColors = [
-    "bg-red-200",
-    "bg-yellow-200",
-    "bg-green-200",
-    "bg-blue-200",
-    "bg-purple-200",
-    "bg-pink-200",
-    "bg-indigo-200",
-    "bg-teal-200",
-  ];
 
   return (
     <div className="min-h-screen p-8">
@@ -150,8 +140,8 @@ const AdminDashboard = () => {
         <div className="bg-white rounded-lg border p-6">
           <h2 className="text-xl font-semibold text-[#125ca6] mb-4">Course Categories</h2>
           <div className="space-y-4">
-            {courseCategories.map((category, index) => (
-              <div key={index} className={`flex items-center ${categoryColors[index % categoryColors.length]}`}>
+            {courseCategories?.map((category, index) => (
+              <div key={index} className={`flex items-center}`}>
                 <span className="flex-grow">{category.name || category.category}</span>
                 <span className="font-semibold">{category.count || 0}</span> {/* Displaying course count */}
               </div>
