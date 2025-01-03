@@ -1,171 +1,143 @@
-import { useEffect, useState } from "react";
-import useAuthContext from "../../../hooks/useAuthContext";
-import axios from "axios";
+import { FaBookOpen, FaCertificate, FaStar } from "react-icons/fa";
+import { TbCurrencyTaka } from "react-icons/tb";
 
 const UserHome = () => {
-  const { user } = useAuthContext(); // Assuming 'user' contains user details like user ID
+  // Dummy data for enrolled courses
+  const enrolledCourses = [
+    {
+      id: 1,
+      title: "Introduction to React",
+      progress: 60,
+      totalLessons: 20,
+      completedLessons: 12,
+    },
+    {
+      id: 2,
+      title: "Advanced JavaScript Concepts",
+      progress: 30,
+      totalLessons: 25,
+      completedLessons: 7,
+    },
+    {
+      id: 3,
+      title: "UI/UX Design Fundamentals",
+      progress: 80,
+      totalLessons: 15,
+      completedLessons: 12,
+    },
+  ];
 
-  // State to hold user data and loading status
-  const [userData, setUserData] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    phone: "",
-    identity: "",
-    institution: "",
-    profession: "",
-    result: "",
-  });
-  const [loading, setLoading] = useState(true); // New state to manage loading
- 
-  useEffect(() => {
-    // Fetch user data if the user exists
-    if (user?.user._id) {
-      axios
-        .get(`http://localhost:4000/api/user/singleUser/${user?.user._id}`, {
-          withCredentials: true,
-        })
-        .then((response) => {
-          setUserData(response.data); // Set the user data
-          setLoading(false); // Set loading to false after fetching data
-        })
-        .catch((error) => {
-          console.error("There was an error fetching the user data!", error);
-          setLoading(false); // Stop loading if there's an error
-        });
-    } else {
-      setLoading(false); // If no user, stop loading
-    }
-  }, [user]);
+  // Dummy data for recommended courses
+  const recommendedCourses = [
+    { id: 4, title: "Node.js Basics", rating: 4.7, duration: "4 weeks" },
+    {
+      id: 5,
+      title: "Python for Data Science",
+      rating: 4.9,
+      duration: "6 weeks",
+    },
+    { id: 6, title: "Responsive Web Design", rating: 4.5, duration: "3 weeks" },
+  ];
 
-  // Show a loader or message while loading
-  if (loading) {
-    return <div>Loading...</div>; // You can customize this loader UI
-  }
-
-  // If the user data is loaded, render the form
   return (
-    <div>
-   
-      <form className="card-body">
-        <div className="md:flex justify-around">
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">First Name</span>
-            </label>
-            <input
-              type="text"
-              placeholder="First Name"
-              name="firstName"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData?.firstname}
-            />
-          </div>
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Last Name</span>
-            </label>
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData?.lastname}
-            />
-          </div>
-        </div>
+    <div className="min-h-screen p-8 bg-gray-50">
+      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Welcome, User!</h1>
 
-        <div className="md:flex justify-around">
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Email</span>
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData?.email}
-            />
-          </div>
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Phone</span>
-            </label>
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData?.phone}
-            />
-          </div>
-        </div>
+      {/* User Stats */}
+      <div className="grid gap-6 md:grid-cols-3 mb-8">
+        <StatCard
+          icon={<FaBookOpen />}
+          title="Enrolled Courses"
+          value={enrolledCourses.length}
+        />
+        <StatCard
+          icon={<FaCertificate />}
+          title="Certificates Earned"
+          value="3"
+        />
+        <StatCard
+          icon={<TbCurrencyTaka />}
+          title="Total Spent"
+          value={
+            <div className="flex items-center">
+              4500
+              <TbCurrencyTaka className="ml-1" />
+            </div>
+          }
+        />
+      </div>
 
-        <div className="md:flex justify-around">
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Identity</span>
-            </label>
-            <input
-              type="text"
-              name="identity"
-              placeholder="Identity"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData?.identity}
-            />
-          </div>
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Institution</span>
-            </label>
-            <input
-              type="text"
-              name="institution"
-              placeholder="Institution"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData?.institution}
-            />
-          </div>
+      {/* Enrolled Courses and Progress */}
+      <div className="bg-white rounded-lg border p-6 mb-8">
+        <h2 className="text-xl font-semibold text-[#125ca6] mb-4">
+          Your Enrolled Courses
+        </h2>
+        <div className="space-y-4">
+          {enrolledCourses.map((course) => (
+            <CourseProgressCard key={course.id} course={course} />
+          ))}
         </div>
+      </div>
 
-        <div className="md:flex justify-around">
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Profession</span>
-            </label>
-            <input
-              type="text"
-              name="profession"
-              placeholder="Profession"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData?.profession}
-            />
-          </div>
-          <div className="form-control md:w-1/3">
-            <label className="label">
-              <span className="label-text">Result</span>
-            </label>
-            <input
-              type="text"
-              name="result"
-              placeholder="Result"
-              className="input input-bordered rounded-none hover:border-blue-400"
-              required
-              defaultValue={userData?.result}
-            />
-          </div>
+      {/* Recommended Courses */}
+      <div className="bg-white rounded-lg border p-6">
+        <h2 className="text-xl font-semibold text-[#125ca6] mb-4">
+          Recommended Courses
+        </h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          {recommendedCourses.map((course) => (
+            <RecommendedCourseCard key={course.id} course={course} />
+          ))}
         </div>
-      </form>
+      </div>
     </div>
   );
 };
+
+// StatCard Component (reused from AdminDashboard)
+const StatCard = ({ icon, title, value }) => (
+  <div className="bg-white rounded-lg border p-6">
+    <div className="flex justify-between items-center mb-4">
+      <h2 className="text-sm font-medium text-gray-500">{title}</h2>
+      <div className="text-[#125ca6] text-xl">{icon}</div>
+    </div>
+    <p className="text-3xl font-bold">{value}</p>
+  </div>
+);
+
+// CourseProgressCard Component
+const CourseProgressCard = ({ course }) => (
+  <div className="bg-gray-50 rounded-lg p-4">
+    <h3 className="font-semibold text-lg mb-2">{course.title}</h3>
+    <div className="flex justify-between items-center mb-2">
+      <span className="text-sm text-gray-500">Progress</span>
+      <span className="text-sm font-medium">{course.progress}%</span>
+    </div>
+    <div className="w-full bg-gray-200 rounded-full h-2.5">
+      <div
+        className="bg-blue-600 h-2.5 rounded-full"
+        style={{ width: `${course.progress}%` }}
+      ></div>
+    </div>
+    <p className="text-sm text-gray-500 mt-2">
+      {course.completedLessons} / {course.totalLessons} lessons completed
+    </p>
+  </div>
+);
+
+// RecommendedCourseCard Component
+const RecommendedCourseCard = ({ course }) => (
+  <div className="bg-gray-50 rounded-lg p-4">
+    <h3 className="font-semibold text-lg mb-2">{course.title}</h3>
+    <div className="flex items-center mb-2">
+      <FaStar className="text-yellow-400 mr-1" />
+      <span className="text-sm font-medium">{course.rating}</span>
+    </div>
+    <p className="text-sm text-gray-500">Duration: {course.duration}</p>
+    <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
+      Enroll Now
+    </button>
+  </div>
+);
 
 export default UserHome;
