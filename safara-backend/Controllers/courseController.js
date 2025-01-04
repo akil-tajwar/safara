@@ -929,6 +929,59 @@ const getTotalPayment = async (req, res) => {
     });
   }
 };
+const getTotalPaymentBySpecificStudent = async (req, res) => {
+  try {
+    // Get studentId from route params
+    const { studentId } = req.params;
+
+    // Check if studentId is provided
+    if (!studentId) {
+      return res.status(400).json({ message: "Student ID is required" });
+    }
+
+    console.log("Student ID:", studentId); // Log the student ID
+
+    // Ensure the ObjectId conversion is correct
+    const result = await PaymentSession.aggregate([
+      {
+        $match: {
+          studentsId: new mongoose.Types.ObjectId(studentId), // Convert string ID to ObjectId
+        },
+      },
+      {
+        $addFields: {
+          paymentAsNumber: {
+            $toDouble: { $ifNull: ["$payment", 0] }, // Convert payment to number, default to 0 if null
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$studentsId",
+          totalPayment: { $sum: "$paymentAsNumber" }, // Sum up the numeric payment values
+        },
+      },
+    ]);
+
+    // If no result found, set totalPayment to 0
+    const totalPayment = result.length > 0 ? result[0].totalPayment : 0;
+
+    res.status(200).json({
+      message: `Total payment calculated successfully for student ID ${studentId}`,
+      studentId,
+      totalPayment,
+    });
+  } catch (error) {
+    console.error(
+      "Error calculating total payment for specific student:",
+      error
+    );
+    res.status(500).json({
+      message: "Failed to calculate total payment for the student",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   createCourse,
@@ -955,4 +1008,5 @@ module.exports = {
   getCompletedCoursesCount,
   getAverageCompletionTime,
   getTotalPayment,
+  getTotalPaymentBySpecificStudent,
 };

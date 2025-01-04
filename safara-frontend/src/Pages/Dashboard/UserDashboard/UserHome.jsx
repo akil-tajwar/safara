@@ -1,7 +1,11 @@
+import { useEffect, useState } from "react";
 import { FaBookOpen, FaCertificate, FaStar } from "react-icons/fa";
 import { TbCurrencyTaka } from "react-icons/tb";
+import useAuthContext from "../../../hooks/useAuthContext";
 
 const UserHome = () => {
+  const [totalSpent, setTotalSpent] = useState([]);
+  const { user } = useAuthContext();
   // Dummy data for enrolled courses
   const enrolledCourses = [
     {
@@ -39,6 +43,21 @@ const UserHome = () => {
     { id: 6, title: "Responsive Web Design", rating: 4.5, duration: "3 weeks" },
   ];
 
+  const fetchTotalSpent = () => {
+    fetch(
+      `http://localhost:4000/api/course/getSpentByStudent/${user?.user?._id}`
+    )
+      .then((res) => res.json())
+      .then((data) => setTotalSpent(data.totalPayment))
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchTotalSpent();
+    } // Fetch users count when component mounts
+  }, []);
+
   return (
     <div className="min-h-screen p-8 bg-gray-50">
       <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Welcome, User!</h1>
@@ -60,7 +79,7 @@ const UserHome = () => {
           title="Total Spent"
           value={
             <div className="flex items-center">
-              4500
+              {totalSpent}
               <TbCurrencyTaka className="ml-1" />
             </div>
           }
