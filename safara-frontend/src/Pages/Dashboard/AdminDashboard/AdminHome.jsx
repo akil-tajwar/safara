@@ -9,8 +9,6 @@ import {
   FaCheckCircle,
   FaClock,
 } from "react-icons/fa";
-import { MdEdit } from "react-icons/md";
-import { RiDeleteBin5Line } from "react-icons/ri";
 
 const AdminDashboard = () => {
   // State variables for storing various counts and data
