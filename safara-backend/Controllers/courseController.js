@@ -893,6 +893,43 @@ const getAverageCompletionTime = async (req, res) => {
   }
 };
 
+// Endpoint to calculate the sum of payments
+const getTotalPayment = async (req, res) => {
+  try {
+    const result = await PaymentSession.aggregate([
+      {
+        $match: {
+          payment: { $ne: null }, // Ensure the payment field is not null
+        },
+      },
+      {
+        $addFields: {
+          paymentAsNumber: { $toDouble: "$payment" }, // Convert payment from string to number
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalPayment: { $sum: "$paymentAsNumber" }, // Sum up the numeric payment values
+        },
+      },
+    ]);
+
+    const totalPayment = result.length > 0 ? result[0].totalPayment : 0;
+
+    res.status(200).json({
+      message: "Total payment calculated successfully",
+      totalPayment,
+    });
+  } catch (error) {
+    console.error("Error calculating total payment:", error);
+    res.status(500).json({
+      message: "Failed to calculate total payment",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createCourse,
   getAllCourses,
@@ -917,4 +954,5 @@ module.exports = {
   getTotalAverageRating,
   getCompletedCoursesCount,
   getAverageCompletionTime,
+  getTotalPayment,
 };
