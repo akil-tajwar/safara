@@ -1,7 +1,7 @@
 const cors = require("cors");
 const mongoose = require("mongoose");
 const express = require("express");
-const axios = require('axios');
+const axios = require("axios");
 
 const userRoutes = require("./Routes/userRoutes.js");
 const meetRoutes = require("./Routes/meetRoutes.js");
@@ -11,12 +11,13 @@ const whatsappRoutes = require("./Routes/whatsappRoutes.js");
 require("dotenv").config();
 const app = express();
 
-
-app.use(cors({
-  origin: 'http://localhost:5173', // Your frontend URL
-  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-  credentials: true // If needed for cookies/auth
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend URL
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true, // If needed for cookies/auth
+  })
+);
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
@@ -28,13 +29,10 @@ app.use("/api/course", courseRoutes);
 app.use("/api/whatsapp", whatsappRoutes);
 app.use("/api/meet", meetRoutes);
 
-
-
 // Test route
 app.get("/", async (req, res) => {
   res.send("Server is working!");
 });
-
 
 const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t9lecvs.mongodb.net/Safara-API?retryWrites=true&w=majority&appName=Cluster0`;
 mongoose

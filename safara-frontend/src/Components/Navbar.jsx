@@ -56,7 +56,9 @@ const Navbar = () => {
               <Link to="/dashboard/admin/adminHome" className="font-semibold">
                 Dashboard
               </Link>
+              
             )}
+         
             {user?.user?.role === "user" && (
               <Link to="/dashboard/user/userHome" className="font-semibold">
                 Dashboard
@@ -64,6 +66,9 @@ const Navbar = () => {
             )}
             <Link to="/allCourses" className="font-semibold">
               Courses
+            </Link>
+            <Link to="/others" className="font-semibold">
+              Others
             </Link>
           </div>
           <div className="flex items-center gap-2 flex-row-reverse">
