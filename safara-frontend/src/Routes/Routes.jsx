@@ -24,6 +24,7 @@ import Certificate from "../Components/certificate";
 import Settings from "../Components/Settings";
 import ScheduleMeet from "../Components/ScheduleMeet";
 import UpdateCourse from "../Pages/Dashboard/AdminDashboard/UpdateCourse";
+import Others from "../Components/Others";
 
 export const router = createBrowserRouter([
   {
@@ -43,33 +44,37 @@ export const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "/others",
+        element: <Others />,
+      },
+      {
         path: "/forgetPassword",
-        element: <ForgetPassword/>,
+        element: <ForgetPassword />,
       },
       {
         path: "/resetPassword/:token",
-        element: <ResetPassword/>,
+        element: <ResetPassword />,
       },
       {
         path: "/allCourses",
-        element: <AllCourses/>,
+        element: <AllCourses />,
       },
       {
         path: "/singleCourse/:id",
-        element: <SingleCourse/>,
-      }, 
+        element: <SingleCourse />,
+      },
       {
         path: "/profile",
-        element: <Profile/>,
-      }, 
+        element: <Profile />,
+      },
       {
         path: "/settings",
-        element: <Settings/>,
-      }, 
+        element: <Settings />,
+      },
       {
         path: "/certificate",
-        element: <Certificate/>,
-      }, 
+        element: <Certificate />,
+      },
       {
         path: "/updateProfile",
         element: <UpdateProfile />,
@@ -88,23 +93,24 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/admin/addCourses",
-        element: <AddCourses/>,
+        element: <AddCourses />,
       },
       {
         path: "/dashboard/admin/updateCourse/:id",
-        element: <UpdateCourse/>,
+        element: <UpdateCourse />,
       },
       {
         path: "/dashboard/admin/manageCourses",
-        element: <ManageCourses/>,
+        element: <ManageCourses />,
       },
+    
       {
         path: "/dashboard/admin/schedulemeet",
-        element: <ScheduleMeet/>,
+        element: <ScheduleMeet />,
       },
       {
         path: "/dashboard/admin/transactionHistory",
-        element: <AllTransactions/>,
+        element: <AllTransactions />,
       },
       {
         path: "/dashboard/admin/allUsers",
@@ -112,7 +118,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  
+
   //user dashboard
   {
     path: "/dashboard/user",
@@ -122,10 +128,10 @@ export const router = createBrowserRouter([
         path: "/dashboard/user/userHome",
         element: <UserHome />,
       },
-    
+
       {
         path: "/dashboard/user/userPaymentHistory",
-        element: <PaymentHistory/>,
+        element: <PaymentHistory />,
       },
       {
         path: "/dashboard/user/userCourses",

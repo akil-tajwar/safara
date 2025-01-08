@@ -1,7 +1,20 @@
-import { FaAd, FaBuilding, FaHome, FaMoneyBill, FaRegBuilding, FaSearch, FaTachometerAlt, FaUsers } from "react-icons/fa";
-import {  MdOutlineFeaturedVideo, MdOutlineNoteAdd} from "react-icons/md";
+import {
+  FaAd,
+  FaBuilding,
+  FaHome,
+  FaMoneyBill,
+  FaRegBuilding,
+  FaSearch,
+  FaTachometerAlt,
+  FaUsers,
+} from "react-icons/fa";
+import { MdOutlineFeaturedVideo, MdOutlineNoteAdd } from "react-icons/md";
 import { VscPreview } from "react-icons/vsc";
-import { GrDocumentConfig, GrDocumentDownload, GrDocumentUpdate } from "react-icons/gr";
+import {
+  GrDocumentConfig,
+  GrDocumentDownload,
+  GrDocumentUpdate,
+} from "react-icons/gr";
 import { FcDepartment } from "react-icons/fc";
 import { NavLink, useLocation } from "react-router-dom";
 import useAuthContext from "../hooks/useAuthContext";
@@ -9,7 +22,7 @@ import { FaUser } from "react-icons/fa6";
 
 const Sidebar = () => {
   const { user } = useAuthContext();
-  
+
   const location = useLocation();
 
   // Regex to match the /singleCourse/:id pattern
@@ -19,8 +32,8 @@ const Sidebar = () => {
     const isSingleCoursePage = singleCourseRegex.test(location.pathname);
 
     // Apply active styles to the Manage Courses link if we're on that page or the /singleCourse/:id page
-    const shouldApplyActiveStyle = 
-      isActive || 
+    const shouldApplyActiveStyle =
+      isActive ||
       (isSingleCoursePage && path === "/dashboard/admin/manageCourses");
 
     return {
@@ -28,20 +41,19 @@ const Sidebar = () => {
       borderRadius: "4px",
       fontSize: "15px",
       whiteSpace: "nowrap",
-      color: shouldApplyActiveStyle ? "white": "white" ,
+      color: shouldApplyActiveStyle ? "white" : "white",
     };
   };
 
   return (
     <div className="bg-gray-800 text-white h-screen fixed left-0 top-0 bottom-0 space-y-2 w-64">
-   
       <div className="w-60">
         <img src="logo.png" alt="" />
       </div>
       <ul className="menu p-4">
         {user?.user?.role === "admin" && (
           <>
-          <h2 className="text-2xl font-bold pb-8 ">Admin Dashboard</h2>
+            <h2 className="text-2xl font-bold pb-8 ">Admin Dashboard</h2>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/admin/adminHome"}>
                 <FaTachometerAlt></FaTachometerAlt>Admin Home
@@ -49,8 +61,17 @@ const Sidebar = () => {
             </li>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/admin/addCourses"}>
-              <GrDocumentUpdate />
+                <GrDocumentUpdate />
                 Add Course
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                style={navLinkStyle}
+                to={"/dashboard/admin/manageOtherCard"}
+              >
+                <GrDocumentUpdate />
+                Manage Other
               </NavLink>
             </li>
             <li>
@@ -60,7 +81,7 @@ const Sidebar = () => {
                 }
                 to={"/dashboard/admin/manageCourses"}
               >
-              <FaRegBuilding />
+                <FaRegBuilding />
                 Manage Courses
               </NavLink>
             </li>
@@ -69,7 +90,7 @@ const Sidebar = () => {
                 style={navLinkStyle}
                 to={"/dashboard/admin/transactionHistory"}
               >
-               <GrDocumentConfig />
+                <GrDocumentConfig />
                 Transaction History
               </NavLink>
             </li>
@@ -82,8 +103,8 @@ const Sidebar = () => {
           </>
         )}
         {user?.user?.role === "user" && (
-          <> 
-          <h2 className="text-2xl font-bold pb-8 ">User Dashboard</h2>
+          <>
+            <h2 className="text-2xl font-bold pb-8 ">User Dashboard</h2>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userHome"}>
                 <FaTachometerAlt></FaTachometerAlt>User Home
@@ -100,7 +121,7 @@ const Sidebar = () => {
             </li>
             <li>
               <NavLink style={navLinkStyle} to={"/dashboard/user/userCourses"}>
-              <MdOutlineFeaturedVideo />
+                <MdOutlineFeaturedVideo />
                 My Classes
               </NavLink>
             </li>
@@ -123,7 +144,7 @@ const Sidebar = () => {
         <li>
           <NavLink style={navLinkStyle} to={`/profile`}>
             <FaUser />
-             Profile
+            Profile
           </NavLink>
         </li>
       </ul>
