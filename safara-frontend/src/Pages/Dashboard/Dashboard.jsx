@@ -8,7 +8,7 @@ const Dashboard = () => {
       <div className="fixed">
         <Sidebar />
       </div>
-      <div className="flex-1 ml-64  h-screen">
+      <div className="flex-1 lg:ml-64 ml-0 h-screen">
         <DashNavbar />
         <div className="p-4">
           {" "}
