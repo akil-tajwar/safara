@@ -13,12 +13,12 @@ const DashNavbar = () => {
   };
 
   return (
-    <div className="flex justify-between relative  w-full h-16 items-center">
+    <div className="flex justify-between relative -z-50  w-full h-16 items-center">
       <div className="navbar bg-gray-800 pt-4">
         <div className="flex-1">
-          <a className="text-2xl font-bold  text-white">
+          <p className="text-2xl font-bold ml-20 lg:ml-0 text-white">
             Welcome {user?.user?.firstname + " " + user?.user?.lastname}
-          </a>
+          </p>
         </div>
         <div className="flex-none">
           <div className="dropdown dropdown-end">

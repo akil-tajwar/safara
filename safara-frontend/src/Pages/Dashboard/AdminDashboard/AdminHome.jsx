@@ -131,7 +131,7 @@ const AdminDashboard = () => {
   // Array of colors to dynamically assign to categories
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen lg:p-8">
       <h1 className="text-3xl font-bold text-[#125ca6] mb-8">
         Admin Dashboard
       </h1>
