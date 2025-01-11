@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaUsers,
   FaBookOpen,
   FaUserGraduate,
   FaChartLine,
   FaStar,
-  FaEye,
   FaCheckCircle,
-  FaClock,
 } from "react-icons/fa";
+import { TbCurrencyTaka } from "react-icons/tb";
 
 const AdminDashboard = () => {
   // State variables for storing various counts and data
@@ -131,8 +130,8 @@ const AdminDashboard = () => {
   // Array of colors to dynamically assign to categories
 
   return (
-    <div className="min-h-screen lg:p-8">
-      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">
+    <div className="min-h-screen lg:p-8 pt-5">
+      <h1 className="text-3xl font-bold text-[#125ca6] mb-5">
         Admin Dashboard
       </h1>
 
@@ -159,11 +158,14 @@ const AdminDashboard = () => {
         <StatCard
           icon={<FaChartLine />}
           title="Revenue"
-          value={totalRevenue}
+          value={
+            <div className="flex items-center">
+              {totalRevenue} <TbCurrencyTaka />
+            </div>
+          }
           change="+7.8%"
         />
       </div>
-
       {/* Course Categories and Platform Overview */}
       <div className="grid gap-6 md:grid-cols-2 mb-8">
         {/* Course Categories Section */}
@@ -196,19 +198,9 @@ const AdminDashboard = () => {
               value={totalAvgRating}
             />
             <MetricCard
-              icon={<FaEye className="text-blue-400" />}
-              title="Total Views"
-              value="250K"
-            />
-            <MetricCard
               icon={<FaCheckCircle className="text-green-400" />}
               title="Completed Courses"
               value={completedCoursesCount}
-            />
-            <MetricCard
-              icon={<FaClock className="text-red-400" />}
-              title="Avg. Completion Time"
-              value={avgCourseCompleteTime}
             />
           </div>
         </div>

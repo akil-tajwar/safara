@@ -59,7 +59,7 @@ const UserHome = () => {
   }, []);
 
   return (
-    <div className="min-h-screen p-8 bg-gray-50">
+    <div className="min-h-screen lg:p-8 pt-5 bg-gray-50">
       <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Welcome, User!</h1>
 
       {/* User Stats */}
