@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   FaHome,
   FaRegBuilding,
@@ -46,7 +46,7 @@ const Sidebar = () => {
       {/* Hamburger button - fixed at bottom left */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-100 bg-gray-800 border-2 border-white text-white p-2 rounded-full shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 bg-gray-800 border-2 border-white text-white p-2 rounded-full shadow-lg"
       >
         <FaBars size={24} />
       </button>
@@ -61,7 +61,7 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`bg-gray-800 text-white h-screen fixed left-0 top-0 bottom-0 w-64 transition-transform duration-300 ease-in-out transform ${
+        className={`bg-gray-800 text-white h-screen z-50 fixed left-0 top-0 bottom-0 w-64 transition-transform duration-300 ease-in-out transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0`}
       >

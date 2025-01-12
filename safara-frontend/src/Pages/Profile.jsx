@@ -45,7 +45,7 @@ const Profile = () => {
         <div className="col-span-2">
           <img
             className="h-[400px] rounded-md w-full object-cover object-top border"
-            src={userData.img}
+            src={userData.img && userData.img}
             alt=""
           />
           <div className="py-5">
