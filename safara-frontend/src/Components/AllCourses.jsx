@@ -28,7 +28,7 @@ const AllCourses = () => {
           <div key={course._id} className="border rounded-xl relative">
             <Link to={`/singleCourse/${course?._id}`}>
               <div className="">
-                <img className="w-[265px] h-[265px] object-cover rounded-xl" src={course?.banner} alt={course?.title} />
+                <img className="w-full object-cover rounded-xl" src={course?.banner} alt={course?.title} />
               </div>
             </Link>
           </div>

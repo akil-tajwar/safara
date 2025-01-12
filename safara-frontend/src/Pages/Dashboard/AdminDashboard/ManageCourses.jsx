@@ -85,14 +85,14 @@ const ManageCourses = () => {
   }, []);
 
   return (
-    <div className="p-6">
+    <div className="lg:p-6 pt-10">
       <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Manage Courses</h1>
       <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-5 w-fit">
         {courses?.map((course) => (
-          <div key={course._id} className="border rounded-xl relative">
+          <div key={course._id} className="border rounded-xl relative ">
             <Link to={`/singleCourse/${course?._id}`}>
               <div className="">
-                <img className="w-[295px] h-[295px] object-cover rounded-xl" src={course?.banner} alt={course?.title} />
+                <img className="w-full object-cover rounded-xl" src={course?.banner} alt={course?.title} />
               </div>
             </Link>
             <div className="absolute right-4 top-4 dropdown-container">

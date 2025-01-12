@@ -51,14 +51,14 @@ const MyClasses = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="lg:p-6 pt-10">
       <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-5 w-fit">
         {courses?.map((course) => (
           <div key={course._id} className="border rounded-xl relative">
             <Link to={`/singleCourse/${course?._id}`}>
               <div className="">
                 <img
-                  className="w-[295px] h-[295px] object-cover rounded-xl"
+                  className="w-full object-cover rounded-xl"
                   src={course?.banner}
                   alt={course?.title}
                 />
