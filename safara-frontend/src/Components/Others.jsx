@@ -4,42 +4,42 @@ const ManageOtherCard = () => {
   const [cards] = useState([
     {
       id: 1,
-      img: "/realstate.jpeg",
+      img: "/safara1.jpg",
       title: "Luxury Residential Complex",
       description:
         "A state-of-the-art residential project featuring modern amenities and breathtaking views. Perfect for families and individuals seeking luxury living.",
     },
     {
       id: 2,
-      img: "/realstate.jpeg",
+      img: "/safara1.jpg",
       title: "Commercial Office Space",
       description:
         "An innovative and high-tech office space for businesses looking for a dynamic and collaborative work environment. Strategically located for convenience.",
     },
     {
       id: 3,
-      img: "/realstate.jpeg",
+      img: "/safara2.jpg",
       title: "Eco-Friendly Housing Development",
       description:
         "A sustainable and green residential project focused on energy efficiency, eco-friendly materials, and a harmonious connection with nature.",
     },
     {
       id: 4,
-      img: "/realstate.jpeg",
+      img: "/safara2.jpg",
       title: "Luxury Villas by the Beach",
       description:
         "Exclusive beachfront villas offering panoramic ocean views, private pools, and luxurious amenities for those who seek the ultimate in relaxation and privacy.",
     },
     {
       id: 5,
-      img: "/realstate.jpeg",
+      img: "/safara2.jpg",
       title: "Urban Mixed-Use Complex",
       description:
         "A vibrant community blending residential, commercial, and retail spaces. Perfectly designed for city living with easy access to everything you need.",
     },
     {
       id: 6,
-      img: "/realstate.jpeg",
+      img: "/safara2.jpg",
       title: "Affordable Housing Project",
       description:
         "A budget-friendly housing solution aimed at providing quality living for families and individuals without compromising on comfort and safety.",
@@ -60,7 +60,7 @@ const ManageOtherCard = () => {
 
   return (
     <div className="container mx-auto p-6 bg-gray-100">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-indigo-600">
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-[#125ca6]">
         Our Other Projects
       </h1>
 
@@ -78,7 +78,9 @@ const ManageOtherCard = () => {
               className="w-full h-48 object-cover rounded-t-lg"
             />
             <div className="p-6">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-2">{card.title}</h3>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                {card.title}
+              </h3>
               <p className="text-gray-600">{card.description}</p>
             </div>
           </div>

@@ -7,79 +7,88 @@ const Footer = () => {
   return (
     <footer className="bg-[#125ca6] text-white">
       {/* Main Footer Content */}
-      <div className="py-10 lg:w-3/4 w-11/12 mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="py-10 lg:w-3/4 w-11/12 mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Address Section */}
         <div className="flex flex-col">
-          <h6 className="text-lg font-semibold mb-4">Contact Us</h6>
+          <h6 className="text-lg font-semibold mb-6">Contact Us</h6>
           <Link
             to="/location"
-            className="link link-hover inline-flex items-center mb-2"
+            className="flex items-center text-white mb-4 hover:text-gray-300"
           >
-            <FaLocationDot className="mr-2" />
-            123 Academic Street, City, Country
+            <FaLocationDot className="mr-3 mb-28  text-4xl" />
+            <span>
+              Office: Holding-83, DNCC, Mujibur business center, Top Floor, 100
+              Feet, Madani Avenue, Vatara, Dhaka-1212 <br />
+              Support:+880 1558-000555 <br />
+              Helpline:+880 1558-000555 <br />
+              (Available: Sat-thu, 10:00AM to 7.00PM)
+            </span>
           </Link>
           <Link
             to="/contact"
-            className="link link-hover inline-flex items-center mb-2"
+            className="flex items-center text-white mb-4 hover:text-gray-300"
           >
-            <IoIosContact className="mr-2" />
+            <IoIosContact className="mr-3 text-2xl" />
             info@university.edu
           </Link>
-          <p className="mt-2">Phone: +1 (555) 123-4567</p>
+          <p className="mt-2 text-sm">Phone: +880 1558-000555</p>
         </div>
 
         {/* Quick Links Section */}
         <div className="flex flex-col">
-          <h6 className="text-lg font-semibold mb-4">Quick Links</h6>
-          <Link to="/admissions" className="link link-hover mb-2">
+          <h6 className="text-lg font-semibold mb-6">Quick Links</h6>
+          <Link to="/admissions" className="mb-3 text-sm hover:text-gray-300">
             Admissions
           </Link>
-          <Link to="/academic-programs" className="link link-hover mb-2">
+          <Link
+            to="/academic-programs"
+            className="mb-3 text-sm hover:text-gray-300"
+          >
             Academic Programs
           </Link>
-          <Link to="/research" className="link link-hover mb-2">
+          <Link to="/research" className="mb-3 text-sm hover:text-gray-300">
             Research
           </Link>
-          <Link to="/campus-life" className="link link-hover">
+          <Link to="/campus-life" className="text-sm hover:text-gray-300">
             Campus Life
           </Link>
         </div>
 
         {/* Social Media Section */}
         <div className="flex flex-col">
-          <h6 className="text-lg font-semibold mb-4">Follow Us</h6>
-          <div className="flex space-x-4">
+          <h6 className="text-lg font-semibold mb-6">Follow Us</h6>
+          <div className="flex space-x-5">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/profile.php?id=61565767569776"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white hover:text-gray-200"
+              className="text-white hover:text-gray-300"
             >
-              <FaFacebook size={24} />
+              <FaFacebook className="text-3xl" />
             </a>
             <a
               href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white hover:text-gray-200"
+              className="text-white hover:text-gray-300"
             >
-              <FaTwitter size={24} />
+              <FaTwitter className="text-3xl" />
             </a>
             <a
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white hover:text-gray-200"
+              className="text-white hover:text-gray-300"
             >
-              <FaLinkedin size={24} />
+              <FaLinkedin className="text-3xl" />
             </a>
             <a
               href="https://youtube.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white hover:text-gray-200"
+              className="text-white hover:text-gray-300"
             >
-              <FaYoutube size={24} />
+              <FaYoutube className="text-3xl" />
             </a>
           </div>
         </div>
@@ -87,17 +96,18 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="text-center py-4 border-t border-gray-700">
-        <p>
-          © {new Date().getFullYear()} International Academic Institute. All
-          Rights Reserved.
+        <p className="text-sm">
+          © {new Date().getFullYear()} © Safara Academy 2025
         </p>
-        <Link to="/terms" className="link link-hover inline-block mt-2">
-          Terms & Conditions
-        </Link>
-        <span className="mx-2">|</span>
-        <Link to="/privacy" className="link link-hover">
-          Privacy Policy
-        </Link>
+        <div className="mt-2 text-sm space-x-2">
+          <Link to="/terms" className="hover:text-gray-300">
+            Terms & Conditions
+          </Link>
+          <span>|</span>
+          <Link to="/privacy" className="hover:text-gray-300">
+            Privacy Policy
+          </Link>
+        </div>
       </div>
     </footer>
   );

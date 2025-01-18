@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   FaHome,
   FaRegBuilding,
@@ -6,7 +6,7 @@ import {
   FaTachometerAlt,
   FaUsers,
   FaBars,
-  FaUser
+  FaUser,
 } from "react-icons/fa";
 import { MdOutlineFeaturedVideo } from "react-icons/md";
 import { GrDocumentConfig, GrDocumentUpdate } from "react-icons/gr";
@@ -17,7 +17,6 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuthContext();
   const location = useLocation();
-
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
@@ -34,8 +33,10 @@ const Sidebar = () => {
 
     return {
       backgroundColor: shouldApplyActiveStyle ? "#125ca6" : "transparent",
-      borderRadius: "4px",
-      fontSize: "15px",
+      borderRadius: "6px",
+
+      fontSize: "18px",
+      fontWeight: "700",
       whiteSpace: "nowrap",
       color: shouldApplyActiveStyle ? "white" : "white",
     };
@@ -55,15 +56,15 @@ const Sidebar = () => {
       <div
         onClick={toggleSidebar}
         className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 lg:hidden ${
-          isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       />
 
       {/* Sidebar */}
       <div
-        className={`bg-gray-800 text-white h-screen z-50 fixed left-0 top-0 bottom-0 w-64 transition-transform duration-300 ease-in-out transform ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0`}
+        className={`bg-gray-800 text-white h-screen fixed left-0 top-0 bottom-0 w-64 transition-transform duration-300 ease-in-out transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 z-50`} // Add z-50 or a higher z-index value
       >
         <div className="w-60">
           <img src="logo.png" alt="" />
@@ -74,11 +75,15 @@ const Sidebar = () => {
               <h2 className="text-2xl font-bold pb-8">Admin Dashboard</h2>
               <li>
                 <NavLink style={navLinkStyle} to={"/dashboard/admin/adminHome"}>
-                  <FaTachometerAlt />Admin Home
+                  <FaTachometerAlt />
+                  Admin Home
                 </NavLink>
               </li>
               <li>
-                <NavLink style={navLinkStyle} to={"/dashboard/admin/addCourses"}>
+                <NavLink
+                  style={navLinkStyle}
+                  to={"/dashboard/admin/addCourses"}
+                >
                   <GrDocumentUpdate />
                   Add Course
                 </NavLink>
@@ -101,7 +106,10 @@ const Sidebar = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink style={navLinkStyle} to={"/dashboard/admin/transactionHistory"}>
+                <NavLink
+                  style={navLinkStyle}
+                  to={"/dashboard/admin/transactionHistory"}
+                >
                   <GrDocumentConfig />
                   Transaction History
                 </NavLink>
@@ -119,17 +127,24 @@ const Sidebar = () => {
               <h2 className="text-2xl font-bold pb-8">User Dashboard</h2>
               <li>
                 <NavLink style={navLinkStyle} to={"/dashboard/user/userHome"}>
-                  <FaTachometerAlt />User Home
+                  <FaTachometerAlt />
+                  User Home
                 </NavLink>
               </li>
               <li>
-                <NavLink style={navLinkStyle} to={"/dashboard/user/userPaymentHistory"}>
+                <NavLink
+                  style={navLinkStyle}
+                  to={"/dashboard/user/userPaymentHistory"}
+                >
                   <GrDocumentConfig />
                   Transaction History
                 </NavLink>
               </li>
               <li>
-                <NavLink style={navLinkStyle} to={"/dashboard/user/userCourses"}>
+                <NavLink
+                  style={navLinkStyle}
+                  to={"/dashboard/user/userCourses"}
+                >
                   <MdOutlineFeaturedVideo />
                   My Classes
                 </NavLink>
@@ -141,13 +156,20 @@ const Sidebar = () => {
           <div className="divider bg-white h-0.5"></div>
           <li>
             <NavLink style={navLinkStyle} to={"/"}>
-              <FaHome />Home
+              <FaHome />
+              Home
             </NavLink>
           </li>
           <li>
             <NavLink style={navLinkStyle} to={"/AllCourses"}>
               <FaSearch />
               Courses
+            </NavLink>
+          </li>
+          <li>
+            <NavLink style={navLinkStyle} to={"/others"}>
+              <FaSearch />
+              Others
             </NavLink>
           </li>
           <li>

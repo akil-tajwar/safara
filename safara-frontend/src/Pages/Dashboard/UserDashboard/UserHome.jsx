@@ -5,6 +5,11 @@ import useAuthContext from "../../../hooks/useAuthContext";
 
 const UserHome = () => {
   const [totalSpent, setTotalSpent] = useState([]);
+  const [totalEnrolledCourses, setTotalEnrolledCourses] = useState([]);
+  const [videosCount, setVideosCount] = useState([]);
+  const [coursesByStudent, setCoursesByStudent] = useState([]);
+  const [completedLessons, setCompletedLessons] = useState([]);
+
   const { user } = useAuthContext();
   // Dummy data for enrolled courses
   const enrolledCourses = [
@@ -58,6 +63,27 @@ const UserHome = () => {
     } // Fetch users count when component mounts
   }, []);
 
+  const fetchEnrolledCourses = () => {
+    fetch(
+      `http://localhost:4000/api/course/getAllEnrolledCourse/${user?.user?._id}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setTotalEnrolledCourses(data.courses.length);
+        setCoursesByStudent(data.courses);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchEnrolledCourses();
+    } // Fetch users count when component mounts
+  }, []);
+
+  console.log("totalenrolled", totalEnrolledCourses);
+  console.log("coursesPurchased", coursesByStudent);
+
   return (
     <div className="min-h-screen lg:p-8 pt-5 bg-gray-50">
       <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Welcome, User!</h1>
@@ -67,7 +93,7 @@ const UserHome = () => {
         <StatCard
           icon={<FaBookOpen />}
           title="Enrolled Courses"
-          value={enrolledCourses.length}
+          value={totalEnrolledCourses}
         />
         <StatCard
           icon={<FaCertificate />}
@@ -115,7 +141,7 @@ const UserHome = () => {
 
 // StatCard Component (reused from AdminDashboard)
 const StatCard = ({ icon, title, value }) => (
-  <div className="bg-white rounded-lg border p-6">
+  <div className="bg-white rounded-lg border p-6 ">
     <div className="flex justify-between items-center mb-4">
       <h2 className="text-sm font-medium text-gray-500">{title}</h2>
       <div className="text-[#125ca6] text-xl">{icon}</div>
