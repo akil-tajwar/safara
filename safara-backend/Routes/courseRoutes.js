@@ -25,6 +25,9 @@ const {
   fail,
   getTotalPayment,
   getTotalPaymentBySpecificStudent,
+
+  getVideosCount,
+  getUserCourseProgress,
 } = require("../Controllers/courseController.js");
 
 const router = express.Router();
@@ -51,6 +54,8 @@ router.get("/getCompletedCoursesCount", getCompletedCoursesCount);
 router.get("/getAverageCompletionTime", getAverageCompletionTime);
 router.get("/getAllTransactions", getAllTransactions);
 router.get("/getTotalPayment", getTotalPayment);
+router.get("/getVideosCount", getVideosCount);
+router.get("/getUserCourseProgress/:id", getUserCourseProgress);
 router.get("/getSpentByStudent/:studentId", getTotalPaymentBySpecificStudent);
 
 //delete

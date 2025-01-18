@@ -983,6 +983,90 @@ const getTotalPaymentBySpecificStudent = async (req, res) => {
   }
 };
 
+const getUserCourseProgress = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "Student ID is required." });
+  }
+
+  try {
+    const courses = await courseModel.aggregate([
+      // Match courses that contain the specified studentId in the students array
+      {
+        $match: {
+          students: { $elemMatch: { studentsId: id } },
+        },
+      },
+      // Unwind the students array to process each student separately
+      { $unwind: "$students" },
+      // Filter the students to include only the specified studentId
+      {
+        $match: {
+          "students.studentsId": id,
+        },
+      },
+      // Group by courseId and title, summing the unlockedVideos for the specified student
+      {
+        $group: {
+          _id: { courseId: "$_id", title: "$title" },
+          unlockedVideo: { $sum: "$students.unlockedVideo" },
+        },
+      },
+      // Project the desired fields in the output
+      {
+        $project: {
+          _id: 0,
+          courseId: "$_id.courseId",
+          title: "$_id.title",
+          unlockedVideo: 1,
+        },
+      },
+    ]);
+
+    if (courses.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No courses found for the specified student." });
+    }
+
+    res.status(200).json(courses);
+  } catch (error) {
+    console.error("Error fetching courses progress:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching courses progress." });
+  }
+};
+
+const getVideosCount = async (req, res) => {
+  try {
+    const result = await courseModel.aggregate([
+      {
+        $project: {
+          numberOfVideos: { $size: "$videos" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalVideos: { $sum: "$numberOfVideos" },
+        },
+      },
+    ]);
+
+    const totalVideos = result.length > 0 ? result[0].totalVideos : 0;
+    console.log(totalVideos);
+
+    res.send({ totalVideos });
+  } catch (error) {
+    console.error("Error fetching total videos count:", error);
+    res.status(500).send({
+      error: "An error occurred while fetching the total videos count.",
+    });
+  }
+};
+
 module.exports = {
   createCourse,
   getAllCourses,
@@ -1009,4 +1093,6 @@ module.exports = {
   getAverageCompletionTime,
   getTotalPayment,
   getTotalPaymentBySpecificStudent,
+  getUserCourseProgress,
+  getVideosCount,
 };

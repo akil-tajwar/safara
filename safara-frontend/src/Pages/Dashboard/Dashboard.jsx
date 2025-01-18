@@ -5,10 +5,10 @@ import DashNavbar from "./UserDashboard/DashNavbar";
 const Dashboard = () => {
   return (
     <div className="flex">
-      <div className="fixed">
+      <div className="relative">
         <Sidebar />
       </div>
-      <div className="flex-1 lg:ml-64 ml-0 h-screen">
+      <div className="flex-1 lg:ml-64 h-screen">
         <DashNavbar />
         <div className="p-4">
           {" "}
