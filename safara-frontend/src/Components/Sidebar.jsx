@@ -47,7 +47,7 @@ const Sidebar = () => {
       {/* Hamburger button - fixed at bottom left */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-100 bg-gray-800 border-2 border-white text-white p-2 rounded-full shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 bg-gray-800 border-2 border-white text-white p-2 rounded-full shadow-lg"
       >
         <FaBars size={24} />
       </button>

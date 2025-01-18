@@ -240,9 +240,9 @@ const AddCourses = () => {
           <p className="mt-2 text-gray-600">{completedUploads}/{totalFiles} files uploaded</p> {/* Updated progress display */}
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="card-body">
+        <form onSubmit={handleSubmit} className="lg:p-6 pt-6">
           <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Add Course</h1>
-          <div className="flex justify-between gap-3">
+          <div className="flex md:flex-row flex-col justify-between gap-3">
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Course Title</span>
@@ -343,7 +343,7 @@ const AddCourses = () => {
             <label className="label">
               <span className="label-text">Course Details*</span>
             </label>
-            <div className="custom-class no-tailwind custom-ul custom-ol">
+            <div className="custom-class -z-50 no-tailwind custom-ul custom-ol">
               <JoditEditor
                 ref={editor}
                 value={content}
@@ -352,7 +352,7 @@ const AddCourses = () => {
             </div>
           </div>
 
-          <div className="flex justify-between gap-3">
+          <div className="flex md:flex-row flex-col justify-between gap-3">
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Banner</span>
@@ -378,7 +378,7 @@ const AddCourses = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
             <div className="grid grid-cols-4 gap-3">
               <div className="form-control col-span-3 w-full">
                 <label className="label">
@@ -491,8 +491,8 @@ const AddCourses = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="grid grid-cols-4 gap-3">
+          <div className="md:grid md:grid-cols-2 gap-3">
+            <div className="grid md:grid-cols-4 grid-cols-1 gap-3">
               <div className="form-control col-span-3 w-full">
                 <label className="label">
                   <span className="label-text">Keywords</span>
@@ -507,7 +507,7 @@ const AddCourses = () => {
               </div>
               <p
                 onClick={handleAddKeyword}
-                className="border h-fit text-center rounded-md py-[11px] cursor-pointer bg-slate-200 mt-9"
+                className="border h-fit px-4 text-center rounded-md py-[11px] cursor-pointer bg-slate-200 mt-9"
               >
                 Add Keyword
               </p>
@@ -534,7 +534,6 @@ const AddCourses = () => {
                 </div>
               </div>
             </div>
-
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Requirements</span>
@@ -564,7 +563,7 @@ const AddCourses = () => {
                       className="w-full px-3 py-2 mb-2 rounded-md border border-slate-200"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div className="grid md:grid-cols-2 gap-4 pt-2">
                     {quiz.options.map((option, optionIndex) => (
                       <div
                         key={optionIndex}
