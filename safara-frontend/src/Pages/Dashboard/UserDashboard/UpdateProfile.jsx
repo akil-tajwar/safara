@@ -119,7 +119,7 @@ const UpdateProfile = () => {
   };
 
   return (
-    <div className="w-3/4 mx-auto">
+    <div className="md:w-3/4 w-11/12 mx-auto">
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <span className="loading loading-spinner w-40 h-40 text-white"></span>
@@ -128,7 +128,7 @@ const UpdateProfile = () => {
       <p className="md:text-3xl border-b font-bold text-[#125ca6] pb-2 mb-10">Update Profile</p>
       <form onSubmit={handleUpdate} className="">
         <p className="font-semibold text-xs text-slate-400 pb-1">PERSONAL INFO</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
           <div className="form-control w-full">
             <label className="label">
               <span className="label-text">First Name</span>
@@ -191,7 +191,7 @@ const UpdateProfile = () => {
         </div>
         {/* Profession Section */}
         <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">PROFESSIONAL INFO</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
           <div className="form-control w-full">
             <label className="label">
               <span className="label-text">Position</span>
@@ -217,7 +217,7 @@ const UpdateProfile = () => {
         </div>
         {/* Educational History */}
         <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">EDUCATIONAL HISTORY</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
           <div className="form-control w-full">
             <label className="label">
               <span className="label-text">Degree</span>
@@ -243,7 +243,7 @@ const UpdateProfile = () => {
         </div>
         {/* Contact Info */}
         <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">CONTACT INFO</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
           <div className="form-control w-full">
             <label className="label">
               <span className="label-text">Phone</span>
