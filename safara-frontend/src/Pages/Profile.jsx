@@ -40,14 +40,25 @@ const Profile = () => {
   }
 
   return (
-    <div className="w-3/4 mx-auto">
-      <div className="grid grid-cols-7 gap-8">
-        <div className="col-span-2">
+    <div className="lg:w-3/4 w-11/12 mx-auto">
+      <div className="grid md:grid-cols-7 grid-cols-1 gap-8">
+        <div className="md:col-span-3 lg:col-span-2 col-span-7">
           <img
             className="h-[400px] rounded-md w-full object-cover object-top border"
             src={userData.img && userData.img}
             alt=""
           />
+          <div className="block md:hidden">
+            <div className="flex justify-between items-center pt-5">
+              <h3 className="text-3xl font-semibold">
+                {userData.firstname} {userData.lastname}
+              </h3>
+              <Link to={"/updateProfile"}>
+                <MdEdit className="text-3xl bg-[#125ca6] text-white rounded-full p-1" />
+              </Link>
+            </div>
+            <p className="text-xl">{userData.profession[0]?.position}</p>
+          </div>
           <div className="py-5">
             <p className="font-semibold text-xs text-slate-400 pb-1">
               PROFESSIONAL INFO
@@ -63,17 +74,19 @@ const Profile = () => {
             <p>{userData.result}</p>
           </div>
         </div>
-        <div className="col-span-5">
+        <div className="md:col-span-4 lg:col-span-5 col-span-7">
           <div className="border-b pb-1">
-            <div className="flex justify-between items-center">
-              <h3 className="text-3xl font-semibold">
-                {userData.firstname} {userData.lastname}
-              </h3>
-              <Link to={"/updateProfile"}>
-                <MdEdit className="text-3xl bg-[#125ca6] text-white rounded-full p-1" />
-              </Link>
+            <div className="md:block hidden">
+              <div className="flex justify-between items-center">
+                <h3 className="text-3xl font-semibold">
+                  {userData.firstname} {userData.lastname}
+                </h3>
+                <Link to={"/updateProfile"}>
+                  <MdEdit className="text-3xl bg-[#125ca6] text-white rounded-full p-1" />
+                </Link>
+              </div>
+              <p className="text-xl">{userData.profession[0]?.position}</p>
             </div>
-            <p className="text-xl">{userData.profession[0]?.position}</p>
             <div className="pt-7 flex gap-8">
               <p
                 className={`flex gap-1 items-center cursor-pointer ${
