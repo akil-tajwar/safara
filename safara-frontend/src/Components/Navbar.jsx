@@ -45,7 +45,7 @@ const Navbar = () => {
           <div
             className={`lg:flex lg:gap-10 md:gap-5 items-center ${
               isMenuOpen
-                ? "flex flex-col border rounded-md absolute top-full left-0 w-full bg-white p-2"
+                ? "flex flex-row gap-5 justify-center border rounded-md absolute top-full left-0 w-full bg-white p-2"
                 : "hidden"
             }`}
           >
