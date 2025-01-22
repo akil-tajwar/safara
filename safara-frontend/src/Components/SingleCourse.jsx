@@ -715,48 +715,81 @@ const SingleCourse = () => {
         <div>
           <Navbar />
           <div className="pt-[73px] pb-20">
-            <div className="rounded-md bg-gradient-to-b from-[#125ca6] via-[#1870c8] to-[#1c7edf] text-white py-10 border-b mb-8">
-              <div className="w-3/4 mx-auto">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="text-3xl font-semibold">
-                      {courseData?.title}
-                    </h3>
-                    <div className="flex gap-1 text-xl mt-2 items-center">
-                      {renderStars(calculateAverageRating())}
-                      <p className="ml-3">
-                        {courseData?.studentsOpinion?.length || 0} Ratings
-                      </p>
-                    </div>
+            <div className="rounded-md bg-gradient-to-b from-[#125ca6] via-[#1870c8] to-[#1c7edf] text-white px-5 py-5 border-b mb-8">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-3xl">{courseData?.title}</h3>
+                  <div className="flex gap-1 text-xl mt-2 items-center">
+                    {renderStars(calculateAverageRating())}
+                    <p className="ml-3">
+                      {courseData?.studentsOpinion?.length || 0} Ratings
+                    </p>
                   </div>
-                  <div className="flex gap-2">
-                    {(user?.user?.role === "admin" ||
-                      courseData?.instructorsId?.includes(userId)) && (
-                      <Link
-                        to={`/dashboard/admin/schedulemeet?${userId}`}
-                        className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
-                      >
-                        Create Meet
-                      </Link>
-                    )}
-                    <button
-                      onClick={() => downloadFiteAtURL(courseData?.syllabus)}
+                </div>
+                <div className="flex flex-col md:flex-row gap-2">
+                  {(user?.user?.role === "admin" ||
+                    courseData?.instructorsId?.includes(userId)) && (
+                    <Link
+                      to={`/dashboard/admin/schedulemeet?${userId}`}
                       className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                     >
-                      <IoMdDownload className="text-xl" />
-                      <p className="">Syllabus</p>
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  <p className="pt-5 w-2/3">{courseData?.magnetLine}</p>
+                      Create Meet
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => downloadFiteAtURL(courseData?.syllabus)}
+                    className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                  >
+                    <IoMdDownload className="text-xl" />
+                    <p className="">Syllabus</p>
+                  </button>
                 </div>
               </div>
+              <div>
+                <p className="pt-5 w-2/3">{courseData?.magnetLine}</p>
+              </div>
             </div>
-            <div className="w-3/4 mx-auto">
-              <div className=" grid grid-cols-7 gap-8 relative">
+            <div className="lg:col-span-2 col-span-5 border rounded-md h-fit my-8 top-[73px] block lg:hidden">
+              <img className="rounded-t-md" src={courseData?.banner} alt="" />
+              {courseData?.discount > 0 ? (
+                <div className="p-3">
+                  <div className="flex gap-4">
+                    <del className="font-semibold text-gray-400 flex items-center">
+                      {courseData?.price}
+                      <TbCurrencyTaka />
+                    </del>
+                    <p className="bg-[#125ca6] bg-opacity-25 font-semibold text-[#125ca6] rounded-full py-1 px-3 w-fit text-sm">
+                      {courseData?.discount}% OFF
+                    </p>
+                  </div>
+                  <div className="text-2xl font-semibold flex items-center">
+                    <h3>
+                      {finalPrice !== null
+                        ? `${Math.round(finalPrice)}`
+                        : "Price not available"}
+                    </h3>
+                    <TbCurrencyTaka />
+                  </div>
+                </div>
+              ) : (
+                <div className="text-2xl p-3 font-semibold flex items-center">
+                  <h3>{courseData?.price}</h3>
+                  <TbCurrencyTaka />
+                </div>
+              )}
+              <div className="p-3 pt-0">
+                <button
+                  onClick={makePayment}
+                  className="bg-[#125ca6] text-white w-full text-xl py-2 mt-2 rounded-md"
+                >
+                  Enroll
+                </button>
+              </div>
+            </div>
+            <div className="lg:w-3/4 w-11/12 mx-auto">
+              <div className="grid lg:grid-cols-7 grid-cols-1 gap-8 relative">
                 <div className="col-span-5">{commonSections}</div>
-                <div className="col-span-2 border rounded-md h-fit sticky top-[73px]">
+                <div className="lg:col-span-2 col-span-5 border rounded-md h-fit sticky top-[73px] lg:block hidden">
                   <img
                     className="rounded-t-md"
                     src={courseData?.banner}
@@ -804,11 +837,11 @@ const SingleCourse = () => {
         </div>
       )}
       {isAdminOrStudent === true && (
-        <div className="flex">
-          <div className="fixed top-0 z-10">
+        <div className="lg:flex block">
+          <div className="lg:fixed top-0 z-10">
             <Sidebar />
           </div>
-          <div className="pl-72 top-7 absolute pr-8">
+          <div className="lg:pl-72 pl-0 top-7 lg:absolute lg:pr-8 pr-0">
             <div className="rounded-md bg-gradient-to-b from-[#125ca6] via-[#1870c8] to-[#1c7edf] text-white px-5 py-5 border-b mb-8">
               <div className="flex justify-between items-center">
                 <div>
@@ -820,7 +853,7 @@ const SingleCourse = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col md:flex-row gap-2">
                   {(user?.user?.role === "admin" ||
                     courseData?.instructorsId?.includes(userId)) && (
                     <Link
@@ -843,7 +876,7 @@ const SingleCourse = () => {
                 <p className="pt-5 w-2/3">{courseData?.magnetLine}</p>
               </div>
             </div>
-            <div className=" grid grid-cols-7 gap-8">
+            <div className=" grid lg:grid-cols-7 grid-cols-1 gap-8">
               <div className="col-span-5 w-full">
                 {showQuiz ? (
                   renderQuizContent()
@@ -854,10 +887,124 @@ const SingleCourse = () => {
                     controls
                   />
                 )}
+                <div className="col-span-2 lg:hidden block z-10 ">
+                  <div className="border rounded-md h-[600px] relative mt-5">
+                    {courseData?.videos?.map((video, index) => (
+                      <p
+                        key={video?._id}
+                        className={`whitespace-nowrap m-3 p-2 rounded-md border ${
+                          showQuiz
+                            ? "text-gray-400 cursor-not-allowed"
+                            : selectedVideo?._id === video._id
+                            ? "bg-[#125ca6] border-[#125ca6] text-white"
+                            : index < unlockedVideos
+                            ? "text-black cursor-pointer"
+                            : "text-gray-400 cursor-not-allowed"
+                        } overflow-hidden`}
+                        onClick={() =>
+                          !showQuiz &&
+                          index < unlockedVideos &&
+                          handleVideoSelect(video, index)
+                        }
+                      >
+                        {index < unlockedVideos ? (
+                          <>{index + 1}. </>
+                        ) : (
+                          <FaLock className="inline-block mr-2" />
+                        )}
+                        {video?.videoTitle}
+                      </p>
+                    ))}
+                    {courseData?.videos?.length > 0 && (
+                      <div className="whitespace-nowrap flex justify-between m-3 p-2 rounded-md border">
+                        <p
+                          className={`px-4 rounded-md ${
+                            courseComplete
+                              ? "text-black"
+                              : "text-gray-400 cursor-not-allowed"
+                          }`}
+                        >
+                          Quiz
+                        </p>
+                        <button
+                          onClick={courseComplete ? handleQuizOpen : undefined}
+                          className={`px-4 rounded-md ${
+                            courseComplete
+                              ? "bg-[#125ca6] text-white"
+                              : "bg-gray-300 text-gray-400 cursor-not-allowed"
+                          }`}
+                          disabled={!courseComplete}
+                        >
+                          Open
+                        </button>
+                      </div>
+                    )}
+                    <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
+                      <button
+                        className={`bg-[#125ca6] py-1 px-4 rounded-md ${
+                          currentVideoIndex === 0 &&
+                          "text-gray-400 bg-gray-300 cursor-not-allowed"
+                        }`}
+                        onClick={() => {
+                          if (currentVideoIndex > 0) {
+                            handleVideoSelect(
+                              courseData.videos[currentVideoIndex - 1],
+                              currentVideoIndex - 1
+                            );
+                          }
+                        }}
+                        disabled={currentVideoIndex === 0}
+                      >
+                        Prev
+                      </button>
+                      <button
+                        className={`bg-[#125ca6] py-1 px-4 rounded-md ${
+                          currentVideoIndex === courseData.videos.length - 1 &&
+                          "text-gray-400 bg-gray-300 cursor-not-allowed"
+                        }`}
+                        onClick={() => {
+                          if (
+                            currentVideoIndex <
+                            courseData.videos.length - 1
+                          ) {
+                            if (currentVideoIndex + 1 < unlockedVideos) {
+                              handleVideoSelect(
+                                courseData.videos[currentVideoIndex + 1],
+                                currentVideoIndex + 1
+                              );
+                            } else {
+                              unlockNextVideo().then(() => {
+                                handleVideoSelect(
+                                  courseData.videos[currentVideoIndex + 1],
+                                  currentVideoIndex + 1
+                                );
+                              });
+                            }
+                          }
+                        }}
+                        disabled={
+                          currentVideoIndex === courseData.videos.length - 1
+                        }
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                  {courseComplete === true && quizComplete && (
+                    <div className="text-center">
+                      <button
+                        onClick={courseCompleteAction}
+                        className="text-white bg-[#125ca6] w-full p-2 rounded-md mt-4"
+                      >
+                        Complete Course
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <div className="py-10">{commonSections}</div>
               </div>
 
-              <div className="col-span-2 h-[600px] z-10 sticky top-[20px]">
+              <div className="col-span-2 h-[600px] hidden lg:block z-10 sticky top-[20px]">
                 <div className="border rounded-md h-[600px]">
                   {courseData?.videos?.map((video, index) => (
                     <p
@@ -911,7 +1058,10 @@ const SingleCourse = () => {
                   )}
                   <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
                     <button
-                      className={`bg-[#125ca6] py-1 px-4 rounded-md ${currentVideoIndex === 0 && 'text-gray-400 bg-gray-300 cursor-not-allowed'}`}
+                      className={`bg-[#125ca6] py-1 px-4 rounded-md ${
+                        currentVideoIndex === 0 &&
+                        "text-gray-400 bg-gray-300 cursor-not-allowed"
+                      }`}
                       onClick={() => {
                         if (currentVideoIndex > 0) {
                           handleVideoSelect(
@@ -925,7 +1075,10 @@ const SingleCourse = () => {
                       Prev
                     </button>
                     <button
-                      className={`bg-[#125ca6] py-1 px-4 rounded-md ${currentVideoIndex === courseData.videos.length - 1 && 'text-gray-400 bg-gray-300 cursor-not-allowed'}`}
+                      className={`bg-[#125ca6] py-1 px-4 rounded-md ${
+                        currentVideoIndex === courseData.videos.length - 1 &&
+                        "text-gray-400 bg-gray-300 cursor-not-allowed"
+                      }`}
                       onClick={() => {
                         if (currentVideoIndex < courseData.videos.length - 1) {
                           if (currentVideoIndex + 1 < unlockedVideos) {
