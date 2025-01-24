@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { FaBookOpen, FaCertificate } from "react-icons/fa";
 import { TbCurrencyTaka } from "react-icons/tb";
@@ -108,6 +109,16 @@ const StatCard = ({ icon, title, value }) => (
   </div>
 );
 
+StatCard.propTypes = {
+  icon: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.node,
+  ]).isRequired,
+};
+
 // CourseProgressCard Component
 const CourseProgressCard = ({ course, userId }) => {
   const studentData = course.students.find(
@@ -140,6 +151,22 @@ const CourseProgressCard = ({ course, userId }) => {
       )}
     </div>
   );
+};
+
+CourseProgressCard.propTypes = {
+  course: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    videos: PropTypes.arrayOf(PropTypes.object).isRequired,
+    students: PropTypes.arrayOf(
+      PropTypes.shape({
+        studentsId: PropTypes.string.isRequired,
+        unlockedVideo: PropTypes.number,
+        isCourseComplete: PropTypes.bool,
+      })
+    ).isRequired,
+  }).isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 export default UserHome;
