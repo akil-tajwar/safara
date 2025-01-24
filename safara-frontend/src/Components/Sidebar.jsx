@@ -55,7 +55,7 @@ const Sidebar = () => {
       {/* Overlay when sidebar is open on mobile */}
       <div
         onClick={toggleSidebar}
-        className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity duration-300 lg:hidden ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       />
