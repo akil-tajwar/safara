@@ -28,7 +28,7 @@ const ScheduleMeet = () => {
       }
       const data = await response.json();
       setStudents(data.students); // Store students data
-      setCourseTitle(data.title)
+      setCourseTitle(data.title);
     } catch (error) {
       console.error("Error fetching course:", error);
     }
@@ -46,7 +46,6 @@ const ScheduleMeet = () => {
             `http://localhost:4000/api/user/singleUser/${student.studentsId}`
           );
           if (!response.ok) {
-
             throw new Error(
               `Failed to fetch user with ID: ${student.studentsId}`
             );
@@ -58,7 +57,7 @@ const ScheduleMeet = () => {
       setUsersData(userEmails); // Set the fetched emails
     } catch (error) {
       console.error("Error fetching user emails:", error);
-      setError(error)
+      setError(error);
     }
   };
 
@@ -73,86 +72,84 @@ const ScheduleMeet = () => {
 
   const createMeet = async () => {
     try {
-      const response = axios.post(
-        "http://localhost:4000/api/meet/createMeet",
-        {
-          summary,
-          startTime: new Date(startTime).toISOString(),
-          endTime: new Date(endTime).toISOString(),
-        }
-      );
+      const response = axios.post("http://localhost:4000/api/meet/createMeet", {
+        summary,
+        startTime: new Date(startTime).toISOString(),
+        endTime: new Date(endTime).toISOString(),
+      });
       console.log(response.data);
       setMeetLink(response.data.meetLink);
 
       axios
-      .post("http://localhost:4000/api/meet/sendSchedule", {
-        usersData,
-        meetLink,
-        courseTitle,
-      })
-      .then((response) => {
-        console.log("API Response:", response.data);
-      })
-      .catch((error) => {
-        console.error("API Error:", error.message);
-        if (error.response) {
-          console.error("Error Response Data:", error.response.data);
-          console.error("Error Status Code:", error.response.status);
-        }
-        setError(error)
-      });
-    
+        .post("http://localhost:4000/api/meet/sendSchedule", {
+          usersData,
+          meetLink,
+          courseTitle,
+        })
+        .then((response) => {
+          console.log("API Response:", response.data);
+        })
+        .catch((error) => {
+          console.error("API Error:", error.message);
+          if (error.response) {
+            console.error("Error Response Data:", error.response.data);
+            console.error("Error Status Code:", error.response.status);
+          }
+          setError(error);
+        });
     } catch (error) {
       console.error("Error creating Google Meet event:", error);
-      setError(error)
+      setError(error);
     }
   };
 
   return (
-    <div>
-      <h1>Schedule a Google Meet</h1>
-      <div>
-        <input
-          type="text"
-          placeholder="Event Summary"
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
-          className="border border-green-500"
-        />
-      </div>
-      <div>
-        <input
-          type="datetime-local"
-          placeholder="Start Time"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-          className="border border-green-500"
-        />
-      </div>
-      <div>
-        <input
-          type="datetime-local"
-          placeholder="End Time"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-          className="border border-green-500"
-        />
-      </div>
-      <button
-        className="btn bg-[#125ca6] text-white my-10"
-        onClick={createMeet}
-      >
-        Create Google Meet Event
-      </button>
-
-      {meetLink && (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-2xl font-semibold pb-5">Schedule a Google Meet</h1>
+      <div className="border border-[#125ca6] p-5 rounded-lg lg:w-1/4 md:w-1/2 w-full">
         <div>
-          <h2>Google Meet Link:</h2>
-          <a href={meetLink} target="_blank" rel="noopener noreferrer">
-            {meetLink || error}
-          </a>
+          <input
+            type="datetime-local"
+            placeholder="Start Time"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            className="border w-full mb-3 p-2 rounded-md"
+          />
         </div>
-      )}
+        <div>
+          <input
+            type="datetime-local"
+            placeholder="End Time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+            className="border w-full mb-3 p-2 rounded-md"
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            placeholder="Event Summary"
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            className="border w-full mb-3 p-2 rounded-md"
+          />
+        </div>
+        <button
+          className="btn bg-[#125ca6] hover:bg-[#125ca6] w-full text-white"
+          onClick={createMeet}
+        >
+          Create Google Meet Event
+        </button>
+
+        {meetLink && (
+          <div>
+            <h2>Google Meet Link:</h2>
+            <a href={meetLink} target="_blank" rel="noopener noreferrer">
+              {meetLink || error}
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
