@@ -23,6 +23,10 @@ import ReactHtmlParser from "react-html-parser";
 
 const SingleCourse = () => {
   const { id } = useParams();
+
+  const courseId= id;
+
+  console.log("courseId",courseId);
   const { user } = useAuthContext();
   // const [isInstructor, setIsInstructor] = useState(false);
   const [courseData, setCourseData] = useState(null);
@@ -730,7 +734,7 @@ const SingleCourse = () => {
                   {(user?.user?.role === "admin" ||
                     courseData?.instructorsId?.includes(userId)) && (
                     <Link
-                      to={`/dashboard/admin/schedulemeet?${userId}`}
+                      to={`/dashboard/admin/schedulemeet?${courseId}`}
                       className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                     >
                       Create Meet
@@ -857,7 +861,7 @@ const SingleCourse = () => {
                   {(user?.user?.role === "admin" ||
                     courseData?.instructorsId?.includes(userId)) && (
                     <Link
-                      to={`/dashboard/admin/schedulemeet?${userId}`}
+                      to={`/dashboard/admin/schedulemeet?${courseId}`}
                       className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                     >
                       Create Meet
