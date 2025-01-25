@@ -8,56 +8,9 @@ const UserHome = () => {
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalEnrolledCourses, setTotalEnrolledCourses] = useState(0);
   const [coursesByStudent, setCoursesByStudent] = useState([]);
-<<<<<<< HEAD
-  const [completedLessons, setCompletedLessons] = useState([]);
-  
-  const { user } = useAuthContext();
-  
-  console.log(coursesByStudent);
-  
-  // Dummy data for enrolled courses
-
-
-  // const enrolledCourses = [
-  //   {
-  //     id: 1,
-  //     title: "Introduction to React",
-  //     progress: 60,
-  //     totalLessons: 20,
-  //     completedLessons: 12,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Advanced JavaScript Concepts",
-  //     progress: 30,
-  //     totalLessons: 25,
-  //     completedLessons: 7,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "UI/UX Design Fundamentals",
-  //     progress: 80,
-  //     totalLessons: 15,
-  //     completedLessons: 12,
-  //   },
-  // ];
-
-  // Dummy data for recommended courses
-  // const recommendedCourses = [
-  //   { id: 4, title: "Node.js Basics", rating: 4.7, duration: "4 weeks" },
-  //   {
-  //     id: 5,
-  //     title: "Python for Data Science",
-  //     rating: 4.9,
-  //     duration: "6 weeks",
-  //   },
-  //   { id: 6, title: "Responsive Web Design", rating: 4.5, duration: "3 weeks" },
-  // ];
-=======
   const [certificateEarned, setCertificateEarned] = useState(0);
 
   const { user } = useAuthContext();
->>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
 
   const fetchTotalSpent = () => {
     fetch(
@@ -68,36 +21,12 @@ const UserHome = () => {
       .catch((error) => console.log(error));
   };
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (user) {
-      fetchTotalSpent();
-    } // Fetch users count when component mounts
-  }, []);
-
-
-=======
->>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
   const fetchEnrolledCourses = () => {
     fetch(
       `http://localhost:4000/api/course/getAllEnrolledCourse/${user?.user?._id}`
     )
       .then((res) => res.json())
       .then((data) => {
-<<<<<<< HEAD
-        const updatedCourses = data.courses.map((course) => {
-          const studentData = course.students.find(
-            (student) => student.studentId === user?.user?._id
-          );
-          return {
-            ...course,
-            unlockedVideo: studentData?.unlockedVideo || 0,
-          };
-        });
-  
-        setTotalEnrolledCourses(updatedCourses.length);
-        setCoursesByStudent(updatedCourses);
-=======
         setTotalEnrolledCourses(data.courses.length);
         setCoursesByStudent(data.courses);
 
@@ -109,22 +38,16 @@ const UserHome = () => {
           return count + (studentData?.isCourseComplete ? 1 : 0);
         }, 0);
         setCertificateEarned(completedCourses);
->>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
       })
       .catch((error) => console.log(error));
   };
-  
+
   useEffect(() => {
     if (user) {
       fetchTotalSpent();
       fetchEnrolledCourses();
     }
   }, [user]);
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
 
   return (
     <div className="min-h-screen lg:p-8 pt-5 bg-gray-50">
@@ -162,31 +85,14 @@ const UserHome = () => {
           Your Courses Progress
         </h2>
         <div className="space-y-4">
-<<<<<<< HEAD
-          {coursesByStudent?.map((course) => (
-            <CourseProgressCard key={course.id} course={course} />
-          ))}
-        </div>
-      </div>
-
-      {/* Recommended Courses */}
-      <div className="bg-white rounded-lg border p-6">
-        <h2 className="text-xl font-semibold text-[#125ca6] mb-4">
-          Recommended Courses
-        </h2>
-        {/* <div className="grid gap-4 md:grid-cols-3">
-          {recommendedCourses?.map((course) => (
-            <RecommendedCourseCard key={course.id} course={course} />
-=======
           {coursesByStudent.map((course) => (
             <CourseProgressCard
               key={course._id}
               course={course}
               userId={user.user._id}
             />
->>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
           ))}
-        </div> */}
+        </div>
       </div>
     </div>
   );
