@@ -1039,14 +1039,29 @@ const getUserCourseProgress = async (req, res) => {
   }
 };
 
+
 const getVideosCount = async (req, res) => {
   try {
+    const { id} = req.params; // Extract studentId from the request body
+
+    if (!id) {
+      return res.status(400).send({ error: "Student ID is required" });
+    }
+
     const result = await courseModel.aggregate([
+      // Filter courses where the student is enrolled
+      {
+        $match: {
+          students: id, // Match courses where studentId exists in the students array
+        },
+      },
+      // Project the number of videos in each course
       {
         $project: {
           numberOfVideos: { $size: "$videos" },
         },
       },
+      // Group to sum up the total videos
       {
         $group: {
           _id: null,
@@ -1055,8 +1070,8 @@ const getVideosCount = async (req, res) => {
       },
     ]);
 
+    // Get the total videos count or return 0 if no courses found
     const totalVideos = result.length > 0 ? result[0].totalVideos : 0;
-    console.log(totalVideos);
 
     res.send({ totalVideos });
   } catch (error) {
@@ -1066,6 +1081,7 @@ const getVideosCount = async (req, res) => {
     });
   }
 };
+
 
 module.exports = {
   createCourse,
