@@ -9,44 +9,49 @@ const UserHome = () => {
   const [videosCount, setVideosCount] = useState([]);
   const [coursesByStudent, setCoursesByStudent] = useState([]);
   const [completedLessons, setCompletedLessons] = useState([]);
-
+  
   const { user } = useAuthContext();
+  
+  console.log(coursesByStudent);
+  
   // Dummy data for enrolled courses
-  const enrolledCourses = [
-    {
-      id: 1,
-      title: "Introduction to React",
-      progress: 60,
-      totalLessons: 20,
-      completedLessons: 12,
-    },
-    {
-      id: 2,
-      title: "Advanced JavaScript Concepts",
-      progress: 30,
-      totalLessons: 25,
-      completedLessons: 7,
-    },
-    {
-      id: 3,
-      title: "UI/UX Design Fundamentals",
-      progress: 80,
-      totalLessons: 15,
-      completedLessons: 12,
-    },
-  ];
+
+
+  // const enrolledCourses = [
+  //   {
+  //     id: 1,
+  //     title: "Introduction to React",
+  //     progress: 60,
+  //     totalLessons: 20,
+  //     completedLessons: 12,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Advanced JavaScript Concepts",
+  //     progress: 30,
+  //     totalLessons: 25,
+  //     completedLessons: 7,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "UI/UX Design Fundamentals",
+  //     progress: 80,
+  //     totalLessons: 15,
+  //     completedLessons: 12,
+  //   },
+  // ];
 
   // Dummy data for recommended courses
-  const recommendedCourses = [
-    { id: 4, title: "Node.js Basics", rating: 4.7, duration: "4 weeks" },
-    {
-      id: 5,
-      title: "Python for Data Science",
-      rating: 4.9,
-      duration: "6 weeks",
-    },
-    { id: 6, title: "Responsive Web Design", rating: 4.5, duration: "3 weeks" },
-  ];
+  // const recommendedCourses = [
+  //   { id: 4, title: "Node.js Basics", rating: 4.7, duration: "4 weeks" },
+  //   {
+  //     id: 5,
+  //     title: "Python for Data Science",
+  //     rating: 4.9,
+  //     duration: "6 weeks",
+  //   },
+  //   { id: 6, title: "Responsive Web Design", rating: 4.5, duration: "3 weeks" },
+  // ];
 
   const fetchTotalSpent = () => {
     fetch(
@@ -63,26 +68,36 @@ const UserHome = () => {
     } // Fetch users count when component mounts
   }, []);
 
+
   const fetchEnrolledCourses = () => {
     fetch(
       `http://localhost:4000/api/course/getAllEnrolledCourse/${user?.user?._id}`
     )
       .then((res) => res.json())
       .then((data) => {
-        setTotalEnrolledCourses(data.courses.length);
-        setCoursesByStudent(data.courses);
+        const updatedCourses = data.courses.map((course) => {
+          const studentData = course.students.find(
+            (student) => student.studentId === user?.user?._id
+          );
+          return {
+            ...course,
+            unlockedVideo: studentData?.unlockedVideo || 0,
+          };
+        });
+  
+        setTotalEnrolledCourses(updatedCourses.length);
+        setCoursesByStudent(updatedCourses);
       })
       .catch((error) => console.log(error));
   };
-
+  
   useEffect(() => {
     if (user) {
       fetchEnrolledCourses();
-    } // Fetch users count when component mounts
-  }, []);
+    }
+  }, [user]);
 
-  console.log("totalenrolled", totalEnrolledCourses);
-  console.log("coursesPurchased", coursesByStudent);
+
 
   return (
     <div className="min-h-screen lg:p-8 pt-5 bg-gray-50">
@@ -118,7 +133,7 @@ const UserHome = () => {
           Your Enrolled Courses
         </h2>
         <div className="space-y-4">
-          {enrolledCourses.map((course) => (
+          {coursesByStudent?.map((course) => (
             <CourseProgressCard key={course.id} course={course} />
           ))}
         </div>
@@ -129,11 +144,11 @@ const UserHome = () => {
         <h2 className="text-xl font-semibold text-[#125ca6] mb-4">
           Recommended Courses
         </h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          {recommendedCourses.map((course) => (
+        {/* <div className="grid gap-4 md:grid-cols-3">
+          {recommendedCourses?.map((course) => (
             <RecommendedCourseCard key={course.id} course={course} />
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

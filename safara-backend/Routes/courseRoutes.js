@@ -54,7 +54,7 @@ router.get("/getCompletedCoursesCount", getCompletedCoursesCount);
 router.get("/getAverageCompletionTime", getAverageCompletionTime);
 router.get("/getAllTransactions", getAllTransactions);
 router.get("/getTotalPayment", getTotalPayment);
-router.get("/getVideosCount", getVideosCount);
+router.get("/getVideosCount/:id", getVideosCount);
 router.get("/getUserCourseProgress/:id", getUserCourseProgress);
 router.get("/getSpentByStudent/:studentId", getTotalPaymentBySpecificStudent);
 
