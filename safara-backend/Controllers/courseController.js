@@ -96,7 +96,7 @@ const getAllEnrolledCourse = async (req, res) => {
       .find({
         "students.studentsId": id,
       })
-      .select("title category subCategory banner students");
+      .select("title category subCategory banner students videos");
 
     if (!enrolledCourses.length) {
       return res

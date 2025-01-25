@@ -37,7 +37,7 @@ const Navbar = () => {
 
   return (
     <div className="fixed w-full py-3 bg-white z-10">
-      <div className="md:w-3/4 w-11/12 mx-auto">
+      <div className="lg:w-3/4 w-11/12 mx-auto">
         <div className="flex justify-between items-center">
           <div className="w-40">
             <img src={logo} alt="Logo" />
@@ -45,7 +45,7 @@ const Navbar = () => {
           <div
             className={`lg:flex lg:gap-10 md:gap-5 items-center ${
               isMenuOpen
-                ? "flex flex-col border rounded-md absolute top-full left-0 w-full bg-white p-2"
+                ? "flex flex-row gap-5 justify-center border rounded-md absolute top-full left-0 w-full bg-white p-2"
                 : "hidden"
             }`}
           >

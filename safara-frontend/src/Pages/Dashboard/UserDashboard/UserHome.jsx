@@ -1,13 +1,14 @@
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { FaBookOpen, FaCertificate, FaStar } from "react-icons/fa";
+import { FaBookOpen, FaCertificate } from "react-icons/fa";
 import { TbCurrencyTaka } from "react-icons/tb";
 import useAuthContext from "../../../hooks/useAuthContext";
 
 const UserHome = () => {
-  const [totalSpent, setTotalSpent] = useState([]);
-  const [totalEnrolledCourses, setTotalEnrolledCourses] = useState([]);
-  const [videosCount, setVideosCount] = useState([]);
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [totalEnrolledCourses, setTotalEnrolledCourses] = useState(0);
   const [coursesByStudent, setCoursesByStudent] = useState([]);
+<<<<<<< HEAD
   const [completedLessons, setCompletedLessons] = useState([]);
   
   const { user } = useAuthContext();
@@ -52,6 +53,11 @@ const UserHome = () => {
   //   },
   //   { id: 6, title: "Responsive Web Design", rating: 4.5, duration: "3 weeks" },
   // ];
+=======
+  const [certificateEarned, setCertificateEarned] = useState(0);
+
+  const { user } = useAuthContext();
+>>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
 
   const fetchTotalSpent = () => {
     fetch(
@@ -62,6 +68,7 @@ const UserHome = () => {
       .catch((error) => console.log(error));
   };
 
+<<<<<<< HEAD
   useEffect(() => {
     if (user) {
       fetchTotalSpent();
@@ -69,12 +76,15 @@ const UserHome = () => {
   }, []);
 
 
+=======
+>>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
   const fetchEnrolledCourses = () => {
     fetch(
       `http://localhost:4000/api/course/getAllEnrolledCourse/${user?.user?._id}`
     )
       .then((res) => res.json())
       .then((data) => {
+<<<<<<< HEAD
         const updatedCourses = data.courses.map((course) => {
           const studentData = course.students.find(
             (student) => student.studentId === user?.user?._id
@@ -87,21 +97,40 @@ const UserHome = () => {
   
         setTotalEnrolledCourses(updatedCourses.length);
         setCoursesByStudent(updatedCourses);
+=======
+        setTotalEnrolledCourses(data.courses.length);
+        setCoursesByStudent(data.courses);
+
+        // Count completed courses for certificates
+        const completedCourses = data.courses.reduce((count, course) => {
+          const studentData = course.students.find(
+            (student) => student.studentsId === user.user._id
+          );
+          return count + (studentData?.isCourseComplete ? 1 : 0);
+        }, 0);
+        setCertificateEarned(completedCourses);
+>>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
       })
       .catch((error) => console.log(error));
   };
   
   useEffect(() => {
     if (user) {
+      fetchTotalSpent();
       fetchEnrolledCourses();
     }
   }, [user]);
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
 
   return (
     <div className="min-h-screen lg:p-8 pt-5 bg-gray-50">
-      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Welcome, User!</h1>
+      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">
+        Welcome, {user?.user?.name || "User"}!
+      </h1>
 
       {/* User Stats */}
       <div className="grid gap-6 md:grid-cols-3 mb-8">
@@ -113,7 +142,7 @@ const UserHome = () => {
         <StatCard
           icon={<FaCertificate />}
           title="Certificates Earned"
-          value="3"
+          value={certificateEarned}
         />
         <StatCard
           icon={<TbCurrencyTaka />}
@@ -130,9 +159,10 @@ const UserHome = () => {
       {/* Enrolled Courses and Progress */}
       <div className="bg-white rounded-lg border p-6 mb-8">
         <h2 className="text-xl font-semibold text-[#125ca6] mb-4">
-          Your Enrolled Courses
+          Your Courses Progress
         </h2>
         <div className="space-y-4">
+<<<<<<< HEAD
           {coursesByStudent?.map((course) => (
             <CourseProgressCard key={course.id} course={course} />
           ))}
@@ -147,6 +177,14 @@ const UserHome = () => {
         {/* <div className="grid gap-4 md:grid-cols-3">
           {recommendedCourses?.map((course) => (
             <RecommendedCourseCard key={course.id} course={course} />
+=======
+          {coursesByStudent.map((course) => (
+            <CourseProgressCard
+              key={course._id}
+              course={course}
+              userId={user.user._id}
+            />
+>>>>>>> 8fab81122832fc3810b69e9175764009fd4ff559
           ))}
         </div> */}
       </div>
@@ -154,7 +192,7 @@ const UserHome = () => {
   );
 };
 
-// StatCard Component (reused from AdminDashboard)
+// StatCard Component
 const StatCard = ({ icon, title, value }) => (
   <div className="bg-white rounded-lg border p-6 ">
     <div className="flex justify-between items-center mb-4">
@@ -165,39 +203,64 @@ const StatCard = ({ icon, title, value }) => (
   </div>
 );
 
-// CourseProgressCard Component
-const CourseProgressCard = ({ course }) => (
-  <div className="bg-gray-50 rounded-lg p-4">
-    <h3 className="font-semibold text-lg mb-2">{course.title}</h3>
-    <div className="flex justify-between items-center mb-2">
-      <span className="text-sm text-gray-500">Progress</span>
-      <span className="text-sm font-medium">{course.progress}%</span>
-    </div>
-    <div className="w-full bg-gray-200 rounded-full h-2.5">
-      <div
-        className="bg-blue-600 h-2.5 rounded-full"
-        style={{ width: `${course.progress}%` }}
-      ></div>
-    </div>
-    <p className="text-sm text-gray-500 mt-2">
-      {course.completedLessons} / {course.totalLessons} lessons completed
-    </p>
-  </div>
-);
+StatCard.propTypes = {
+  icon: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.node,
+  ]).isRequired,
+};
 
-// RecommendedCourseCard Component
-const RecommendedCourseCard = ({ course }) => (
-  <div className="bg-gray-50 rounded-lg p-4">
-    <h3 className="font-semibold text-lg mb-2">{course.title}</h3>
-    <div className="flex items-center mb-2">
-      <FaStar className="text-yellow-400 mr-1" />
-      <span className="text-sm font-medium">{course.rating}</span>
+// CourseProgressCard Component
+const CourseProgressCard = ({ course, userId }) => {
+  const studentData = course.students.find(
+    (student) => student.studentsId === userId
+  );
+  const totalVideos = course.videos.length;
+  const unlockedVideos = studentData?.unlockedVideo || 0;
+  const progress = totalVideos > 0 ? (unlockedVideos / totalVideos) * 100 : 0;
+
+  return (
+    <div className="bg-gray-50 rounded-lg p-4">
+      <h3 className="font-semibold text-lg mb-2">{course.title}</h3>
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-sm text-gray-500">Progress</span>
+        <span className="text-sm font-medium">{progress.toFixed(0)}%</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2.5">
+        <div
+          className="bg-blue-600 h-2.5 rounded-full"
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+      <p className="text-sm text-gray-500 mt-2">
+        {unlockedVideos} / {totalVideos} videos completed
+      </p>
+      {studentData?.isCourseComplete && (
+        <div className="mt-2 text-sm text-green-600 font-medium">
+          Course Completed! 🎉
+        </div>
+      )}
     </div>
-    <p className="text-sm text-gray-500">Duration: {course.duration}</p>
-    <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
-      Enroll Now
-    </button>
-  </div>
-);
+  );
+};
+
+CourseProgressCard.propTypes = {
+  course: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    videos: PropTypes.arrayOf(PropTypes.object).isRequired,
+    students: PropTypes.arrayOf(
+      PropTypes.shape({
+        studentsId: PropTypes.string.isRequired,
+        unlockedVideo: PropTypes.number,
+        isCourseComplete: PropTypes.bool,
+      })
+    ).isRequired,
+  }).isRequired,
+  userId: PropTypes.string.isRequired,
+};
 
 export default UserHome;
