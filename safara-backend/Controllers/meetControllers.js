@@ -77,7 +77,7 @@ const sendSchedule = async (req, res) => {
       service: "gmail", // or another email service
       auth: {
         user: "ammaraslam7164@gmail.com",
-        pass: "zedyjqbuoqhojlgr", // App-specific password for Gmail
+        pass: "pyshxdpnnyaotsqv", // App-specific password for Gmail
       },
     });
   
