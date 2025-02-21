@@ -7,6 +7,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import app from "../firebase/firebase";
 import DOMPurify from "dompurify";
 
+// Initialize Firebase Authentication
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
@@ -17,26 +18,42 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Helper function to sanitize email and password inputs
+  const sanitizeInput = (input) => {
+    return DOMPurify.sanitize(input.trim());  // Trimming and sanitizing input
+  };
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!email || !password) {
+    
+    // Sanitize email and password
+    const sanitizedEmail = sanitizeInput(email);
+    const sanitizedPassword = sanitizeInput(password);
+
+    if (!sanitizedEmail || !sanitizedPassword) {
       setError("Please fill in all required fields");
       return;
     }
 
-    const userData = await login(email, password);
-    if (userData) {
-      if (userData.user.role === "school-owner") {
-        navigate("/dashboard");
-      } else if (userData.user.role === "teacher") {
-        navigate("/teacherDashboard");
-      } else {
-        navigate("/");
+    try {
+      const userData = await login(sanitizedEmail, sanitizedPassword);
+      if (userData) {
+        if (userData.user.role === "school-owner") {
+          navigate("/dashboard");
+        } else if (userData.user.role === "teacher") {
+          navigate("/teacherDashboard");
+        } else {
+          navigate("/");
+        }
       }
+    } catch (err) {
+      setError(DOMPurify.sanitize(err.message || "Login failed. Please try again."));
     }
   };
 
+  // Handle Google Login
   const handleGoogleLogin = async () => {
     try {
       setError("");
@@ -62,38 +79,28 @@ const Login = () => {
       await googleLogin(userData);
     } catch (error) {
       console.error("Google login error:", error);
-      setError(error.message || "Google login failed. Please try again.");
+      setError(DOMPurify.sanitize(error.message || "Google login failed. Please try again."));
     }
   };
 
   return (
     <div className="mt-20">
-      <Link
-        to={"/"}
-        className="flex items-center gap-2 font-semibold lg:w-3/4 md:11/12 mx-auto text-xl pb-10"
-      >
+      <Link to={"/"} className="flex items-center gap-2 font-semibold lg:w-3/4 md:11/12 mx-auto text-xl pb-10">
         <FaAngleLeft />
         <p>Go back to home</p>
       </Link>
-      <h2 className="text-center text-4xl font-semibold text-[#125ca6] pb-5">
-        LOGIN
-      </h2>
-      <form
-        onSubmit={handleSubmit}
-        className="md:w-1/4 w-11/12 mx-auto border rounded-md p-10"
-      >
+      <h2 className="text-center text-4xl font-semibold text-[#125ca6] pb-5">LOGIN</h2>
+      <form onSubmit={handleSubmit} className="md:w-1/4 w-11/12 mx-auto border rounded-md p-10">
         {(error || loginError) && (
           <p
             className="text-red-500 mb-4"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(error || loginError),
+              __html: DOMPurify.sanitize(error || loginError),  // Sanitizing the error message
             }}
           />
         )}
         <div className="form-control">
-          <label className="">
-            <span className="">Email</span>
-          </label>
+          <label>Email</label>
           <input
             type="email"
             placeholder="Enter your email"
@@ -104,9 +111,7 @@ const Login = () => {
           />
         </div>
         <div className="form-control mt-4">
-          <label className="">
-            <span className="">Password</span>
-          </label>
+          <label>Password</label>
           <input
             type="password"
             placeholder="Enter your password"
@@ -116,9 +121,7 @@ const Login = () => {
             required
           />
           <label className="mt-4">
-            <Link to="/forgetPassword" className="">
-              Forgot password?
-            </Link>
+            <Link to="/forgetPassword">Forgot password?</Link>
           </label>
         </div>
 
@@ -132,7 +135,7 @@ const Login = () => {
           </button>
         </div>
         <p className="text-center pt-4">
-          Don&apos;t have an account?{" "}
+          Don't have an account?{" "}
           <Link
             to="/signup"
             className="text-[#125ca6] transition-all hover:text-[#0a4a6f] hover:underline"
@@ -147,9 +150,7 @@ const Login = () => {
           disabled={isLoading}
         >
           <FcGoogle className="text-3xl mr-3" />
-          <span>
-            {isLoading ? "Logging in with Google..." : "Login with Google"}
-          </span>
+          <span>{isLoading ? "Logging in with Google..." : "Login with Google"}</span>
         </button>
       </form>
     </div>
