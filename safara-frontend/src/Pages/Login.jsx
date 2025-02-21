@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaAngleLeft } from "react-icons/fa6";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import app from "../firebase/firebase";
+import DOMPurify from "dompurify";
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -82,7 +83,12 @@ const Login = () => {
         className="md:w-1/4 w-11/12 mx-auto border rounded-md p-10"
       >
         {(error || loginError) && (
-          <p className="text-red-500 mb-4">{error || loginError}</p>
+          <p
+            className="text-red-500 mb-4"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(error || loginError),
+            }}
+          />
         )}
         <div className="form-control">
           <label className="">
