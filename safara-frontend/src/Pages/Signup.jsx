@@ -115,7 +115,7 @@ const Signup = () => {
             type="text"
             placeholder="Enter your first name"
             {...register("firstname", { required: true })}
-            className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
           />
         </div>
         <div className="form-control pb-4">
@@ -126,7 +126,7 @@ const Signup = () => {
             type="text"
             placeholder="Enter your last name"
             {...register("lastname", { required: true })}
-            className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
           />
         </div>
         <div className="form-control pb-4">
@@ -137,7 +137,7 @@ const Signup = () => {
             type="email"
             placeholder="email"
             {...register("email", { required: true })}
-            className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
           />
         </div>
         <div className="form-control pb-4">
@@ -148,7 +148,7 @@ const Signup = () => {
             type="text"
             placeholder="phone"
             {...register("phone", { required: true })}
-            className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
           />
         </div>
         {/* Image Upload Field */}
@@ -174,7 +174,7 @@ const Signup = () => {
             type="password"
             placeholder="password"
             {...register("password", { required: true })}
-            className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
           />
         </div>
         <div className="form-control pb-4">
@@ -189,7 +189,7 @@ const Signup = () => {
               validate: (value) =>
                 value === password || "Passwords do not match",
             })}
-            className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
           />
           {errors.retypePassword && (
             <p className="text-red-500 text-sm mt-1">
@@ -207,7 +207,10 @@ const Signup = () => {
         </div>
         <p className="text-center pt-2">
           Already have an account?{" "}
-          <Link to="/login" className="text-[#125ca6]">
+          <Link
+            to="/login"
+            className="text-[#125ca6] hover:text-white hover:underline hover:bg-[#125ca6] px-1 py-0.5 rounded-md transition-all"
+          >
             Login
           </Link>{" "}
         </p>
