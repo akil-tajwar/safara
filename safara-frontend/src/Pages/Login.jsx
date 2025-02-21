@@ -93,7 +93,7 @@ const Login = () => {
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
             required
           />
         </div>
@@ -106,7 +106,7 @@ const Login = () => {
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
             required
           />
           <label className="mt-4">
@@ -119,7 +119,7 @@ const Login = () => {
         <div className="form-control mt-6">
           <button
             type="submit"
-            className="bg-[#125ca6] py-3 rounded-md text-white"
+            className="bg-[#125ca6] py-3 rounded-md text-white transition-all hover:bg-[#0a4a6f] hover:border-[#0a4a6f] border-2"
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
@@ -127,14 +127,17 @@ const Login = () => {
         </div>
         <p className="text-center pt-4">
           Don&apos;t have an account?{" "}
-          <Link to="/signup" className="text-[#125ca6]">
+          <Link
+            to="/signup"
+            className="text-[#125ca6] transition-all hover:text-[#0a4a6f] hover:underline"
+          >
             Sign up
           </Link>
         </p>
         <button
           onClick={handleGoogleLogin}
           type="button"
-          className="border border-[#125ca6] py-3 rounded-md w-full mt-4 flex items-center justify-center"
+          className="border border-[#125ca6] py-3 rounded-md w-full mt-4 flex items-center justify-center transition-all hover:bg-[#0a4a6f] hover:border-[#0a4a6f] hover:text-white"
           disabled={isLoading}
         >
           <FcGoogle className="text-3xl mr-3" />
