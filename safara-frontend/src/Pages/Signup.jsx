@@ -5,6 +5,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { useState } from "react";
 import { storage } from "../firebase/firebase"; // Use storage from the initialized firebase file
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import DOMPurify from "dompurify"; // For sanitizing inputs
 
 const Signup = () => {
   const { signup } = useSignup();
@@ -13,28 +14,50 @@ const Signup = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch, // Added for validation
+    watch,
   } = useForm();
 
   const [selectedImage, setSelectedImage] = useState(null);
 
+  // Function to sanitize all inputs
+  const sanitizeInput = (input) => {
+    return DOMPurify.sanitize(input.trim());  // Trim and sanitize to remove any unwanted content
+  };
+
   const onSubmit = async (data) => {
+    // Sanitize all user inputs to prevent XSS attacks
     const { firstname, lastname, email, phone, password } = data;
+
+    const sanitizedFirstname = sanitizeInput(firstname);
+    const sanitizedLastname = sanitizeInput(lastname);
+    const sanitizedEmail = sanitizeInput(email);
+    const sanitizedPhone = sanitizeInput(phone);
+    const sanitizedPassword = sanitizeInput(password);
     const role = "user";
     const prevRole = role;
 
     try {
-      // Check if an image file is selected
+      // Validate if an image file is selected
       if (selectedImage) {
+        // Image file validation (limit size, file type)
+        const allowedTypes = ["image/jpeg", "image/png"];
+        if (!allowedTypes.includes(selectedImage.type)) {
+          throw new Error("Invalid file type. Only JPG and PNG are allowed.");
+        }
+
+        const maxSize = 5 * 1024 * 1024; // Limit to 5MB
+        if (selectedImage.size > maxSize) {
+          throw new Error("File is too large. Maximum size is 5MB.");
+        }
+
         const imgName = `${new Date().getTime()}_${selectedImage.name}`;
         const storageRef = ref(storage, `images/${imgName}`);
         const uploadTask = uploadBytesResumable(storageRef, selectedImage);
 
-        // Listen for state changes, errors, and completion of the upload
+        // Listen for upload progress, errors, and completion
         uploadTask.on(
           "state_changed",
           (snapshot) => {
-            // Calculate and set upload progress
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             setUploadPerc(Math.round(progress));
@@ -43,35 +66,31 @@ const Signup = () => {
             console.error("Error uploading image: ", error);
           },
           async () => {
-            // Get the download URL once upload is complete
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-
-            // Call signup function with all data including image URL
             await signup(
-              firstname,
-              lastname,
-              email,
-              phone,
+              sanitizedFirstname,
+              sanitizedLastname,
+              sanitizedEmail,
+              sanitizedPhone,
               role,
               prevRole,
               downloadURL,
-              password
+              sanitizedPassword
             );
-
             console.log("Signup successful with image URL:", downloadURL);
           }
         );
       } else {
-        // If no image is selected, proceed without image URL
+        // Proceed without image if none selected
         await signup(
-          firstname,
-          lastname,
-          email,
-          phone,
+          sanitizedFirstname,
+          sanitizedLastname,
+          sanitizedEmail,
+          sanitizedPhone,
           role,
           prevRole,
           "",
-          password
+          sanitizedPassword
         );
         console.log("Signup successful without image.");
       }
@@ -86,7 +105,6 @@ const Signup = () => {
     }
   };
 
-  // Watch password and retypePassword fields
   const password = watch("password");
   const retypePassword = watch("retypePassword");
 
@@ -108,9 +126,7 @@ const Signup = () => {
       >
         {/* Form Fields */}
         <div className="form-control pb-4">
-          <label className="">
-            <span className="">First Name</span>
-          </label>
+          <label className="">First Name</label>
           <input
             type="text"
             placeholder="Enter your first name"
@@ -119,9 +135,7 @@ const Signup = () => {
           />
         </div>
         <div className="form-control pb-4">
-          <label className="">
-            <span className="">Last Name</span>
-          </label>
+          <label className="">Last Name</label>
           <input
             type="text"
             placeholder="Enter your last name"
@@ -130,9 +144,7 @@ const Signup = () => {
           />
         </div>
         <div className="form-control pb-4">
-          <label className="">
-            <span className="">Email</span>
-          </label>
+          <label className="">Email</label>
           <input
             type="email"
             placeholder="email"
@@ -141,9 +153,7 @@ const Signup = () => {
           />
         </div>
         <div className="form-control pb-4">
-          <label className="">
-            <span className="">Phone</span>
-          </label>
+          <label className="">Phone</label>
           <input
             type="text"
             placeholder="phone"
@@ -154,9 +164,7 @@ const Signup = () => {
         {/* Image Upload Field */}
         <div className="form-control w-full mb-4">
           <div className="flex justify-between">
-            <label>
-              <span>Upload your img</span>
-            </label>
+            <label><span>Upload your img</span></label>
             <p>{uploadPerc}%</p>
           </div>
           <input
@@ -167,9 +175,7 @@ const Signup = () => {
           />
         </div>
         <div className="form-control pb-4">
-          <label className="">
-            <span className="">Password</span>
-          </label>
+          <label className="">Password</label>
           <input
             type="password"
             placeholder="password"
@@ -178,9 +184,7 @@ const Signup = () => {
           />
         </div>
         <div className="form-control pb-4">
-          <label className="">
-            <span className="">Retype Password</span>
-          </label>
+          <label className="">Retype Password</label>
           <input
             type="password"
             placeholder="Retype password"
@@ -198,10 +202,7 @@ const Signup = () => {
           )}
         </div>
         <div className="form-control mt-10">
-          <button
-            type="submit"
-            className="bg-[#125ca6] py-3 rounded-md text-white"
-          >
+          <button type="submit" className="bg-[#125ca6] py-3 rounded-md text-white">
             Signup
           </button>
         </div>

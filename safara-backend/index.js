@@ -33,7 +33,14 @@ app.use("/api/meet", meetRoutes);
 app.get("/", async (req, res) => {
   res.send("Server is working!");
 });
-
+// Set CSP headers
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
+  );
+  next();
+});
 const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t9lecvs.mongodb.net/Safara-API?retryWrites=true&w=majority&appName=Cluster0`;
 mongoose
   .connect(url)
