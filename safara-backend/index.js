@@ -1,7 +1,9 @@
 const cors = require("cors");
 const mongoose = require("mongoose");
 const express = require("express");
-const axios = require("axios");
+const helmet = require("helmet");
+
+// Use helmet middleware for secure headers
 
 const userRoutes = require("./Routes/userRoutes.js");
 const meetRoutes = require("./Routes/meetRoutes.js");
@@ -18,10 +20,10 @@ app.use(
     credentials: true, // If needed for cookies/auth
   })
 );
-
 // Middleware to parse JSON request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
 
 // Routes
 app.use("/api/user", userRoutes);
@@ -33,6 +35,7 @@ app.use("/api/meet", meetRoutes);
 app.get("/", async (req, res) => {
   res.send("Server is working!");
 });
+
 // Set CSP headers
 app.use((req, res, next) => {
   res.setHeader(
@@ -41,9 +44,10 @@ app.use((req, res, next) => {
   );
   next();
 });
-const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t9lecvs.mongodb.net/Safara-API?retryWrites=true&w=majority&appName=Cluster0`;
+const MONGODB_URI = process.env.MONGODB_URI;
+
 mongoose
-  .connect(url)
+  .connect(MONGODB_URI)
   .then(() => {
     // Listen for requests
     console.log("Successfully Connected to DB");
