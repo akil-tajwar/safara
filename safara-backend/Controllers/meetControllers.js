@@ -11,10 +11,9 @@ const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
 // Route to create a Google Meet event
 const createMeet = async (req, res) => {
-  console.log("hitting create meet");
+
   const { summary, startTime, endTime } = req.body;
 
-  console.log("from backend ai create-meet", summary, startTime, endTime);
   const oauth2Client = new OAuth2(CLIENT_ID, CLIENT_SECRET);
   oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
