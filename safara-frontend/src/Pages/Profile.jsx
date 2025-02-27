@@ -149,7 +149,8 @@ const Profile = () => {
                     const isUserCompleted = course.students.some(
                       (student) =>
                         student.studentsId === user.user._id &&
-                        student.isCourseComplete
+                        student.isCourseComplete &&
+                        student.isQuizComplete
                     );
 
                     return (
