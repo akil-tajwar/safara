@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaHome,
   FaRegBuilding,
@@ -8,7 +8,7 @@ import {
   FaBars,
   FaUser,
 } from "react-icons/fa";
-import { MdOutlineFeaturedVideo } from "react-icons/md";
+import { MdOutlineFeaturedVideo, MdOutlineFolderSpecial } from "react-icons/md";
 import { GrDocumentConfig, GrDocumentUpdate } from "react-icons/gr";
 import { NavLink, useLocation } from "react-router-dom";
 import useAuthContext from "../hooks/useAuthContext";
@@ -16,10 +16,32 @@ import useAuthContext from "../hooks/useAuthContext";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuthContext();
+  console.log("🚀 ~ Sidebar ~ user:", user?.user?._id)
+  const [currentUser, setCurrentUser] = useState([]);
   const location = useLocation();
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  const fetchAllUsers = () => {
+    const url = `http://localhost:4000/api/user/allUsers`;
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("🚀 ~ .then ~ data:", data)
+        const userData = data.find(userData => userData._id === user?.user?._id);
+        setCurrentUser(userData);
+        console.log("🚀 ~ .then ~ userData:", userData)
+      })
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    if (user?.user?._id) {
+      fetchAllUsers();
+    }
+  }, [user?.user?._id]);
+  
 
   // Regex to match the /singleCourse/:id pattern
   const singleCourseRegex = /^\/singleCourse\/[^/]+$/;
@@ -70,7 +92,7 @@ const Sidebar = () => {
           <img src="logo.png" alt="" />
         </div>
         <ul className="menu p-4">
-          {user?.user?.role === "admin" && (
+          {currentUser.role === "admin" && (
             <>
               <h2 className="text-2xl font-bold pb-8">Admin Dashboard</h2>
               <li>
@@ -122,7 +144,7 @@ const Sidebar = () => {
               </li>
             </>
           )}
-          {user?.user?.role === "user" && (
+          {currentUser.role === "user" && (
             <>
               <h2 className="text-2xl font-bold pb-8">User Dashboard</h2>
               <li>
@@ -168,7 +190,7 @@ const Sidebar = () => {
           </li>
           <li>
             <NavLink style={navLinkStyle} to={"/others"}>
-              <FaSearch />
+            <MdOutlineFolderSpecial />
               Others
             </NavLink>
           </li>
