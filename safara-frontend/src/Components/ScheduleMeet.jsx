@@ -108,7 +108,7 @@ const ScheduleMeet = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-2xl font-semibold pb-5">Schedule a Google Meet</h1>
-      <div className="border border-[#125ca6] p-5 rounded-lg lg:w-1/4 md:w-1/2 w-full">
+      <div className="border border-primary p-5 rounded-lg lg:w-1/4 md:w-1/2 w-full">
         <input
           type="datetime-local"
           placeholder="Start Time"
@@ -131,7 +131,7 @@ const ScheduleMeet = () => {
           className="border w-full mb-3 p-2 rounded-md"
         />
         <button
-          className="btn bg-[#125ca6] hover:bg-[#125ca6] w-full text-white"
+          className="btn bg-primary hover:bg-primary w-full text-white"
           onClick={createMeet}
           disabled={loading || !usersData.length || !courseTitle}
         >

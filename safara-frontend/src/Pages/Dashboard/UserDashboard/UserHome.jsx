@@ -51,7 +51,7 @@ const UserHome = () => {
 
   return (
     <div className="min-h-screen lg:p-8 pt-5 bg-gray-50">
-      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">
+      <h1 className="text-3xl font-bold text-primary mb-8">
         Welcome, {user?.user?.name || "User"}!
       </h1>
 
@@ -81,7 +81,7 @@ const UserHome = () => {
 
       {/* Enrolled Courses and Progress */}
       <div className="bg-white rounded-lg border p-6 mb-8">
-        <h2 className="text-xl font-semibold text-[#125ca6] mb-4">
+        <h2 className="text-xl font-semibold text-primary mb-4">
           Your Courses Progress
         </h2>
         <div className="space-y-4">
@@ -103,7 +103,7 @@ const StatCard = ({ icon, title, value }) => (
   <div className="bg-white rounded-lg border p-6 ">
     <div className="flex justify-between items-center mb-4">
       <h2 className="text-sm font-medium text-gray-500">{title}</h2>
-      <div className="text-[#125ca6] text-xl">{icon}</div>
+      <div className="text-primary text-xl">{icon}</div>
     </div>
     <p className="text-3xl font-bold">{value}</p>
   </div>

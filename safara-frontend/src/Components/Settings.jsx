@@ -96,7 +96,7 @@ const Settings = () => {
         <div className="border p-4 rounded-lg flex justify-between items-center">
           <h5 className="text-lg">Password</h5>
           <button
-            className="bg-[#125ca6] py-2 px-5 w-44 rounded-md text-white"
+            className="bg-primary py-2 px-5 w-44 rounded-md text-white"
             onClick={() =>
               document.getElementById("change-password-modal").showModal()
             }
@@ -126,7 +126,7 @@ const Settings = () => {
                     type="password"
                     name="oldPassword"
                     placeholder="Enter your old password"
-                    className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    className="input input-bordered focus:border-none rounded-md border hover:border-primary"
                   />
                 </div>
                 <div className="form-control py-3">
@@ -137,7 +137,7 @@ const Settings = () => {
                     type="password"
                     name="newPassword"
                     placeholder="Enter your new password"
-                    className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    className="input input-bordered focus:border-none rounded-md border hover:border-primary"
                   />
                 </div>
                 <div className="form-control">
@@ -148,12 +148,12 @@ const Settings = () => {
                     type="password"
                     name="retypePassword"
                     placeholder="Enter your new password"
-                    className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    className="input input-bordered focus:border-none rounded-md border hover:border-primary"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="bg-[#125ca6] w-full mt-6 py-3 rounded-md text-white"
+                  className="bg-primary w-full mt-6 py-3 rounded-md text-white"
                 >
                   Change Password
                 </button>
@@ -191,7 +191,7 @@ const Settings = () => {
                   <input
                     type="password"
                     placeholder="Enter your password"
-                    className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+                    className="input input-bordered focus:border-none rounded-md border hover:border-primary"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />

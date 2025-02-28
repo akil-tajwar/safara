@@ -86,7 +86,7 @@ const ManageCourses = () => {
 
   return (
     <div className="lg:p-6 pt-10">
-      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Manage Courses</h1>
+      <h1 className="text-3xl font-bold text-primary mb-8">Manage Courses</h1>
       <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-5 w-fit relative z-10">
         {courses?.map((course) => (
           <div key={course._id} className="border rounded-xl relative ">
@@ -97,20 +97,20 @@ const ManageCourses = () => {
             </Link>
             <div className="absolute right-4 top-4 dropdown-container">
               <BsThreeDots
-                className="bg-[#125ca6] border cursor-pointer text-white absolute right-0 p-1 text-3xl rounded-full"
+                className="bg-primary border cursor-pointer text-white absolute right-0 p-1 text-3xl rounded-full"
                 onClick={(e) => toggleDropdown(course._id, e)} // Toggle dropdown on click
               />
               {visibleDropdown === course._id && (
                 <div className="border bg-white w-52 p-3 rounded-md absolute right-0 top-10 z-10">
                   <Link to={`/dashboard/admin/updateCourse/${course?._id}`} className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md">
-                    <MdEdit className="tooltip p-1 text-2xl bg-[#125ca6] text-white rounded-full" />
+                    <MdEdit className="tooltip p-1 text-2xl bg-primary text-white rounded-full" />
                     <p>Update Course</p>
                   </Link>
                   <div
                     onClick={() => handleDelete(course._id)}
                     className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md"
                   >
-                    <RiDeleteBin5Line className="tooltip p-1 text-2xl bg-[#125ca6] text-white rounded-full" />
+                    <RiDeleteBin5Line className="tooltip p-1 text-2xl bg-primary text-white rounded-full" />
                     <p>Delete Course</p>
                   </div>
                 </div>

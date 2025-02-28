@@ -131,7 +131,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen lg:p-8 pt-5">
-      <h1 className="text-3xl font-bold text-[#125ca6] mb-5">
+      <h1 className="text-3xl font-bold text-primary mb-5">
         Admin Dashboard
       </h1>
 
@@ -170,7 +170,7 @@ const AdminDashboard = () => {
       <div className="grid gap-6 md:grid-cols-2 mb-8">
         {/* Course Categories Section */}
         <div className="bg-white rounded-lg border p-6">
-          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">
+          <h2 className="text-xl font-semibold text-primary mb-4">
             Course Categories
           </h2>
           <div className="space-y-4">
@@ -188,7 +188,7 @@ const AdminDashboard = () => {
 
         {/* Platform Overview Section */}
         <div className="bg-white rounded-lg border p-6">
-          <h2 className="text-xl font-semibold text-[#125ca6] mb-4">
+          <h2 className="text-xl font-semibold text-primary mb-4">
             Platform Overview
           </h2>
           <div className="grid grid-cols-2 gap-4">
@@ -214,7 +214,7 @@ const StatCard = ({ icon, title, value, change }) => (
   <div className="bg-white rounded-lg border p-6">
     <div className="flex justify-between items-center mb-4">
       <h2 className="text-sm font-medium text-gray-500">{title}</h2>
-      <div className="text-[#125ca6] text-xl">{icon}</div>
+      <div className="text-primary text-xl">{icon}</div>
     </div>
     <p className="text-3xl font-bold">{value}</p>
   </div>

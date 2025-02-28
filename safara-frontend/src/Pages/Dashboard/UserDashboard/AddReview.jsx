@@ -47,7 +47,7 @@ const AddReview = () => {
         <div>
         <div className="card bg-base-100 w-1/2 mx-auto  shrink-0 shadow-2xl">
           <form onSubmit={handleSubmit} className="card-body">
-            <h2 className="text-center font-bold text-3xl text-[#125ca6]">RATE US!</h2>
+            <h2 className="text-center font-bold text-3xl text-primary">RATE US!</h2>
             <Rating
               style={{ maxWidth: 200 }}
               className="mx-auto m-4"

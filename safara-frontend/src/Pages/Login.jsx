@@ -89,7 +89,7 @@ const Login = () => {
         <FaAngleLeft />
         <p>Go back to home</p>
       </Link>
-      <h2 className="text-center text-4xl font-semibold text-[#125ca6] pb-5">LOGIN</h2>
+      <h2 className="text-center text-4xl font-semibold text-primary pb-5">LOGIN</h2>
       <form onSubmit={handleSubmit} className="md:w-1/4 w-11/12 mx-auto border rounded-md p-10">
         {(error || loginError) && (
           <p
@@ -106,7 +106,7 @@ const Login = () => {
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
+            className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
             required
           />
         </div>
@@ -117,7 +117,7 @@ const Login = () => {
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
+            className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
             required
           />
           <label className="mt-4">
@@ -128,7 +128,7 @@ const Login = () => {
         <div className="form-control mt-6">
           <button
             type="submit"
-            className="bg-[#125ca6] py-3 rounded-md text-white transition-all hover:bg-[#0a4a6f] hover:border-[#0a4a6f] border-2"
+            className="bg-primary py-3 rounded-md text-white transition-all hover:bg-[#0a4a6f] hover:border-[#0a4a6f] border-2"
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
@@ -138,7 +138,7 @@ const Login = () => {
           Don't have an account?{" "}
           <Link
             to="/signup"
-            className="text-[#125ca6] transition-all hover:text-[#0a4a6f] hover:underline"
+            className="text-primary transition-all hover:text-[#0a4a6f] hover:underline"
           >
             Sign up
           </Link>
@@ -146,7 +146,7 @@ const Login = () => {
         <button
           onClick={handleGoogleLogin}
           type="button"
-          className="border border-[#125ca6] py-3 rounded-md w-full mt-4 flex items-center justify-center transition-all hover:bg-[#0a4a6f] hover:border-[#0a4a6f] hover:text-white"
+          className="border border-primary py-3 rounded-md w-full mt-4 flex items-center justify-center transition-all hover:bg-[#0a4a6f] hover:border-[#0a4a6f] hover:text-white"
           disabled={isLoading}
         >
           <FcGoogle className="text-3xl mr-3" />

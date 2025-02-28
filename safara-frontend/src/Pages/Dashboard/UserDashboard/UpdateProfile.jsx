@@ -125,7 +125,7 @@ const UpdateProfile = () => {
           <span className="loading loading-spinner w-40 h-40 text-white"></span>
         </div>
       )}
-      <p className="md:text-3xl border-b font-bold text-[#125ca6] pb-2 mb-10">Update Profile</p>
+      <p className="md:text-3xl border-b font-bold text-primary pb-2 mb-10">Update Profile</p>
       <form onSubmit={handleUpdate} className="">
         <p className="font-semibold text-xs text-slate-400 pb-1">PERSONAL INFO</p>
         <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
@@ -279,7 +279,7 @@ const UpdateProfile = () => {
           </div>
         </div>
         <div className="py-10 text-center">
-          <button type="submit" className="rounded-md py-[11px] px-4 bg-[#125ca6] text-white">
+          <button type="submit" className="rounded-md py-[11px] px-4 bg-primary text-white">
             Update
           </button>
         </div>

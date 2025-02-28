@@ -442,7 +442,7 @@ const SingleCourse = () => {
       {!quizSubmitted && (
         <button
           onClick={handleQuizSubmit}
-          className="w-full bg-[#125ca6] text-white font-bold py-2 px-4 rounded"
+          className="w-full bg-primary text-white font-bold py-2 px-4 rounded"
         >
           Submit
         </button>
@@ -454,7 +454,7 @@ const SingleCourse = () => {
           </h2>
           <button
             onClick={handleCloseQuiz}
-            className="mt-4 w-full bg-[#125ca6] text-white font-bold py-2 px-4 rounded"
+            className="mt-4 w-full bg-primary text-white font-bold py-2 px-4 rounded"
           >
             Return to Videos
           </button>
@@ -646,7 +646,7 @@ const SingleCourse = () => {
             <div className="text-right">
               <button
                 onClick={handleSubmitRating}
-                className="bg-[#125ca6] text-white px-5 py-2 mt-1 rounded-md"
+                className="bg-primary text-white px-5 py-2 mt-1 rounded-md"
               >
                 Submit
               </button>
@@ -660,13 +660,13 @@ const SingleCourse = () => {
           <div className="flex gap-2 text-2xl text-white">
             <FaChevronLeft
               onClick={() => scrollCarousel(studentsOpinionCarouselRef, "left")}
-              className="bg-[#125ca6] rounded-md p-1 cursor-pointer"
+              className="bg-primary rounded-md p-1 cursor-pointer"
             />
             <FaChevronRight
               onClick={() =>
                 scrollCarousel(studentsOpinionCarouselRef, "right")
               }
-              className="bg-[#125ca6] rounded-md p-1 cursor-pointer"
+              className="bg-primary rounded-md p-1 cursor-pointer"
             />
           </div>
         </div>
@@ -683,11 +683,11 @@ const SingleCourse = () => {
           <div className="flex gap-2 text-2xl text-white">
             <FaChevronLeft
               onClick={() => scrollCarousel(reletedCoursesCarouselRef, "left")}
-              className="bg-[#125ca6] rounded-md p-1 cursor-pointer"
+              className="bg-primary rounded-md p-1 cursor-pointer"
             />
             <FaChevronRight
               onClick={() => scrollCarousel(reletedCoursesCarouselRef, "right")}
-              className="bg-[#125ca6] rounded-md p-1 cursor-pointer"
+              className="bg-primary rounded-md p-1 cursor-pointer"
             />
           </div>
         </div>
@@ -719,7 +719,7 @@ const SingleCourse = () => {
         <div>
           <Navbar />
           <div className="pt-[73px] pb-20">
-            <div className="rounded-md bg-gradient-to-b from-[#125ca6] via-[#1870c8] to-[#1c7edf] text-white px-5 py-5 border-b mb-8">
+            <div className="rounded-md bg-gradient-to-b from-primary via-[#1870c8] to-[#1c7edf] text-white px-5 py-5 border-b mb-8">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-3xl">{courseData?.title}</h3>
@@ -735,14 +735,14 @@ const SingleCourse = () => {
                     courseData?.instructorsId?.includes(userId)) && (
                     <Link
                       to={`/dashboard/admin/schedulemeet?${courseId}`}
-                      className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                      className="text-primary flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                     >
                       Create Meet
                     </Link>
                   )}
                   <button
                     onClick={() => downloadFiteAtURL(courseData?.syllabus)}
-                    className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                    className="text-primary flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                   >
                     <IoMdDownload className="text-xl" />
                     <p className="">Syllabus</p>
@@ -762,7 +762,7 @@ const SingleCourse = () => {
                       {courseData?.price}
                       <TbCurrencyTaka />
                     </del>
-                    <p className="bg-[#125ca6] bg-opacity-25 font-semibold text-[#125ca6] rounded-full py-1 px-3 w-fit text-sm">
+                    <p className="bg-primary bg-opacity-25 font-semibold text-primary rounded-full py-1 px-3 w-fit text-sm">
                       {courseData?.discount}% OFF
                     </p>
                   </div>
@@ -784,7 +784,7 @@ const SingleCourse = () => {
               <div className="p-3 pt-0">
                 <button
                   onClick={makePayment}
-                  className="bg-[#125ca6] text-white w-full text-xl py-2 mt-2 rounded-md"
+                  className="bg-primary text-white w-full text-xl py-2 mt-2 rounded-md"
                 >
                   Enroll
                 </button>
@@ -806,7 +806,7 @@ const SingleCourse = () => {
                           {courseData?.price}
                           <TbCurrencyTaka />
                         </del>
-                        <p className="bg-[#125ca6] bg-opacity-25 font-semibold text-[#125ca6] rounded-full py-1 px-3 w-fit text-sm">
+                        <p className="bg-primary bg-opacity-25 font-semibold text-primary rounded-full py-1 px-3 w-fit text-sm">
                           {courseData?.discount}% OFF
                         </p>
                       </div>
@@ -828,7 +828,7 @@ const SingleCourse = () => {
                   <div className="p-3 pt-0">
                     <button
                       onClick={makePayment}
-                      className="bg-[#125ca6] text-white w-full text-xl py-2 mt-2 rounded-md"
+                      className="bg-primary text-white w-full text-xl py-2 mt-2 rounded-md"
                     >
                       Enroll
                     </button>
@@ -846,7 +846,7 @@ const SingleCourse = () => {
             <Sidebar />
           </div>
           <div className="lg:pl-72 pl-0 top-7 lg:absolute lg:pr-8 pr-0">
-            <div className="rounded-md bg-gradient-to-b from-[#125ca6] via-[#1870c8] to-[#1c7edf] text-white px-5 py-5 border-b mb-8">
+            <div className="rounded-md bg-gradient-to-b from-primary via-[#1870c8] to-[#1c7edf] text-white px-5 py-5 border-b mb-8">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-3xl">{courseData?.title}</h3>
@@ -862,14 +862,14 @@ const SingleCourse = () => {
                     courseData?.instructorsId?.includes(userId)) && (
                     <Link
                       to={`/dashboard/admin/schedulemeet?${courseId}`}
-                      className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                      className="text-primary flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                     >
                       Create Meet
                     </Link>
                   )}
                   <button
                     onClick={() => downloadFiteAtURL(courseData?.syllabus)}
-                    className="text-[#125ca6] flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                    className="text-primary flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                   >
                     <IoMdDownload className="text-xl" />
                     <p className="">Syllabus</p>
@@ -900,7 +900,7 @@ const SingleCourse = () => {
                           showQuiz
                             ? "text-gray-400 cursor-not-allowed"
                             : selectedVideo?._id === video._id
-                            ? "bg-[#125ca6] border-[#125ca6] text-white"
+                            ? "bg-primary border-primary text-white"
                             : index < unlockedVideos
                             ? "text-black cursor-pointer"
                             : "text-gray-400 cursor-not-allowed"
@@ -934,7 +934,7 @@ const SingleCourse = () => {
                           onClick={courseComplete ? handleQuizOpen : undefined}
                           className={`px-4 rounded-md ${
                             courseComplete
-                              ? "bg-[#125ca6] text-white"
+                              ? "bg-primary text-white"
                               : "bg-gray-300 text-gray-400 cursor-not-allowed"
                           }`}
                           disabled={!courseComplete}
@@ -945,7 +945,7 @@ const SingleCourse = () => {
                     )}
                     <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
                       <button
-                        className={`bg-[#125ca6] py-1 px-4 rounded-md ${
+                        className={`bg-primary py-1 px-4 rounded-md ${
                           currentVideoIndex === 0 &&
                           "text-gray-400 bg-gray-300 cursor-not-allowed"
                         }`}
@@ -962,7 +962,7 @@ const SingleCourse = () => {
                         Prev
                       </button>
                       <button
-                        className={`bg-[#125ca6] py-1 px-4 rounded-md ${
+                        className={`bg-primary py-1 px-4 rounded-md ${
                           currentVideoIndex === courseData.videos.length - 1 &&
                           "text-gray-400 bg-gray-300 cursor-not-allowed"
                         }`}
@@ -998,7 +998,7 @@ const SingleCourse = () => {
                     <div className="text-center">
                       <button
                         onClick={courseCompleteAction}
-                        className="text-white bg-[#125ca6] w-full p-2 rounded-md mt-4"
+                        className="text-white bg-primary w-full p-2 rounded-md mt-4"
                       >
                         Complete Course
                       </button>
@@ -1017,7 +1017,7 @@ const SingleCourse = () => {
                         showQuiz
                           ? "text-gray-400 cursor-not-allowed"
                           : selectedVideo?._id === video._id
-                          ? "bg-[#125ca6] border-[#125ca6] text-white"
+                          ? "bg-primary border-primary text-white"
                           : index < unlockedVideos
                           ? "text-black cursor-pointer"
                           : "text-gray-400 cursor-not-allowed"
@@ -1051,7 +1051,7 @@ const SingleCourse = () => {
                         onClick={courseComplete ? handleQuizOpen : undefined}
                         className={`px-4 rounded-md ${
                           courseComplete
-                            ? "bg-[#125ca6] text-white"
+                            ? "bg-primary text-white"
                             : "bg-gray-300 text-gray-400 cursor-not-allowed"
                         }`}
                         disabled={!courseComplete}
@@ -1062,7 +1062,7 @@ const SingleCourse = () => {
                   )}
                   <div className="text-white p-3 flex justify-between items-center absolute bottom-0 left-0 right-0">
                     <button
-                      className={`bg-[#125ca6] py-1 px-4 rounded-md ${
+                      className={`bg-primary py-1 px-4 rounded-md ${
                         currentVideoIndex === 0 &&
                         "text-gray-400 bg-gray-300 cursor-not-allowed"
                       }`}
@@ -1079,7 +1079,7 @@ const SingleCourse = () => {
                       Prev
                     </button>
                     <button
-                      className={`bg-[#125ca6] py-1 px-4 rounded-md ${
+                      className={`bg-primary py-1 px-4 rounded-md ${
                         currentVideoIndex === courseData.videos.length - 1 &&
                         "text-gray-400 bg-gray-300 cursor-not-allowed"
                       }`}
@@ -1112,7 +1112,7 @@ const SingleCourse = () => {
                   <div className="text-center">
                     <button
                       onClick={courseCompleteAction}
-                      className="text-white bg-[#125ca6] w-full p-2 rounded-md mt-4"
+                      className="text-white bg-primary w-full p-2 rounded-md mt-4"
                     >
                       Complete Course
                     </button>

@@ -66,7 +66,7 @@ const MyClasses = () => {
             </Link>
             {/* <div className="absolute right-4 top-4 dropdown-container">
                     <BsThreeDots
-                      className="bg-[#125ca6] border cursor-pointer text-white absolute right-0 p-1 text-3xl rounded-full"
+                      className="bg-primary border cursor-pointer text-white absolute right-0 p-1 text-3xl rounded-full"
                       onClick={(e) => toggleDropdown(course._id, e)} // Toggle dropdown on click
                     />
                     {visibleDropdown === course._id && (
@@ -75,14 +75,14 @@ const MyClasses = () => {
                           to={`/dashboard/admin/updateCourse/${course?._id}`}
                           className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md"
                         >
-                          <MdEdit className="tooltip p-1 text-2xl bg-[#125ca6] text-white rounded-full" />
+                          <MdEdit className="tooltip p-1 text-2xl bg-primary text-white rounded-full" />
                           <p>Update Course</p>
                         </Link>
                         <div
                           onClick={() => handleDelete(course._id)}
                           className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md"
                         >
-                          <RiDeleteBin5Line className="tooltip p-1 text-2xl bg-[#125ca6] text-white rounded-full" />
+                          <RiDeleteBin5Line className="tooltip p-1 text-2xl bg-primary text-white rounded-full" />
                           <p>Delete Course</p>
                         </div>
                       </div>

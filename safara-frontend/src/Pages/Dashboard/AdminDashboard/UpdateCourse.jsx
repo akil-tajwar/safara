@@ -673,7 +673,7 @@ function UpdateCourse() {
           <div className="pt-8 text-center">
             <button
               type="submit"
-              className="rounded-md py-[11px] px-4 bg-[#125ca6] text-white"
+              className="rounded-md py-[11px] px-4 bg-primary text-white"
             >
               Update Course
             </button>

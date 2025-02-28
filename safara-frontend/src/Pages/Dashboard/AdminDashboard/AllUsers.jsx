@@ -241,7 +241,7 @@ const AllUsers = () => {
 
     return (
         <div className=" m-6">
-            <h1 className="text-3xl font-bold text-[#125ca6] mb-6">All Users</h1>
+            <h1 className="text-3xl font-bold text-primary mb-6">All Users</h1>
             <div className="overflow-x-hidden border rounded-md">
                 <table className="table table-zebra">
                     <thead>
@@ -263,7 +263,7 @@ const AllUsers = () => {
                                         {user.role === 'admin' ?
                                             <div className="tooltip" data-tip="Undo Admin">
                                                 <FaUserMinus
-                                                    className="bg-[#125ca6] cursor-pointer tooltip p-1 text-2xl text-white rounded"
+                                                    className="bg-primary cursor-pointer tooltip p-1 text-2xl text-white rounded"
                                                     onClick={() => handleUndoAdmin(user._id)}
                                                 />
                                             </div> :
@@ -301,14 +301,14 @@ const AllUsers = () => {
                         <button
                             onClick={handlePreviousPage}
                             disabled={currentPage === 1}
-                            className={`text-2xl py-2 px-4 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-[#125ca6]'}`}
+                            className={`text-2xl py-2 px-4 rounded ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-primary'}`}
                         >
                             <FaChevronLeft />
                         </button>
                         {[...Array(totalPages)].map((_, index) => (
                             <li key={index + 1} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
                                 <button
-                                    className="page-link bg-[#125ca6] text-white py-2 px-4 rounded"
+                                    className="page-link bg-primary text-white py-2 px-4 rounded"
                                     onClick={() => handlePageChange(index + 1)}
                                 >
                                     {index + 1}
@@ -318,7 +318,7 @@ const AllUsers = () => {
                         <button
                             onClick={handleNextPage}
                             disabled={currentPage === totalPages}
-                            className={`text-2xl py-2 px-4 rounded ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-[#125ca6]'}`}
+                            className={`text-2xl py-2 px-4 rounded ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-primary'}`}
                         >
                             <FaChevronRight />
                         </button>
