@@ -241,7 +241,7 @@ const AddCourses = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="lg:p-6 pt-6">
-          <h1 className="text-3xl font-bold text-[#125ca6] mb-8">Add Course</h1>
+          <h1 className="text-3xl font-bold text-primary mb-8">Add Course</h1>
           <div className="flex md:flex-row flex-col justify-between gap-3">
             <div className="form-control w-full">
               <label className="label">
@@ -627,7 +627,7 @@ const AddCourses = () => {
           <div className="pt-8 text-center">
             <button
               type="submit"
-              className="rounded-md py-[11px] px-4 bg-[#125ca6] text-white"
+              className="rounded-md py-[11px] px-4 bg-primary text-white"
             >
               Add Course
             </button>

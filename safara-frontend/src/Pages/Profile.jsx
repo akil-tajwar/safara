@@ -54,7 +54,7 @@ const Profile = () => {
                 {userData.firstname} {userData.lastname}
               </h3>
               <Link to={"/updateProfile"}>
-                <MdEdit className="text-3xl bg-[#125ca6] text-white rounded-full p-1" />
+                <MdEdit className="text-3xl bg-primary text-white rounded-full p-1" />
               </Link>
             </div>
             <p className="text-xl">{userData.profession[0]?.position}</p>
@@ -82,7 +82,7 @@ const Profile = () => {
                   {userData.firstname} {userData.lastname}
                 </h3>
                 <Link to={"/updateProfile"}>
-                  <MdEdit className="text-3xl bg-[#125ca6] text-white rounded-full p-1" />
+                  <MdEdit className="text-3xl bg-primary text-white rounded-full p-1" />
                 </Link>
               </div>
               <p className="text-xl">{userData.profession[0]?.position}</p>
@@ -90,7 +90,7 @@ const Profile = () => {
             <div className="pt-7 flex gap-8">
               <p
                 className={`flex gap-1 items-center cursor-pointer ${
-                  activeTab === 0 && "text-[#125ca6]"
+                  activeTab === 0 && "text-primary"
                 }`}
                 onClick={() => setActiveTab(0)}
               >
@@ -98,7 +98,7 @@ const Profile = () => {
               </p>
               <p
                 className={`flex gap-1 items-center cursor-pointer ${
-                  activeTab === 1 && "text-[#125ca6]"
+                  activeTab === 1 && "text-primary"
                 }`}
                 onClick={() => setActiveTab(1)}
               >
@@ -175,7 +175,7 @@ const Profile = () => {
                               pathname: "/dashboard/user/userCertificate",
                             }}
                             state={{ courseTitle: course.title }}
-                            className="btn bg-[#125ca6] text-white"
+                            className="btn bg-primary text-white"
                           >
                             Download Certificate
                           </Link>

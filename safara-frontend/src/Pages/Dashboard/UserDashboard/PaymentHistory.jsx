@@ -82,7 +82,7 @@ const PaymentHistory = () => {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-[#125ca6]">Loading...</div>
+        <div className="text-xl text-primary">Loading...</div>
       </div>
     );
   }
@@ -90,7 +90,7 @@ const PaymentHistory = () => {
   if (!user || !user.user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-[#125ca6]">Please log in to view your transaction history</div>
+        <div className="text-xl text-primary">Please log in to view your transaction history</div>
       </div>
     );
   }
@@ -98,7 +98,7 @@ const PaymentHistory = () => {
   if (filteredTransactions.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-[#125ca6]">You have no transactions yet</div>
+        <div className="text-xl text-primary">You have no transactions yet</div>
       </div>
     );
   }
@@ -106,7 +106,7 @@ const PaymentHistory = () => {
   console.log("Rendering transactions:", currentTransactions.length);
   return (
     <div className="min-h-screen p-6">
-      <h1 className="text-3xl font-bold text-[#125ca6] mb-8">
+      <h1 className="text-3xl font-bold text-primary mb-8">
         My Transaction History
       </h1>
       <div className="bg-white rounded-lg">
@@ -115,7 +115,7 @@ const PaymentHistory = () => {
             <input
               type="text"
               placeholder="Search transactions..."
-              className="pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#125ca6]"
+              className="pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -175,7 +175,7 @@ const PaymentHistory = () => {
               className={`text-2xl py-2 px-4 rounded ${
                 currentPage === 1
                   ? "text-gray-400 cursor-not-allowed"
-                  : "text-[#125ca6]"
+                  : "text-primary"
               }`}
             >
               <FaChevronLeft />
@@ -190,8 +190,8 @@ const PaymentHistory = () => {
                 <button
                   className={`page-link py-2 px-4 rounded ${
                     currentPage === index + 1
-                      ? "bg-[#125ca6] text-white"
-                      : "text-[#125ca6]"
+                      ? "bg-primary text-white"
+                      : "text-primary"
                   }`}
                   onClick={() => setCurrentPage(index + 1)}
                 >
@@ -205,7 +205,7 @@ const PaymentHistory = () => {
               className={`text-2xl py-2 px-4 rounded ${
                 currentPage === totalPages
                   ? "text-gray-400 cursor-not-allowed"
-                  : "text-[#125ca6]"
+                  : "text-primary"
               }`}
             >
               <FaChevronRight />

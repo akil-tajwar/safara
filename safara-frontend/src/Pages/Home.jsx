@@ -47,33 +47,33 @@ const Home = () => {
         <div>
           <div>
             <h3 className="text-6xl font-semibold">Best learning Platform</h3>
-            <h3 className="text-6xl font-semibold text-[#125ca6]">
+            <h3 className="text-6xl font-semibold text-primary">
               In the world
             </h3>
           </div>
           <p className="my-5 text-justify">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-            Voluptatibus, praesentium. Molestias ipsa debitis eaque laudantium
-            libero magni. Perferendis vel sequi velit in voluptas deleniti
-            praesentium, exercitationem optio nisi dicta ea?
+            Welcome to Safara Learning Center – your gateway to quality
+            education! Explore interactive courses, expert-led lessons, and a
+            community-driven learning experience. Whether you&apos;re enhancing
+            skills or starting fresh, we provide the tools you need for success.
           </p>
           {user?.user ? (
             user?.user?.role === "admin" ? (
               <Link to={"/dashboard/admin/adminHome"}>
-                <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
+                <button className="bg-primary hover:bg-secondary text-white px-3 py-2 rounded-md font-semibold">
                   Get Started
                 </button>
               </Link>
             ) : (
               <Link to={"/dashboard/user/userHome"}>
-                <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
+                <button className="bg-primary hover:bg-secondary text-white px-3 py-2 rounded-md font-semibold">
                   Get Started
                 </button>
               </Link>
             )
           ) : (
             <Link to={"/login"}>
-              <button className="bg-[#125ca6] text-white px-3 py-2 rounded-md font-semibold">
+              <button className="bg-primary hover:bg-secondary text-white px-3 py-2 rounded-md font-semibold">
                 Get Started
               </button>
             </Link>
@@ -94,12 +94,12 @@ const Home = () => {
               <FaStar className="text-yellow-400" />
               <FaStar className="text-yellow-400" />
             </div>
-            <h4 className="text-2xl font-semibold text-center bg-[#125ca6] text-white rounded-full px-5 py-1 border-4 border-white">
+            <h4 className="text-2xl font-semibold text-center bg-primary text-white rounded-full px-5 py-1 border-4 border-white">
               Top Rated Courses
             </h4>
           </div>
         </div>
-        <div className="mb-20 mt-5 bg-[#125ca6] w-full mx-auto rounded-xl p-10">
+        <div className="mb-20 mt-5 bg-primary w-full mx-auto rounded-xl p-10">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 w-fit gap-5">
             {courses.map((course) => (
               <Link
@@ -151,30 +151,34 @@ const Home = () => {
           </div>
         </div>
         <div className="">
-          <h1 className="text-[#125ca6] font-medium text-4xl mb-5">
-            Learn More
-          </h1>
+          <h1 className="text-primary font-medium text-4xl mb-5">Learn More</h1>
           <p className="text-justify">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-            autem aperiam repellat quae ipsa?
+            At Safara Learning Center, we believe in making education
+            accessible, engaging, and effective. Our platform is designed to
+            help learners of all levels develop new skills, enhance their
+            knowledge, and achieve their goals through expert-led courses and
+            interactive learning resources.
           </p>
           <p className="text-justify pt-5">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-            autem aperiam repellat quae ipsa? Sunt soluta necessitatibus iusto,
-            corporis fugiat molestias repudiandae cum dolorum hic nam eum fugit.
-            Quod cumque doloribus iste ab cupiditate ratione deserunt laboriosam
-            harum architecto repellendus!
+            Whether you&apos;re looking to advance in your career, prepare for exams,
+            or simply explore a new subject, we provide a wide range of courses
+            tailored to your needs. With a focus on high-quality content,
+            hands-on exercises, and real-world applications, Safara Learning
+            Center ensures that every learner gains practical skills that can be
+            applied immediately.
           </p>
           <p className="text-justify pt-5">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-            autem aperiam repellat quae ipsa? Sunt soluta necessitatibus iusto,
-            corporis fugiat molestias repudiandae cum dolorum hic nam eum fugit.
+            Join our community of passionate learners and experienced educators
+            who are committed to helping you succeed. With flexible learning
+            schedules, interactive materials, and personalized guidance, Safara
+            Learning Center empowers you to take control of your learning
+            journey.
           </p>
         </div>
       </div>
       {/* lear more ended  */}
       {/* <div className="mt-20 w-full ">
-        <div className="stats shadow mx-auto w-full bg-[#125ca6] text-white">
+        <div className="stats shadow mx-auto w-full bg-primary text-white">
           <div className="stat place-items-center">
             <div className="stat-title text-white">Users</div>
             <div className="stat-value">31K</div>

@@ -39,7 +39,7 @@ const ResetPassword = () => {
           <FaAngleLeft />
           <p>Go back to home</p>
         </Link>
-        <h2 className="text-center text-4xl font-semibold text-[#125ca6] pb-5">Reset Password</h2>
+        <h2 className="text-center text-4xl font-semibold text-primary pb-5">Reset Password</h2>
         <form onSubmit={handleSubmit} className="w-1/4 mx-auto border rounded-md p-10">
           <div className="form-control">
             <label className="">
@@ -51,23 +51,23 @@ const ResetPassword = () => {
               placeholder="Enter your password"
           
              
-              className="input input-bordered focus:border-none rounded-md border hover:border-[#125ca6]"
+              className="input input-bordered focus:border-none rounded-md border hover:border-primary"
             />
           </div>
         
   
           <div className="form-control mt-6">
-            <button type="submit" className="bg-[#125ca6] py-3 rounded-md text-white">
+            <button type="submit" className="bg-primary py-3 rounded-md text-white">
              Reset
             </button>
           </div>
           <p className="text-center pt-4">
             Already have an account?{" "}
-            <Link to="/login" className="text-[#125ca6]">
+            <Link to="/login" className="text-primary">
           Login
             </Link>{" "}
           </p>
-          <button className="border border-[#125ca6] py-3 rounded-md w-full mt-4 flex items-center justify-center">
+          <button className="border border-primary py-3 rounded-md w-full mt-4 flex items-center justify-center">
             <FcGoogle className="text-3xl mr-3" />
             <span>Login with Google</span>
           </button>

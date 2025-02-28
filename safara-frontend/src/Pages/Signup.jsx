@@ -117,7 +117,7 @@ const Signup = () => {
         <FaAngleLeft />
         <p>Go back to home</p>
       </Link>
-      <h2 className="text-center text-4xl font-semibold text-[#125ca6] pb-5">
+      <h2 className="text-center text-4xl font-semibold text-primary pb-5">
         SIGNUP
       </h2>
       <form
@@ -131,7 +131,7 @@ const Signup = () => {
             type="text"
             placeholder="Enter your first name"
             {...register("firstname", { required: true })}
-            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
+            className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
         <div className="form-control pb-4">
@@ -140,7 +140,7 @@ const Signup = () => {
             type="text"
             placeholder="Enter your last name"
             {...register("lastname", { required: true })}
-            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
+            className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
         <div className="form-control pb-4">
@@ -149,7 +149,7 @@ const Signup = () => {
             type="email"
             placeholder="email"
             {...register("email", { required: true })}
-            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
+            className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
         <div className="form-control pb-4">
@@ -158,7 +158,7 @@ const Signup = () => {
             type="text"
             placeholder="phone"
             {...register("phone", { required: true })}
-            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
+            className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
         {/* Image Upload Field */}
@@ -180,7 +180,7 @@ const Signup = () => {
             type="password"
             placeholder="password"
             {...register("password", { required: true })}
-            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
+            className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
         <div className="form-control pb-4">
@@ -193,7 +193,7 @@ const Signup = () => {
               validate: (value) =>
                 value === password || "Passwords do not match",
             })}
-            className="input input-bordered focus:ring-2 focus:ring-[#125ca6] focus:border-[#125ca6] rounded-md border hover:border-[#125ca6] transition-all"
+            className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
           {errors.retypePassword && (
             <p className="text-red-500 text-sm mt-1">
@@ -202,7 +202,7 @@ const Signup = () => {
           )}
         </div>
         <div className="form-control mt-10">
-          <button type="submit" className="bg-[#125ca6] py-3 rounded-md text-white">
+          <button type="submit" className="bg-primary py-3 rounded-md text-white">
             Signup
           </button>
         </div>
@@ -210,7 +210,7 @@ const Signup = () => {
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-[#125ca6] hover:text-white hover:underline hover:bg-[#125ca6] px-1 py-0.5 rounded-md transition-all"
+            className="text-primary hover:text-white hover:underline hover:bg-primary px-1 py-0.5 rounded-md transition-all"
           >
             Login
           </Link>{" "}

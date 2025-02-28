@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import useAuthContext from "../hooks/useAuthContext";
 import { useLogout } from "../hooks/useLogout";
-import logo from "../../public/logo.png";
+import logo from "../../public/logo.jpeg";
 import { CgProfile } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdLogout } from "react-icons/md";
@@ -78,7 +78,7 @@ const Navbar = () => {
               </button>
             </div>
             {user ? (
-              <div className="bg-[#125ca6] flex items-center gap-5 rounded-full">
+              <div className="bg-primary flex items-center gap-5 rounded-full">
                 <p className="pl-4 text-white font-semibold hidden sm:block">
                   {userData?.firstname} {userData?.lastname}
                 </p>
@@ -123,7 +123,7 @@ const Navbar = () => {
                 <Link to={"/login"}>Login</Link>
                 <Link
                   to={"/signup"}
-                  className="bg-[#125ca6] text-white px-3 pt-1 pb-[0.4rem] rounded-md"
+                  className="bg-primary text-white px-3 pt-1 pb-[0.4rem] rounded-md"
                 >
                   Signup
                 </Link>
