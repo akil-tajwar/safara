@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
+const baseUrl = process.env.SAFARA_baseUrl;
 
 const AllCourses = () => {
      const [courses, setCourses]= useState([])
+     console.log("🚀 ~ AllCourses ~ baseUrl:", baseUrl)
 
     const fetchCourses = () => {
         const url = `http://localhost:4000/api/course/getAllCourses`; // Your courses endpoint
