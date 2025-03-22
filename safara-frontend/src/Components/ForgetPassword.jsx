@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 
 const ForgetPassword = () => {
     const navigate = useNavigate();
+    const baseUrl= import.meta.env.VITE_BASE_URL;
     const handleSubmit = (e) => {
       e.preventDefault();
   
@@ -15,7 +16,7 @@ const ForgetPassword = () => {
   
       axios
         .post(
-          `http://localhost:4000/api/user/forgetPassword`,
+          `${baseUrl}/api/user/forgetPassword`,
           { email },
           { withCredential: true }
         )

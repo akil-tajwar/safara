@@ -25,11 +25,11 @@ const UpdateProfile = () => {
     location: "",
     img: "",
   });
-
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   // Fetch user data by ID
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/user/singleUser/${user?.user?._id}`, {
+      .get(`${baseUrl}/api/user/singleUser/${user?.user?._id}`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -96,7 +96,7 @@ const UpdateProfile = () => {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
             updatedData.img = downloadURL; // Update image URL
             await axios.patch(
-              `http://localhost:4000/api/user/updateUser/${user?.user?._id}`,
+              `${baseUrl}/api/user/updateUser/${user?.user?._id}`,
               updatedData,
               { withCredentials: true }
             );
@@ -106,7 +106,7 @@ const UpdateProfile = () => {
         );
       } else {
         await axios.patch(
-          `http://localhost:4000/api/user/updateUser/${user?.user?._id}`,
+          `${baseUrl}/api/user/updateUser/${user?.user?._id}`,
           updatedData,
           { withCredentials: true }
         );

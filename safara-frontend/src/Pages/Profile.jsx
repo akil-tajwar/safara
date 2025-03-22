@@ -9,9 +9,9 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [userData, setUserData] = useState(null);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   const fetchSingleUser = () => {
-    const url = `http://localhost:4000/api/user/singleUser/${user?.user?._id}`;
+    const url = `${baseUrl}/api/user/singleUser/${user?.user?._id}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => setUserData(data))
@@ -19,7 +19,7 @@ const Profile = () => {
   };
 
   const fetchEnrolledCourses = () => {
-    const url = `http://localhost:4000/api/course/getAllEnrolledCourse/${user?.user?._id}`;
+    const url = `${baseUrl}/api/course/getAllEnrolledCourse/${user?.user?._id}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => setEnrolledCourses(data.courses))

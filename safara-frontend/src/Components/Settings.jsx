@@ -21,11 +21,11 @@ const Settings = () => {
       setError("Password is required.");
       return;
     }
-
+    const baseUrl= import.meta.env.VITE_BASE_URL;
     try {
       // Send request to delete the account
       const response = await axios.delete(
-        "http://localhost:4000/api/user/deleteMyAccount",
+        `${baseUrl}/api/user/deleteMyAccount`,
         {
           data: { password, id },
         }
@@ -70,11 +70,11 @@ const Settings = () => {
       setError("New password and confirmation do not match.");
       return;
     }
-
+    const baseUrl= import.meta.env.VITE_BASE_URL;
     try {
       // Make API request
       const response = await axios.patch(
-        "http://localhost:4000/api/user/changePassword",
+        `${baseUrl}/api/user/changePassword`,
         { oldPassword, newPassword, retypePassword, id }
       );
 

@@ -19,9 +19,10 @@ const Home = () => {
 
   useEffect(() => {
     const fetchTopCourses = async () => {
+      const baseUrl= import.meta.env.VITE_BASE_URL;
       try {
         const response = await fetch(
-          "http://localhost:4000/api/course/topCourses"
+          `${baseUrl}/api/course/topCourses`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch top courses");

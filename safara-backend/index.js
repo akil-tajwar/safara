@@ -12,10 +12,10 @@ const courseRoutes = require("./Routes/courseRoutes.js");
 const whatsappRoutes = require("./Routes/whatsappRoutes.js");
 require("dotenv").config();
 const app = express();
-
+ const baseUrl= process.env.BASE_URL;
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend URL
+    origin: baseUrl, // Your frontend URL
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true, // If needed for cookies/auth
   })

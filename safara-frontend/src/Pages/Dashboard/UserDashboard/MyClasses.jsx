@@ -17,10 +17,10 @@ const MyClasses = () => {
   const initialIndex = categories.indexOf(category);
   const [tabIndex, setTabIndex] = useState(initialIndex + 1);
   const [visibleDropdown, setVisibleDropdown] = useState(null);
-
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   const fetchCourses = () => {
     setLoading(true); // Set loading to true before the request
-    const url = `http://localhost:4000/api/course/getAllEnrolledCourse/${user?.user?._id}`;
+    const url = `${baseUrl}/api/course/getAllEnrolledCourse/${user?.user?._id}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {

@@ -15,12 +15,12 @@ const AllTransactions = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
+        const baseUrl= import.meta.env.VITE_BASE_URL;
         // Fetch all data in parallel
         const [transactionsRes, usersRes, coursesRes] = await Promise.all([
-          fetch("http://localhost:4000/api/course/getAllTransactions"),
-          fetch("http://localhost:4000/api/user/allUsers"),
-          fetch("http://localhost:4000/api/course/getAllCourses"),
+          fetch(`${baseUrl}/api/course/getAllTransactions`),
+          fetch(`${baseUrl}/api/user/allUsers`),
+          fetch(`${baseUrl}/api/course/getAllCourses`),
         ]);
 
         const [transactionsData, usersData, coursesData] = await Promise.all([

@@ -14,11 +14,9 @@ const Navbar = () => {
   const { logout } = useLogout();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  console.log("🚀 ~ Home ~ user:", user);
-  console.log(user?.user?._id);
-
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   const fetchUser = () => {
-    const url = `http://localhost:4000/api/user/singleUser/${user?.user?._id}`;
+    const url = `${baseUrl}/api/user/singleUser/${user?.user?._id}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {

@@ -20,9 +20,10 @@ const AdminDashboard = () => {
   const [avgCourseCompleteTime, setAvgCourseCompleteTime] = useState([]);
   const [completedCoursesCount, setCompletedCoursesCount] = useState(0);
 
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   // Fetching the total number of users
   const fetchCountUsers = () => {
-    fetch(`http://localhost:4000/api/user/allUsersCount`)
+    fetch(`${baseUrl}/api/user/allUsersCount`)
       .then((res) => res.json())
       .then((data) => setCountUsers(data))
       .catch((error) => console.log(error));
@@ -34,7 +35,7 @@ const AdminDashboard = () => {
 
   // Fetching the total number of courses
   const fetchCourseCount = () => {
-    fetch(`http://localhost:4000/api/course/getCourseCount`)
+    fetch(`${baseUrl}/api/course/getCourseCount`)
       .then((res) => res.json())
       .then((data) => setCourseCount(data))
       .catch((error) => console.log(error));
@@ -46,7 +47,7 @@ const AdminDashboard = () => {
 
   // Fetching the total number of enrolled users
   const fetchEnrolledUsers = () => {
-    fetch(`http://localhost:4000/api/course/enrolledUsersCourses`)
+    fetch(`${baseUrl}/api/course/enrolledUsersCourses`)
       .then((res) => res.json())
       .then((data) => setEnrolledUsers(data))
       .catch((error) => console.log(error));
@@ -58,7 +59,7 @@ const AdminDashboard = () => {
 
   // Fetching total revenue
   const fetchTotalRevenue = () => {
-    fetch(`http://localhost:4000/api/course/getTotalPayment`)
+    fetch(`${baseUrl}/api/course/getTotalPayment`)
       .then((res) => res.json())
       .then((data) => setTotalRevenue(data.totalPayment))
       .catch((error) => console.log(error));
@@ -72,7 +73,7 @@ const AdminDashboard = () => {
 
   // Fetching course categories and their counts
   const fetchCourseCategories = () => {
-    fetch(`http://localhost:4000/api/course/getCourseCategories`)
+    fetch(`${baseUrl}/api/course/getCourseCategories`)
       .then((res) => res.json())
       .then((data) => setCoursesCategories(data.categories))
       .catch((error) => console.log(error));
@@ -84,7 +85,7 @@ const AdminDashboard = () => {
 
   // Fetching the total average rating
   const fetchTotalAverageRating = () => {
-    fetch(`http://localhost:4000/api/course/getAvgRating`)
+    fetch(`${baseUrl}/api/course/getAvgRating`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Total average rating:", data.avgRating); // Debugging the fetched data
@@ -99,7 +100,7 @@ const AdminDashboard = () => {
 
   // Fetching the completed courses count
   const fetchCompletedCoursesCount = () => {
-    fetch(`http://localhost:4000/api/course/getCompletedCoursesCount`)
+    fetch(`${baseUrl}/api/course/getCompletedCoursesCount`)
       .then((res) => res.json())
       .then((data) => {
         setCompletedCoursesCount(data.totalCompletedCourses); // Set the completed courses count
@@ -113,7 +114,7 @@ const AdminDashboard = () => {
 
   // Fetching the completed courses count
   const fetchAvgCompletedCourseTime = () => {
-    fetch(`http://localhost:4000/api/course/getAverageCompletionTime`)
+    fetch(`${baseUrl}/api/course/getAverageCompletionTime`)
       .then((res) => res.json())
       .then((data) => {
         setAvgCourseCompleteTime(data.averageCompletionTimeInDays); // Set the completed courses count
@@ -131,9 +132,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen lg:p-8 pt-5">
-      <h1 className="text-3xl font-bold text-primary mb-5">
-        Admin Dashboard
-      </h1>
+      <h1 className="text-3xl font-bold text-primary mb-5">Admin Dashboard</h1>
 
       {/* Dashboard Stats */}
       <div className="grid gap-6 md:grid-cols-4 mb-8">

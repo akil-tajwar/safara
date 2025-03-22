@@ -18,11 +18,11 @@ const PaymentHistory = () => {
 
       try {
         setLoading(true);
-
+        const baseUrl = import.meta.env.VITE_BASE_URL;
         // Fetch all data in parallel
         const [transactionsRes, coursesRes] = await Promise.all([
-          fetch("http://localhost:4000/api/course/getAllTransactions"),
-          fetch("http://localhost:4000/api/course/getAllCourses"),
+          fetch(`${baseUrl}/api/course/getAllTransactions`),
+          fetch(`${baseUrl}/api/course/getAllCourses`),
         ]);
 
         const [transactionsData, coursesData] = await Promise.all([
@@ -51,7 +51,7 @@ const PaymentHistory = () => {
   // Filter transactions based on search term and user ID
   const filteredTransactions = transactions.filter((transaction) => {
     if (!user || !user.user || !user.user._id) return false;
-    
+
     const courseName = courses[transaction.courseId] || "";
     const searchTermLower = searchTerm.toLowerCase();
 
@@ -74,7 +74,10 @@ const PaymentHistory = () => {
     indexOfFirstTransaction,
     indexOfLastTransaction
   );
-  console.log("🚀 ~ PaymentHistory ~ currentTransactions:", currentTransactions.length)
+  console.log(
+    "🚀 ~ PaymentHistory ~ currentTransactions:",
+    currentTransactions.length
+  );
   const totalPages = Math.ceil(
     filteredTransactions.length / transactionsPerPage
   );
@@ -90,7 +93,9 @@ const PaymentHistory = () => {
   if (!user || !user.user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-primary">Please log in to view your transaction history</div>
+        <div className="text-xl text-primary">
+          Please log in to view your transaction history
+        </div>
       </div>
     );
   }
@@ -218,4 +223,3 @@ const PaymentHistory = () => {
 };
 
 export default PaymentHistory;
-

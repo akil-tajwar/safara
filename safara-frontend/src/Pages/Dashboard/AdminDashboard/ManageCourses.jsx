@@ -8,9 +8,9 @@ import { Link } from "react-router-dom";
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
   const [visibleDropdown, setVisibleDropdown] = useState(null); // To track the visible dropdown
-
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   const fetchCourses = () => {
-    const url = `http://localhost:4000/api/course/getAllCourses`;
+    const url = `${baseUrl}/api/course/getAllCourses`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -35,7 +35,7 @@ const ManageCourses = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:4000/api/course/deleteCourse/${id}`, {
+        fetch(`${baseUrl}/api/course/deleteCourse/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())

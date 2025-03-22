@@ -7,13 +7,14 @@ import Swal from "sweetalert2";
 const ResetPassword = () => {
     const navigate = useNavigate();
     const {token} = useParams();
+    const baseUrl= import.meta.env.VITE_BASE_URL;
     const handleSubmit = (e) => {
       e.preventDefault();
       const form = e.target;
       const password = form.password.value;
       axios
         .post(
-          `http://localhost:4000/api/user/resetPassword/`+token,
+          `${baseUrl}/api/user/resetPassword/`+token,
           { password },
           { withCredential: true }
         )
