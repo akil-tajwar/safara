@@ -11,20 +11,16 @@ const UserHome = () => {
   const [certificateEarned, setCertificateEarned] = useState(0);
 
   const { user } = useAuthContext();
-
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const fetchTotalSpent = () => {
-    fetch(
-      `http://localhost:4000/api/course/getSpentByStudent/${user?.user?._id}`
-    )
+    fetch(`${baseUrl}/api/course/getSpentByStudent/${user?.user?._id}`)
       .then((res) => res.json())
       .then((data) => setTotalSpent(data.totalPayment))
       .catch((error) => console.log(error));
   };
 
   const fetchEnrolledCourses = () => {
-    fetch(
-      `http://localhost:4000/api/course/getAllEnrolledCourse/${user?.user?._id}`
-    )
+    fetch(`${baseUrl}/api/course/getAllEnrolledCourse/${user?.user?._id}`)
       .then((res) => res.json())
       .then((data) => {
         setTotalEnrolledCourses(data.courses.length);

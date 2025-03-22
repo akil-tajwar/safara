@@ -1,26 +1,24 @@
 import { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
-const baseUrl = process.env.SAFARA_baseUrl;
 
 const AllCourses = () => {
-     const [courses, setCourses]= useState([])
-     console.log("🚀 ~ AllCourses ~ baseUrl:", baseUrl)
+  const [courses, setCourses] = useState([]);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const fetchCourses = () => {
+    const url = `${baseUrl}/api/course/getAllCourses`; // Your courses endpoint
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        setCourses(data);
 
-    const fetchCourses = () => {
-        const url = `http://localhost:4000/api/course/getAllCourses`; // Your courses endpoint
-        fetch(url)
-          .then((res) => res.json())
-          .then((data) => {
-            setCourses(data);
-    
-           // Check enrollment with the fetched courses
-          })
-          .catch((error) => console.log(error));
-      };
+        // Check enrollment with the fetched courses
+      })
+      .catch((error) => console.log(error));
+  };
 
   useEffect(() => {
-    fetchCourses()
+    fetchCourses();
   }, []);
 
   return (
@@ -30,7 +28,11 @@ const AllCourses = () => {
           <div key={course._id} className="border rounded-xl relative">
             <Link to={`/singleCourse/${course?._id}`}>
               <div className="">
-                <img className="w-full object-cover rounded-xl" src={course?.banner} alt={course?.title} />
+                <img
+                  className="w-full object-cover rounded-xl"
+                  src={course?.banner}
+                  alt={course?.title}
+                />
               </div>
             </Link>
           </div>

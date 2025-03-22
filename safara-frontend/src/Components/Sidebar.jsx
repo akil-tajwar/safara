@@ -22,9 +22,10 @@ const Sidebar = () => {
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+  const baseUrl= import.meta.env.VITE_BASE_URL;
 
   const fetchAllUsers = () => {
-    const url = `http://localhost:4000/api/user/allUsers`;
+    const url = `${baseUrl}/api/user/allUsers`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {

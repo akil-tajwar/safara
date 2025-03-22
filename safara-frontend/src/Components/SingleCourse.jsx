@@ -76,11 +76,11 @@ const SingleCourse = () => {
       }
     }
   }, [courseData, userId]);
-
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   const courseCompleteAction = async () => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/course/completeCourse/${userId}`,
+        `${baseUrl}/api/course/completeCourse/${userId}`,
         {
           method: "PATCH",
           headers: {
@@ -128,12 +128,11 @@ const SingleCourse = () => {
     aTag.click();
     aTag.remove();
   };
-
   const unlockNextVideo = async () => {
     if (unlockedVideos < courseData.videos.length) {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/course/unlockVideo/${userId}`,
+          `${baseUrl}/api/course/unlockVideo/${userId}`,
           {
             method: "PATCH",
             headers: {
@@ -162,7 +161,7 @@ const SingleCourse = () => {
   };
 
   const handleSubmitRating = async () => {
-    const url = `http://localhost:4000/api/course/giveRating/${courseData._id}`;
+    const url = `${baseUrl}/api/course/giveRating/${courseData._id}`;
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -205,7 +204,7 @@ const SingleCourse = () => {
   const fetchSingleCourse = async () => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/course/getSingleCourse/${id}`
+        `${baseUrl}/api/course/getSingleCourse/${id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch course");
@@ -225,7 +224,7 @@ const SingleCourse = () => {
   };
 
   const fetchreletedCourses = () => {
-    const url = `http://localhost:4000/api/course/getAllCourses`;
+    const url = `${baseUrl}/api/course/getAllCourses`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -243,7 +242,7 @@ const SingleCourse = () => {
   };
 
   const fetchAllUsers = () => {
-    const url = `http://localhost:4000/api/user/allUsers`;
+    const url = `${baseUrl}/api/user/allUsers`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -364,7 +363,7 @@ const SingleCourse = () => {
   const quizCompleteAction = async () => {
     try {
       const response = await fetch(
-        `http://localhost:4000/api/course/completeQuiz/${userId}`,
+        `${baseUrl}/api/course/completeQuiz/${userId}`,
         {
           method: "PATCH",
           headers: {
@@ -522,7 +521,7 @@ const SingleCourse = () => {
     };
     console.log("Payment Data before sent:", paymentData);
 
-    fetch("http://localhost:4000/api/course/payment/order", {
+    fetch(`${baseUrl}/api/course/payment/order`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

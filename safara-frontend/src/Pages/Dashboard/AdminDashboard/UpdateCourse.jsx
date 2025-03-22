@@ -36,13 +36,13 @@ function UpdateCourse() {
   const [totalFiles, setTotalFiles] = useState(0);
   const [error, setError] = useState("");
   const [quizzes, setQuizzes] = useState([]);
-
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   // Fetch course data
   useEffect(() => {
     const fetchCourseData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/api/course/getSingleCourse/${id}`
+          `${baseUrl}/api/course/getSingleCourse/${id}`
         );
         if (response.ok) {
           const courseData = await response.json();
@@ -88,7 +88,7 @@ function UpdateCourse() {
   // Fetch instructors data
   useEffect(() => {
     const fetchAllUsers = () => {
-      const url = `http://localhost:4000/api/user/allUsers`;
+      const url = `${baseUrl}/api/user/allUsers`;
       fetch(url)
         .then((res) => res.json())
         .then((data) => {
@@ -244,7 +244,7 @@ function UpdateCourse() {
       };
 
       const response = await fetch(
-        `http://localhost:4000/api/course/updateCourse/${id}`,
+        `${baseUrl}/api/course/updateCourse/${id}`,
         {
           method: "PATCH",
           headers: {

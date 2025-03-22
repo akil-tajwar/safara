@@ -34,10 +34,10 @@ const AddCourses = () => {
   const [quizzes, setQuizzes] = useState([
     { question: "", options: ["", "", "", ""], answer: "", selectedAnswer: "" },
   ]);
-
+  const baseUrl= import.meta.env.VITE_BASE_URL;
   // Fetch instructors data
   const fetchAllUsers = () => {
-    const url = `http://localhost:4000/api/user/allUsers`;
+    const url = `${baseUrl}/api/user/allUsers`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -196,10 +196,10 @@ const AddCourses = () => {
           answer: parseInt(quiz.answer),
         })),
       };
-
+      const baseUrl= import.meta.env.VITE_BASE_URL;
       // Make a POST request to the backend API
       const response = await fetch(
-        "http://localhost:4000/api/course/createCourse",
+        `${baseUrl}/api/course/createCourse`,
         {
           method: "POST",
           headers: {
