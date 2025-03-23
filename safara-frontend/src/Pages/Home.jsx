@@ -11,19 +11,15 @@ import { FaStar } from "react-icons/fa";
 
 const Home = () => {
   const { user } = useAuthContext();
-  console.log("🚀 ~ Home ~ user:", user);
 
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   useEffect(() => {
     const fetchTopCourses = async () => {
-      const baseUrl= import.meta.env.VITE_BASE_URL;
       try {
-        const response = await fetch(
-          `${baseUrl}/api/course/topCourses`
-        );
+        const response = await fetch(`${baseUrl}/api/course/topCourses`);
         if (!response.ok) {
           throw new Error("Failed to fetch top courses");
         }
@@ -40,8 +36,7 @@ const Home = () => {
   }, []);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
+  if(error){console.log(error);}
   return (
     <div className="lg:w-3/4 w-11/12 mx-auto">
       <div className="lg:grid lg:grid-cols-2 flex flex-col-reverse gap-5 items-center">
@@ -161,12 +156,12 @@ const Home = () => {
             interactive learning resources.
           </p>
           <p className="text-justify pt-5">
-            Whether you&apos;re looking to advance in your career, prepare for exams,
-            or simply explore a new subject, we provide a wide range of courses
-            tailored to your needs. With a focus on high-quality content,
-            hands-on exercises, and real-world applications, Safara Learning
-            Center ensures that every learner gains practical skills that can be
-            applied immediately.
+            Whether you&apos;re looking to advance in your career, prepare for
+            exams, or simply explore a new subject, we provide a wide range of
+            courses tailored to your needs. With a focus on high-quality
+            content, hands-on exercises, and real-world applications, Safara
+            Learning Center ensures that every learner gains practical skills
+            that can be applied immediately.
           </p>
           <p className="text-justify pt-5">
             Join our community of passionate learners and experienced educators
