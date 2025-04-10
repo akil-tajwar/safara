@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAuthContext from "./useAuthContext";
 
 const axiosSecure = axios.create({
-    baseURL:  import.meta.env.VITE_BASE_URL;
+    baseURL:  import.meta.env.VITE_SAFARA_baseUrl;
 })
 const useAxiosSecure = () => {
     const navigate = useNavigate();

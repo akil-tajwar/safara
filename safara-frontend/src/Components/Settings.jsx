@@ -21,7 +21,7 @@ const Settings = () => {
       setError("Password is required.");
       return;
     }
-    const baseUrl= import.meta.env.VITE_BASE_URL;
+    const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
     try {
       // Send request to delete the account
       const response = await axios.delete(
@@ -70,7 +70,7 @@ const Settings = () => {
       setError("New password and confirmation do not match.");
       return;
     }
-    const baseUrl= import.meta.env.VITE_BASE_URL;
+    const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
     try {
       // Make API request
       const response = await axios.patch(

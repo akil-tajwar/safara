@@ -25,7 +25,7 @@ const UpdateProfile = () => {
     location: "",
     img: "",
   });
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   // Fetch user data by ID
   useEffect(() => {
     axios

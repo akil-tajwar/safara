@@ -22,7 +22,7 @@ const Sidebar = () => {
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
 
   const fetchAllUsers = () => {
     const url = `${baseUrl}/api/user/allUsers`;

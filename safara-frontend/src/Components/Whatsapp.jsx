@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Whatsapp = () => {
-    const baseUrl= import.meta.env.VITE_BASE_URL;
+    const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   const handleClick = async () => {
     try {
       const response = await fetch(

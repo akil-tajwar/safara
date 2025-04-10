@@ -15,7 +15,7 @@ const Home = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
   useEffect(() => {
     const fetchTopCourses = async () => {
       try {
@@ -33,10 +33,14 @@ const Home = () => {
     };
 
     fetchTopCourses();
-  }, []);
+  }, [
+    
+  ]);
 
   if (loading) return <div>Loading...</div>;
-  if(error){console.log(error);}
+  if (error) {
+    console.log(error);
+  }
   return (
     <div className="lg:w-3/4 w-11/12 mx-auto">
       <div className="lg:grid lg:grid-cols-2 flex flex-col-reverse gap-5 items-center">

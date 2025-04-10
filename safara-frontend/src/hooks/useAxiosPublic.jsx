@@ -2,7 +2,7 @@
 import axios from "axios"
 const axiosPublic = axios.create({
   
-    baseURL:  import.meta.env.VITE_BASE_URL;
+    baseURL:  import.meta.env.VITE_SAFARA_baseUrl;
       
 })
 const useAxiosPublic = () => {
