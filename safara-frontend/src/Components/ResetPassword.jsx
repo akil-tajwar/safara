@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const ResetPassword = () => {
     const navigate = useNavigate();
     const {token} = useParams();
-    const baseUrl= import.meta.env.VITE_BASE_URL;
+    const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
     const handleSubmit = (e) => {
       e.preventDefault();
       const form = e.target;

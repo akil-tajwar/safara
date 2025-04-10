@@ -16,7 +16,7 @@ const ScheduleMeet = () => {
 
   // Extract course ID from URL query parameters
   const id = location.search.slice(1);
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   useEffect(() => {
     const fetchSingleCourse = async () => {
       try {
@@ -50,7 +50,7 @@ const ScheduleMeet = () => {
               );
               return { email: data?.email || "No Email" };
             } catch (err) {
-              console.error(`Error fetching email for student ID ${student?.studentsId}:`, err);
+              // console.error(`Error fetching email for student ID ${student?.studentsId}:`, err);
               return { email: "Error Fetching Email" }; // Handle individual email fetch failures
             }
           })
@@ -58,7 +58,7 @@ const ScheduleMeet = () => {
         setUsersData(emails);
       } catch (err) {
         setError("Failed to fetch user emails.");
-        console.error("Error fetching user emails:", err);
+        
       }
     };
 
@@ -83,6 +83,7 @@ const ScheduleMeet = () => {
       if (data?.meetLink) {
         setMeetLink(data.meetLink);
 
+
         // Send schedule only if all required data is present
         if (usersData.length > 0 && courseTitle) {
           await axios.post(`${baseUrl}/api/meet/sendSchedule`, {
@@ -90,7 +91,6 @@ const ScheduleMeet = () => {
             meetLink: data.meetLink,
             courseTitle,
           });
-          console.log("Meet schedule sent successfully.");
         } else {
           setError("Missing users, course title, or meet link.");
         }
@@ -99,7 +99,7 @@ const ScheduleMeet = () => {
       }
     } catch (err) {
       setError("Error creating Google Meet event.");
-      console.error("Error creating event:", err);
+     
     } finally {
       setLoading(false);
     }
@@ -144,6 +144,7 @@ const ScheduleMeet = () => {
             <a href={meetLink} target="_blank" rel="noopener noreferrer" className="text-blue-500">
               {meetLink}
             </a>
+            <h4>Meet schedule Created successfully!</h4>
           </div>
         )}
       </div>

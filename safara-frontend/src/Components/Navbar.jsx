@@ -14,7 +14,7 @@ const Navbar = () => {
   const { logout } = useLogout();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   const fetchUser = () => {
     const url = `${baseUrl}/api/user/singleUser/${user?.user?._id}`;
     fetch(url)

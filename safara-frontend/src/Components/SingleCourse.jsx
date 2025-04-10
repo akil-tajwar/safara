@@ -76,7 +76,7 @@ const SingleCourse = () => {
       }
     }
   }, [courseData, userId]);
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   const courseCompleteAction = async () => {
     try {
       const response = await fetch(

@@ -11,7 +11,7 @@ const UserHome = () => {
   const [certificateEarned, setCertificateEarned] = useState(0);
 
   const { user } = useAuthContext();
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
   const fetchTotalSpent = () => {
     fetch(`${baseUrl}/api/course/getSpentByStudent/${user?.user?._id}`)
       .then((res) => res.json())

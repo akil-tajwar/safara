@@ -75,8 +75,8 @@ const sendSchedule = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail", // or another email service
       auth: {
-        user: "ammaraslam7164@gmail.com",
-        pass: "pyshxdpnnyaotsqv", // App-specific password for Gmail
+        user: process.env.nodemailer_user,
+        pass: process.env.nodemailer_pass, // App-specific password for Gmail
       },
     });
   
@@ -88,7 +88,7 @@ const sendSchedule = async (req, res) => {
       }
   
       const mailOptions = {
-        from: "ammaraslam7164@gmail.com", // Sender's email
+        from: process.env.nodemailer_user, // Sender's email
         to: user.email, // Receiver's email
         subject: "Your Scheduled Google Meet Link",
         html: `
@@ -101,7 +101,7 @@ const sendSchedule = async (req, res) => {
         </ul>
         <p>Please make sure to join the meeting on time. Feel free to reach out if you have any questions.</p>
         <p>Looking forward to your participation!</p>
-        <p>Best regards,<br/><strong>Safara Academy Team</strong></p>
+        <p>Best regards,<br/><strong>Safara Learning Center</strong></p>
       `,
       };
   

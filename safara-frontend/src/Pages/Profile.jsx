@@ -9,7 +9,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [userData, setUserData] = useState(null);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   const fetchSingleUser = () => {
     const url = `${baseUrl}/api/user/singleUser/${user?.user?._id}`;
     fetch(url)

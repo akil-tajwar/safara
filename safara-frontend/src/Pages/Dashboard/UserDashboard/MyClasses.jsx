@@ -17,7 +17,7 @@ const MyClasses = () => {
   const initialIndex = categories.indexOf(category);
   const [tabIndex, setTabIndex] = useState(initialIndex + 1);
   const [visibleDropdown, setVisibleDropdown] = useState(null);
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   const fetchCourses = () => {
     setLoading(true); // Set loading to true before the request
     const url = `${baseUrl}/api/course/getAllEnrolledCourse/${user?.user?._id}`;
