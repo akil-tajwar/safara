@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 const AllCourses = () => {
   const [courses, setCourses] = useState([]);
   const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+  console.log("baseurl",baseUrl);
+  console.log("courses",courses);
   const fetchCourses = () => {
     const url = `${baseUrl}/api/course/getAllCourses`; // Your courses endpoint
     fetch(url)
