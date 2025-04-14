@@ -12,7 +12,7 @@ export const useLogin = () => {
   const login = async (email, password) => {
     setError(null);
     setIsLoading(true);
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
     try {
       const response = await fetch(`${baseUrl}/api/user/login`, {
         method: "POST",
@@ -54,7 +54,7 @@ export const useLogin = () => {
   const googleLogin = async (userData) => {
     setError(null);
     setIsLoading(true);
-    const baseUrl= import.meta.env.VITE_BASE_URL;
+    const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
     try {
       const response = await fetch(`${baseUrl}/api/user/googleLogin`, {
         method: "POST",

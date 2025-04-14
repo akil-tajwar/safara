@@ -16,7 +16,7 @@ const ScheduleMeet = () => {
 
   // Extract course ID from URL query parameters
   const id = location.search.slice(1);
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   useEffect(() => {
     const fetchSingleCourse = async () => {
       try {

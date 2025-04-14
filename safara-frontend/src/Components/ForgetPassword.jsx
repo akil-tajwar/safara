@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 const ForgetPassword = () => {
     const navigate = useNavigate();
-    const baseUrl= import.meta.env.VITE_BASE_URL;
+    const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
     const handleSubmit = (e) => {
       e.preventDefault();
   

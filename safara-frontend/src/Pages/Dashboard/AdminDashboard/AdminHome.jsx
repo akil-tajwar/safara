@@ -20,7 +20,7 @@ const AdminDashboard = () => {
   const [avgCourseCompleteTime, setAvgCourseCompleteTime] = useState([]);
   const [completedCoursesCount, setCompletedCoursesCount] = useState(0);
 
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   // Fetching the total number of users
   const fetchCountUsers = () => {
     fetch(`${baseUrl}/api/user/allUsersCount`)

@@ -34,7 +34,7 @@ const AddCourses = () => {
   const [quizzes, setQuizzes] = useState([
     { question: "", options: ["", "", "", ""], answer: "", selectedAnswer: "" },
   ]);
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   // Fetch instructors data
   const fetchAllUsers = () => {
     const url = `${baseUrl}/api/user/allUsers`;
@@ -196,7 +196,7 @@ const AddCourses = () => {
           answer: parseInt(quiz.answer),
         })),
       };
-      const baseUrl= import.meta.env.VITE_BASE_URL;
+      const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
       // Make a POST request to the backend API
       const response = await fetch(
         `${baseUrl}/api/course/createCourse`,

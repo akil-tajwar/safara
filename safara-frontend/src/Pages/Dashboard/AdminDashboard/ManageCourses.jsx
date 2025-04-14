@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
   const [visibleDropdown, setVisibleDropdown] = useState(null); // To track the visible dropdown
-  const baseUrl= import.meta.env.VITE_BASE_URL;
+  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
   const fetchCourses = () => {
     const url = `${baseUrl}/api/course/getAllCourses`;
     fetch(url)

@@ -19,7 +19,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchTopCourses = async () => {
-      const baseUrl= import.meta.env.VITE_BASE_URL;
+      const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
       try {
         const response = await fetch(
           `${baseUrl}/api/course/topCourses`

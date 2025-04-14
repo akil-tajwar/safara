@@ -14,7 +14,7 @@ const AllUsers = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 15;
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
   const fetchAllUsers = () => {
     const url = `${baseUrl}/api/user/allUsers`;
     fetch(url)

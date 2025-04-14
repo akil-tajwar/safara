@@ -15,7 +15,7 @@ const AllTransactions = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const baseUrl= import.meta.env.VITE_BASE_URL;
+        const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
         // Fetch all data in parallel
         const [transactionsRes, usersRes, coursesRes] = await Promise.all([
           fetch(`${baseUrl}/api/course/getAllTransactions`),
