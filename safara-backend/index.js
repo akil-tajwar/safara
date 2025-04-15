@@ -13,6 +13,7 @@ const whatsappRoutes = require("./Routes/whatsappRoutes.js");
 require("dotenv").config();
 const app = express();
  const baseUrl= process.env.BASE_URL;
+ console.log("🚀 ~ baseUrl:", baseUrl)
 app.use(
   cors({
     origin: baseUrl, // Your frontend URL

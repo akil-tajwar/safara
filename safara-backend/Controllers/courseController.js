@@ -589,11 +589,11 @@ const completeQuiz = async (req, res) => {
     }
 
     // Check if course is already completed
-    if (student.isQuizComplete) {
-      return res.status(400).json({
-        error: "Quiz is already marked as complete for this student",
-      });
-    }
+    // if (student.isQuizComplete) {
+    //   return res.status(400).json({
+    //     error: "Quiz is already marked as complete for this student",
+    //   });
+    // }
 
     // Set isCourseComplete to true
     const updatedCourse = await courseModel.findOneAndUpdate(
@@ -602,7 +602,11 @@ const completeQuiz = async (req, res) => {
         "students.studentsId": studentId,
       },
       {
-        $set: { "students.$.isQuizComplete": true },
+        $set: {
+          "students.$.isQuizComplete": true,
+          "students.$.quizMarks": req.body.quizMarks,
+          "students.$.quizMarksPercentage": req.body.quizMarksPercentage,
+         },
       },
       { new: true }
     );

@@ -347,10 +347,10 @@ const SingleCourse = () => {
     setScore(newScore);
     setQuizSubmitted(true);
     setUnlockedVideos(courseData.videos.length);
-    // Store current quiz state before API call
+    
     const currentQuizState = [...quizzes];
-    quizCompleteAction().then(() => {
-      // Restore quiz state after API call
+
+    quizCompleteAction(newScore).then(() => {
       setQuizzes(currentQuizState);
     });
   };
@@ -360,27 +360,49 @@ const SingleCourse = () => {
     setSelectedVideo(courseData.videos[0]);
   };
 
-  const quizCompleteAction = async () => {
+  const quizCompleteAction = async (newScore) => {
+    const quizMarksPercentage = (newScore * 100) / quizzes.length;
+    console.log("🚀 ~ quizCompleteAction ~ quizMarksPercentage:", quizMarksPercentage)
+    console.log(score);
     try {
-      const response = await fetch(
-        `${baseUrl}/api/course/completeQuiz/${userId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ _id: courseData._id }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to complete the quiz");
+      if(quizMarksPercentage < 40){
+        Swal.fire({
+          title: "Error",
+          text: `You got ${quizMarksPercentage}% marks in your quiz. You need to score at least 40% to complete the quiz.`,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return;
       }
+      else{
+        const response = await fetch(
+          `${baseUrl}/api/course/completeQuiz/${userId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ _id: courseData._id, quizMarks: newScore, quizMarksPercentage: quizMarksPercentage }),
+          }
+        );
+  
+        const data = await response.json();
+  
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to complete the quiz");
+        }
+  
+        console.log("quiz completed successfully:", data);
+        setQuizComplete(true);
 
-      console.log("quiz completed successfully:", data);
-      setQuizComplete(true);
+        Swal.fire({
+          title: "Congratulations!",
+          text: `You got ${quizMarksPercentage}% marks in your quiz. You have completed the quiz!`,
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      }
+      
       // Remove fetchSingleCourse() to preserve quiz state
     } catch (error) {
       console.error("Error completing the quiz:", error);

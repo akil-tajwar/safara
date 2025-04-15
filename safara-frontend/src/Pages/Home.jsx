@@ -16,6 +16,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+  console.log("🚀 ~ Home ~ baseUrl:", baseUrl)
   useEffect(() => {
     const fetchTopCourses = async () => {
       try {
