@@ -104,6 +104,10 @@ const courseSchema = new mongoose.Schema({
             type: Number,
             default: 0
         },
+        quizMarksPercentage: {
+            type: Number,
+            default: 0
+        },
         isQuizComplete: {
             type: Boolean,
             default: false
