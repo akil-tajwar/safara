@@ -20,6 +20,7 @@ function UpdateCourse() {
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [requirements, setRequirements] = useState("");
+  const [whatsappGroupLink, setWhatsappGroupLink] = useState("");
   const [content, setContent] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -36,7 +37,7 @@ function UpdateCourse() {
   const [totalFiles, setTotalFiles] = useState(0);
   const [error, setError] = useState("");
   const [quizzes, setQuizzes] = useState([]);
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
   // Fetch course data
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -53,6 +54,7 @@ function UpdateCourse() {
           setPrice(courseData.price || "");
           setDiscount(courseData.discount || "");
           setRequirements(courseData.requirements || "");
+          setWhatsappGroupLink(courseData.whatsappGroupLink || "");
           setContent(courseData.details || "");
           setSelectedVideos(courseData.videos || []);
           setSelectedKeywords(courseData.keywords || []);
@@ -191,7 +193,10 @@ function UpdateCourse() {
     setLoading(true);
     setError("");
 
-    const total = selectedVideos.filter(v => v.videoFile).length + (bannerFile ? 1 : 0) + (pdfFile ? 1 : 0);
+    const total =
+      selectedVideos.filter((v) => v.videoFile).length +
+      (bannerFile ? 1 : 0) +
+      (pdfFile ? 1 : 0);
     setTotalFiles(total);
     setCompletedUploads(0);
     setUploadProgress(0);
@@ -227,6 +232,7 @@ function UpdateCourse() {
         magnetLine: magnetLine,
         details: content,
         requirements,
+        whatsappGroupLink,
         instructorsId: selectedInstructors.map((inst) => inst._id),
         ...(bannerURL && { banner: bannerURL }),
         ...(videoURLs.length > 0 && { videos: videoURLs }),
@@ -243,16 +249,13 @@ function UpdateCourse() {
         })),
       };
 
-      const response = await fetch(
-        `${baseUrl}/api/course/updateCourse/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(courseData),
-        }
-      );
+      const response = await fetch(`${baseUrl}/api/course/updateCourse/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(courseData),
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -275,16 +278,19 @@ function UpdateCourse() {
       {loading ? (
         <div className="fixed inset-0 bg-white flex flex-col justify-center items-center">
           <h2 className="text-2xl font-semibold text-center">
-            Please wait. Files are uploading and processing. <br /> This may take a while.
+            Please wait. Files are uploading and processing. <br /> This may
+            take a while.
           </h2>
           <div className="w-64 h-6 bg-gray-200 rounded-full mt-4 overflow-hidden">
-            <div 
+            <div
               className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${uploadProgress}%` }}
             ></div>
           </div>
           <p className="mt-2 text-gray-600">{Math.round(uploadProgress)}%</p>
-          <p className="mt-2 text-gray-600">{completedUploads}/{totalFiles} files uploaded</p>
+          <p className="mt-2 text-gray-600">
+            {completedUploads}/{totalFiles} files uploaded
+          </p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="lg:p-6 pt-6">
@@ -581,17 +587,31 @@ function UpdateCourse() {
                 </div>
               </div>
             </div>
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Requirements</span>
-              </label>
-              <input
-                type="text"
-                value={requirements}
-                onChange={(e) => setRequirements(e.target.value)}
-                placeholder="Requirements"
-                className="px-3 py-[11px] rounded-md border border-slate-200"
-              />
+            <div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Requirements</span>
+                </label>
+                <input
+                  type="text"
+                  value={requirements}
+                  onChange={(e) => setRequirements(e.target.value)}
+                  placeholder="Requirements"
+                  className="px-3 py-[11px] rounded-md border border-slate-200"
+                />
+              </div>
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Whatsapp Group Link</span>
+                </label>
+                <input
+                  type="text"
+                  value={whatsappGroupLink}
+                  onChange={(e) => setWhatsappGroupLink(e.target.value)}
+                  placeholder="Whatsapp Group Link"
+                  className="px-3 py-[11px] rounded-md border border-slate-200"
+                />
+              </div>
             </div>
             <div className="col-span-2 mt-4">
               <h3 className="mb-2">Quizzes</h3>
@@ -685,4 +705,3 @@ function UpdateCourse() {
 }
 
 export default UpdateCourse;
-

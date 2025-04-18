@@ -9,6 +9,7 @@ import {
   FaRegStar,
   FaStar,
   FaStarHalfAlt,
+  FaWhatsapp,
 } from "react-icons/fa";
 import { PiExam } from "react-icons/pi";
 import Navbar from "./Navbar";
@@ -895,6 +896,14 @@ const SingleCourse = () => {
                     <IoMdDownload className="text-xl" />
                     <p className="">Syllabus</p>
                   </button>
+                  <Link
+                    to={courseData?.whatsappGroupLink}
+                    target="_blank"
+                    className="text-primary flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                  >
+                    <FaWhatsapp className="text-xl" />
+                    <p className="">Join Group</p>
+                  </Link>
                 </div>
               </div>
               <div>

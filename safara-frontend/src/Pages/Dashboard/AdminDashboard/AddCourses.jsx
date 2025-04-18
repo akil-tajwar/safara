@@ -17,6 +17,7 @@ const AddCourses = () => {
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [requirements, setRequirements] = useState("");
+  const [whatsappGroupLink, setWhatsappGroupLink] = useState("");
   const [content, setContent] = useState(""); // For course details
   const [searchTerm, setSearchTerm] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -34,7 +35,7 @@ const AddCourses = () => {
   const [quizzes, setQuizzes] = useState([
     { question: "", options: ["", "", "", ""], answer: "", selectedAnswer: "" },
   ]);
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
   // Fetch instructors data
   const fetchAllUsers = () => {
     const url = `${baseUrl}/api/user/allUsers`;
@@ -104,7 +105,8 @@ const AddCourses = () => {
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setUploadProgress(progress); // Show individual file progress
         },
         (error) => reject(error),
@@ -150,7 +152,8 @@ const AddCourses = () => {
     setUploadProgress(0);
     setCompletedUploads(0); // Reset completed uploads count
 
-    const total = selectedVideos.length + (bannerFile ? 1 : 0) + (pdfFile ? 1 : 0);
+    const total =
+      selectedVideos.length + (bannerFile ? 1 : 0) + (pdfFile ? 1 : 0);
     setTotalFiles(total);
 
     try {
@@ -181,6 +184,7 @@ const AddCourses = () => {
         magnetLine: magnetLine, // Actual magnet line from the form
         details: content, // Course details from the editor
         requirements, // Actual requirements from the form
+        whatsappGroupLink, // Actual WhatsApp group link from the form
         instructorsId: selectedInstructors.map((inst) => inst._id),
         banner: bannerURL,
         videos: videoURLs,
@@ -196,18 +200,15 @@ const AddCourses = () => {
           answer: parseInt(quiz.answer),
         })),
       };
-      const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+      const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
       // Make a POST request to the backend API
-      const response = await fetch(
-        `${baseUrl}/api/course/createCourse`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(courseData),
-        }
-      );
+      const response = await fetch(`${baseUrl}/api/course/createCourse`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(courseData),
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -228,16 +229,20 @@ const AddCourses = () => {
       {loading ? (
         <div className="fixed inset-0 bg-white flex flex-col justify-center items-center">
           <h2 className="text-2xl font-semibold text-center">
-            Please wait. Files are uploading and processing. <br /> This may take a while.
+            Please wait. Files are uploading and processing. <br /> This may
+            take a while.
           </h2>
           <div className="w-64 h-6 bg-gray-200 rounded-full mt-4 overflow-hidden">
-            <div 
+            <div
               className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${uploadProgress}%` }}
             ></div>
           </div>
           <p className="mt-2 text-gray-600">{Math.round(uploadProgress)}%</p>
-          <p className="mt-2 text-gray-600">{completedUploads}/{totalFiles} files uploaded</p> {/* Updated progress display */}
+          <p className="mt-2 text-gray-600">
+            {completedUploads}/{totalFiles} files uploaded
+          </p>{" "}
+          {/* Updated progress display */}
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="lg:p-6 pt-6">
@@ -534,17 +539,31 @@ const AddCourses = () => {
                 </div>
               </div>
             </div>
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Requirements</span>
-              </label>
-              <input
-                type="text"
-                value={requirements}
-                onChange={(e) => setRequirements(e.target.value)}
-                placeholder="Requirements"
-                className="px-3 py-[11px] rounded-md border border-slate-200"
-              />
+            <div >
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text">Requirements</span>
+                </label>
+                <input
+                  type="text"
+                  value={requirements}
+                  onChange={(e) => setRequirements(e.target.value)}
+                  placeholder="Requirements"
+                  className="px-3 py-[11px] rounded-md border border-slate-200"
+                />
+              </div>
+              <div className="form-control w-full mt-3">
+                <label className="label">
+                  <span className="label-text">Whatsapp Group Link</span>
+                </label>
+                <input
+                  type="text"
+                  value={whatsappGroupLink}
+                  onChange={(e) => setWhatsappGroupLink(e.target.value)}
+                  placeholder="Whatsapp Group Link"
+                  className="px-3 py-[11px] rounded-md border border-slate-200"
+                />
+              </div>
             </div>
             {/* Quiz Section */}
             <div className="col-span-2 mt-4">
