@@ -10,6 +10,7 @@ const createCourse = async (req, res) => {
     details,
     requirements,
     instructorsId,
+    whatsappGroupLink,
     banner,
     videos,
     quizzes, // Changed from 'quiz' to 'quizzes' to match frontend
@@ -31,6 +32,7 @@ const createCourse = async (req, res) => {
       details,
       requirements,
       instructorsId,
+      whatsappGroupLink,
       banner,
       videos,
       quiz: quizzes.map((q) => ({

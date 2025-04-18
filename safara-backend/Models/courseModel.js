@@ -17,6 +17,9 @@ const courseSchema = new mongoose.Schema({
     requirements: {
         type: String
     },
+    whatsappGroupLink: {
+        type: String,
+    },
     instructorsId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "userCollection",
