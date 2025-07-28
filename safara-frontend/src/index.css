@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Orbitron:wght@400..900&family=Playwrite+CU:wght@100..400&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 .custom-shadow {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 15px 15px;
 }

@@ -622,6 +622,7 @@ const completeQuiz = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 const getEnrolledUsersCourses = async (req, res) => {
   try {
     // Aggregate query to count total enrolled students across all courses

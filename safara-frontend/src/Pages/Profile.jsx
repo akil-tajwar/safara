@@ -9,7 +9,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [userData, setUserData] = useState(null);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
   const fetchSingleUser = () => {
     const url = `${baseUrl}/api/user/singleUser/${user?.user?._id}`;
     fetch(url)
@@ -174,7 +174,10 @@ const Profile = () => {
                             to={{
                               pathname: "/dashboard/user/userCertificate",
                             }}
-                            state={{ courseTitle: course.title }}
+                            state={{
+                              courseTitle: course.title,
+                              studentId: user?.user?._id,
+                            }}
                             className="btn bg-primary text-white"
                           >
                             Download Certificate
