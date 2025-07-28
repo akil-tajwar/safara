@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom"; // Ensure Link is imported
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+
 import "react-tabs/style/react-tabs.css";
-import AllCourses from "../../../Components/AllCourses";
 import useAuthContext from "../../../hooks/useAuthContext";
-import { BsThreeDots } from "react-icons/bs";
-import { MdEdit } from "react-icons/md";
-import { RiDeleteBin5Line } from "react-icons/ri";
 
 const MyClasses = () => {
   const categories = ["My Classes", "Explore", "Incoming", "Course Details"];
@@ -15,9 +11,8 @@ const MyClasses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
   const initialIndex = categories.indexOf(category);
-  const [tabIndex, setTabIndex] = useState(initialIndex + 1);
-  const [visibleDropdown, setVisibleDropdown] = useState(null);
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
   const fetchCourses = () => {
     setLoading(true); // Set loading to true before the request
     const url = `${baseUrl}/api/course/getAllEnrolledCourse/${user?.user?._id}`;
@@ -45,7 +40,6 @@ const MyClasses = () => {
     }
   }, [user]); // Re-run when user state changes
 
-  console.log(courses);
   if (loading) {
     return <div>Loading...</div>; // Show loading while fetching courses
   }
