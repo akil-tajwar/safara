@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
 import { FaAngleLeft } from "react-icons/fa6";
 import { useState } from "react";
-import { storage } from "../firebase/firebase"; // Use storage from the initialized firebase file
+import { storage } from "../firebase/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import DOMPurify from "dompurify"; // For sanitizing inputs
+import DOMPurify from "dompurify";
+import { Helmet } from "react-helmet"; // <-- Import Helmet
 
 const Signup = () => {
   const { signup } = useSignup();
@@ -19,13 +20,9 @@ const Signup = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Function to sanitize all inputs
-  const sanitizeInput = (input) => {
-    return DOMPurify.sanitize(input.trim());  // Trim and sanitize to remove any unwanted content
-  };
+  const sanitizeInput = (input) => DOMPurify.sanitize(input.trim());
 
   const onSubmit = async (data) => {
-    // Sanitize all user inputs to prevent XSS attacks
     const { firstname, lastname, email, phone, password } = data;
 
     const sanitizedFirstname = sanitizeInput(firstname);
@@ -33,19 +30,17 @@ const Signup = () => {
     const sanitizedEmail = sanitizeInput(email);
     const sanitizedPhone = sanitizeInput(phone);
     const sanitizedPassword = sanitizeInput(password);
-    const role = "user";
+    const role = "admin";
     const prevRole = role;
 
     try {
-      // Validate if an image file is selected
       if (selectedImage) {
-        // Image file validation (limit size, file type)
         const allowedTypes = ["image/jpeg", "image/png"];
         if (!allowedTypes.includes(selectedImage.type)) {
           throw new Error("Invalid file type. Only JPG and PNG are allowed.");
         }
 
-        const maxSize = 5 * 1024 * 1024; // Limit to 5MB
+        const maxSize = 5 * 1024 * 1024;
         if (selectedImage.size > maxSize) {
           throw new Error("File is too large. Maximum size is 5MB.");
         }
@@ -54,7 +49,6 @@ const Signup = () => {
         const storageRef = ref(storage, `images/${imgName}`);
         const uploadTask = uploadBytesResumable(storageRef, selectedImage);
 
-        // Listen for upload progress, errors, and completion
         uploadTask.on(
           "state_changed",
           (snapshot) => {
@@ -62,9 +56,7 @@ const Signup = () => {
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             setUploadPerc(Math.round(progress));
           },
-          (error) => {
-            console.error("Error uploading image: ", error);
-          },
+          (error) => console.error("Error uploading image: ", error),
           async () => {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
             await signup(
@@ -81,7 +73,6 @@ const Signup = () => {
           }
         );
       } else {
-        // Proceed without image if none selected
         await signup(
           sanitizedFirstname,
           sanitizedLastname,
@@ -110,6 +101,15 @@ const Signup = () => {
 
   return (
     <div className="pt-10 pb-24">
+      {/* Helmet for page title and meta */}
+      <Helmet>
+        <title>Signup | Safara Learning Center</title>
+        <meta
+          name="description"
+          content="Create your account at Safara Learning Center. Join our LMS platform to access top-rated courses."
+        />
+      </Helmet>
+
       <Link
         to={"/"}
         className="flex items-center gap-2 font-semibold lg:w-3/4 md:11/12 mx-auto text-xl pb-10"
@@ -124,9 +124,9 @@ const Signup = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="md:w-1/4 w-11/12 mx-auto border rounded-md p-10"
       >
-        {/* Form Fields */}
+        {/* First Name */}
         <div className="form-control pb-4">
-          <label className="">First Name</label>
+          <label>First Name</label>
           <input
             type="text"
             placeholder="Enter your first name"
@@ -134,8 +134,9 @@ const Signup = () => {
             className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
+        {/* Last Name */}
         <div className="form-control pb-4">
-          <label className="">Last Name</label>
+          <label>Last Name</label>
           <input
             type="text"
             placeholder="Enter your last name"
@@ -143,8 +144,9 @@ const Signup = () => {
             className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
+        {/* Email */}
         <div className="form-control pb-4">
-          <label className="">Email</label>
+          <label>Email</label>
           <input
             type="email"
             placeholder="email"
@@ -152,8 +154,9 @@ const Signup = () => {
             className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
+        {/* Phone */}
         <div className="form-control pb-4">
-          <label className="">Phone</label>
+          <label>Phone</label>
           <input
             type="text"
             placeholder="phone"
@@ -161,10 +164,10 @@ const Signup = () => {
             className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
-        {/* Image Upload Field */}
+        {/* Image Upload */}
         <div className="form-control w-full mb-4">
           <div className="flex justify-between">
-            <label><span>Upload your img</span></label>
+            <label>Upload your img</label>
             <p>{uploadPerc}%</p>
           </div>
           <input
@@ -174,8 +177,9 @@ const Signup = () => {
             onChange={handleImageChange}
           />
         </div>
+        {/* Password */}
         <div className="form-control pb-4">
-          <label className="">Password</label>
+          <label>Password</label>
           <input
             type="password"
             placeholder="password"
@@ -183,8 +187,9 @@ const Signup = () => {
             className="input input-bordered focus:ring-2 focus:ring-primary focus:border-primary rounded-md border hover:border-primary transition-all"
           />
         </div>
+        {/* Retype Password */}
         <div className="form-control pb-4">
-          <label className="">Retype Password</label>
+          <label>Retype Password</label>
           <input
             type="password"
             placeholder="Retype password"
@@ -202,7 +207,10 @@ const Signup = () => {
           )}
         </div>
         <div className="form-control mt-10">
-          <button type="submit" className="bg-primary py-3 rounded-md text-white">
+          <button
+            type="submit"
+            className="bg-primary py-3 rounded-md text-white"
+          >
             Signup
           </button>
         </div>

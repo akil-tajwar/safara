@@ -2,6 +2,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const express = require("express");
 const helmet = require("helmet");
+const compression = require("compression");
 
 // Use helmet middleware for secure headers
 
@@ -12,8 +13,8 @@ const courseRoutes = require("./Routes/courseRoutes.js");
 const whatsappRoutes = require("./Routes/whatsappRoutes.js");
 require("dotenv").config();
 const app = express();
- const baseUrl= process.env.BASE_URL;
- console.log("🚀 ~ baseUrl:", baseUrl)
+const baseUrl = process.env.BASE_URL;
+console.log("🚀 ~ baseUrl:", baseUrl);
 app.use(
   cors({
     origin: baseUrl, // Your frontend URL
@@ -25,6 +26,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
+app.use(compression());
 
 // Routes
 app.use("/api/user", userRoutes);
@@ -36,6 +38,7 @@ app.use("/api/meet", meetRoutes);
 app.get("/", async (req, res) => {
   res.send("Server is working!");
 });
+app.use(express.static("dist"));
 
 // Set CSP headers
 app.use((req, res, next) => {

@@ -2,10 +2,10 @@ import { IoIosNotifications } from "react-icons/io";
 import useAuthContext from "../../../hooks/useAuthContext";
 import { useLogout } from "../../../hooks/useLogout";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet"; // ✅ Import Helmet
 
 const DashNavbar = () => {
   const { user } = useAuthContext();
-
   const { logout } = useLogout();
 
   const handleLogout = () => {
@@ -13,14 +13,29 @@ const DashNavbar = () => {
   };
 
   return (
-    <div className="flex justify-between relative -z-50  w-full h-16 items-center">
+    <div className="flex justify-between relative -z-50 w-full h-16 items-center">
+      {/* ✅ Helmet for page metadata */}
+      <Helmet>
+        <title>
+          {user?.user?.firstname
+            ? `Dashboard - ${user.user.firstname} ${user.user.lastname}`
+            : "Dashboard - Mahad"}
+        </title>
+        <meta
+          name="description"
+          content="Access your dashboard to manage courses, track progress, and stay updated with notifications."
+        />
+      </Helmet>
+
       <div className="navbar bg-gray-800 pt-4">
         <div className="flex-1">
           <p className="text-2xl font-bold ml-20 lg:ml-0 text-white">
             Welcome {user?.user?.firstname + " " + user?.user?.lastname}
           </p>
         </div>
+
         <div className="flex-none">
+          {/* Notifications */}
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
@@ -44,6 +59,8 @@ const DashNavbar = () => {
               </div>
             </div>
           </div>
+
+          {/* User Avatar + Dropdown */}
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
@@ -51,10 +68,7 @@ const DashNavbar = () => {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src={user?.user?.img}
-                />
+                <img alt="User Avatar" src={user?.user?.img} />
               </div>
             </div>
             <ul

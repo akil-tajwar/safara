@@ -6,6 +6,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import app from "../firebase/firebase";
 import DOMPurify from "dompurify";
+import { Helmet } from "react-helmet"; // ✅ Import Helmet
 
 // Initialize Firebase Authentication
 const auth = getAuth(app);
@@ -18,17 +19,12 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Helper function to sanitize email and password inputs
-  const sanitizeInput = (input) => {
-    return DOMPurify.sanitize(input.trim());  // Trimming and sanitizing input
-  };
+  const sanitizeInput = (input) => DOMPurify.sanitize(input.trim());
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    
-    // Sanitize email and password
+
     const sanitizedEmail = sanitizeInput(email);
     const sanitizedPassword = sanitizeInput(password);
 
@@ -49,11 +45,12 @@ const Login = () => {
         }
       }
     } catch (err) {
-      setError(DOMPurify.sanitize(err.message || "Login failed. Please try again."));
+      setError(
+        DOMPurify.sanitize(err.message || "Login failed. Please try again.")
+      );
     }
   };
 
-  // Handle Google Login
   const handleGoogleLogin = async () => {
     try {
       setError("");
@@ -79,23 +76,44 @@ const Login = () => {
       await googleLogin(userData);
     } catch (error) {
       console.error("Google login error:", error);
-      setError(DOMPurify.sanitize(error.message || "Google login failed. Please try again."));
+      setError(
+        DOMPurify.sanitize(
+          error.message || "Google login failed. Please try again."
+        )
+      );
     }
   };
 
   return (
     <div className="mt-20">
-      <Link to={"/"} className="flex items-center gap-2 font-semibold lg:w-3/4 md:11/12 mx-auto text-xl pb-10">
+      {/* ✅ Helmet for dynamic title + meta */}
+      <Helmet>
+        <title>Login | Safara LMS</title>
+        <meta
+          name="description"
+          content="Login to Safara LMS to access your courses, dashboard, and personalized learning experience."
+        />
+      </Helmet>
+
+      <Link
+        to={"/"}
+        className="flex items-center gap-2 font-semibold lg:w-3/4 md:11/12 mx-auto text-xl pb-10"
+      >
         <FaAngleLeft />
         <p>Go back to home</p>
       </Link>
-      <h2 className="text-center text-4xl font-semibold text-primary pb-5">LOGIN</h2>
-      <form onSubmit={handleSubmit} className="md:w-1/4 w-11/12 mx-auto border rounded-md p-10">
+      <h2 className="text-center text-4xl font-semibold text-primary pb-5">
+        LOGIN
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="md:w-1/4 w-11/12 mx-auto border rounded-md p-10"
+      >
         {(error || loginError) && (
           <p
             className="text-red-500 mb-4"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(error || loginError),  // Sanitizing the error message
+              __html: DOMPurify.sanitize(error || loginError),
             }}
           />
         )}
@@ -150,7 +168,9 @@ const Login = () => {
           disabled={isLoading}
         >
           <FcGoogle className="text-3xl mr-3" />
-          <span>{isLoading ? "Logging in with Google..." : "Login with Google"}</span>
+          <span>
+            {isLoading ? "Logging in with Google..." : "Login with Google"}
+          </span>
         </button>
       </form>
     </div>

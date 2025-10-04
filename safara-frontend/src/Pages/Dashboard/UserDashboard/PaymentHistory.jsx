@@ -1,7 +1,8 @@
-import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import useAuthContext from "../../../hooks/useAuthContext";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 
 const PaymentHistory = () => {
   const { user, loading: authLoading } = useAuthContext();
@@ -62,11 +63,6 @@ const PaymentHistory = () => {
     );
   });
 
-  useEffect(() => {
-    console.log("Filtered Transactions:", filteredTransactions.length);
-    console.log("User ID:", user?.user?._id);
-  }, [filteredTransactions, user]);
-
   // Pagination logic
   const indexOfLastTransaction = currentPage * transactionsPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
@@ -74,18 +70,14 @@ const PaymentHistory = () => {
     indexOfFirstTransaction,
     indexOfLastTransaction
   );
-  console.log(
-    "🚀 ~ PaymentHistory ~ currentTransactions:",
-    currentTransactions.length
-  );
   const totalPages = Math.ceil(
     filteredTransactions.length / transactionsPerPage
   );
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-primary">Loading...</div>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <span className="loading loading-spinner w-40 h-40 text-white"></span>
       </div>
     );
   }
@@ -108,26 +100,22 @@ const PaymentHistory = () => {
     );
   }
 
-  console.log("Rendering transactions:", currentTransactions.length);
   return (
     <div className="min-h-screen p-6">
+      {/* Helmet for SEO */}
+      <Helmet>
+        <title>My Transaction History - Mahad</title>
+        <meta
+          name="description"
+          content="View all your payments, enrolled courses, and transaction history in Mahad dashboard."
+        />
+      </Helmet>
+
       <h1 className="text-3xl font-bold text-primary mb-8">
         My Transaction History
       </h1>
-      <div className="bg-white rounded-lg">
-        {/* <div className="flex justify-between items-center mb-6">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search transactions..."
-              className="pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          </div>
-        </div> */}
 
+      <div className="bg-white rounded-lg">
         <div className="overflow-x-auto border rounded-md">
           <table className="table table-zebra w-full">
             <thead>

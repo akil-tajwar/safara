@@ -608,7 +608,7 @@ const completeQuiz = async (req, res) => {
           "students.$.isQuizComplete": true,
           "students.$.quizMarks": req.body.quizMarks,
           "students.$.quizMarksPercentage": req.body.quizMarksPercentage,
-         },
+        },
       },
       { new: true }
     );
@@ -1046,10 +1046,9 @@ const getUserCourseProgress = async (req, res) => {
   }
 };
 
-
 const getVideosCount = async (req, res) => {
   try {
-    const { id} = req.params; // Extract studentId from the request body
+    const { id } = req.params; // Extract studentId from the request body
 
     if (!id) {
       return res.status(400).send({ error: "Student ID is required" });
@@ -1088,7 +1087,6 @@ const getVideosCount = async (req, res) => {
     });
   }
 };
-
 
 module.exports = {
   createCourse,

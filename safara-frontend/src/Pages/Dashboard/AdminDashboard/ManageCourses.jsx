@@ -4,11 +4,13 @@ import { MdEdit } from "react-icons/md";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet"; // ✅ Import Helmet
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
   const [visibleDropdown, setVisibleDropdown] = useState(null); // To track the visible dropdown
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+
   const fetchCourses = () => {
     const url = `${baseUrl}/api/course/getAllCourses`;
     fetch(url)
@@ -86,23 +88,39 @@ const ManageCourses = () => {
 
   return (
     <div className="lg:p-6 pt-10">
+      {/* ✅ Helmet for dynamic page title */}
+      <Helmet>
+        <title>Manage Courses - Admin Dashboard</title>
+        <meta
+          name="description"
+          content="Admin dashboard to view, update, and delete all courses. Manage courses efficiently with options to edit course details or remove courses."
+        />
+      </Helmet>
+
       <h1 className="text-3xl font-bold text-primary mb-8">Manage Courses</h1>
       <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-5 w-fit relative z-10">
         {courses?.map((course) => (
           <div key={course._id} className="border rounded-xl relative ">
             <Link to={`/singleCourse/${course?._id}`}>
               <div className="">
-                <img className="w-full object-cover rounded-xl" src={course?.banner} alt={course?.title} />
+                <img
+                  className="w-full object-cover rounded-xl"
+                  src={course?.banner}
+                  alt={course?.title}
+                />
               </div>
             </Link>
             <div className="absolute right-4 top-4 dropdown-container">
               <BsThreeDots
                 className="bg-primary border cursor-pointer text-white absolute right-0 p-1 text-3xl rounded-full"
-                onClick={(e) => toggleDropdown(course._id, e)} // Toggle dropdown on click
+                onClick={(e) => toggleDropdown(course._id, e)}
               />
               {visibleDropdown === course._id && (
                 <div className="border bg-white w-52 p-3 rounded-md absolute right-0 top-10 z-10">
-                  <Link to={`/dashboard/admin/updateCourse/${course?._id}`} className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md">
+                  <Link
+                    to={`/dashboard/admin/updateCourse/${course?._id}`}
+                    className="cursor-pointer flex gap-3 hover:bg-slate-200 p-2 rounded-md"
+                  >
                     <MdEdit className="tooltip p-1 text-2xl bg-primary text-white rounded-full" />
                     <p>Update Course</p>
                   </Link>

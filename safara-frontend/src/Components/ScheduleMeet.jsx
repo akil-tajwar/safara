@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet"; // ✅ Import Helmet
 
 const ScheduleMeet = () => {
   const [summary, setSummary] = useState("");
@@ -14,9 +15,9 @@ const ScheduleMeet = () => {
   const [usersData, setUsersData] = useState([]);
   const location = useLocation();
 
-  // Extract course ID from URL query parameters
   const id = location.search.slice(1);
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+
   useEffect(() => {
     const fetchSingleCourse = async () => {
       try {
@@ -38,7 +39,7 @@ const ScheduleMeet = () => {
   }, [id]);
 
   useEffect(() => {
-    if (students.length === 0) return; // Skip if no students
+    if (students.length === 0) return;
 
     const fetchUserEmails = async () => {
       try {
@@ -50,15 +51,13 @@ const ScheduleMeet = () => {
               );
               return { email: data?.email || "No Email" };
             } catch (err) {
-              // console.error(`Error fetching email for student ID ${student?.studentsId}:`, err);
-              return { email: "Error Fetching Email" }; // Handle individual email fetch failures
+              return { email: "Error Fetching Email" };
             }
           })
         );
         setUsersData(emails);
       } catch (err) {
         setError("Failed to fetch user emails.");
-        
       }
     };
 
@@ -72,7 +71,7 @@ const ScheduleMeet = () => {
     }
 
     setLoading(true);
-    setError(""); // Reset error before starting
+    setError("");
     try {
       const { data } = await axios.post(`${baseUrl}/api/meet/createMeet`, {
         summary,
@@ -83,8 +82,6 @@ const ScheduleMeet = () => {
       if (data?.meetLink) {
         setMeetLink(data.meetLink);
 
-
-        // Send schedule only if all required data is present
         if (usersData.length > 0 && courseTitle) {
           await axios.post(`${baseUrl}/api/meet/sendSchedule`, {
             usersData,
@@ -99,7 +96,6 @@ const ScheduleMeet = () => {
       }
     } catch (err) {
       setError("Error creating Google Meet event.");
-     
     } finally {
       setLoading(false);
     }
@@ -107,6 +103,15 @@ const ScheduleMeet = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
+      {/* ✅ Helmet for SEO and page title */}
+      <Helmet>
+        <title>Schedule Google Meet - Safara</title>
+        <meta
+          name="description"
+          content="Schedule Google Meet sessions for your Safara courses and notify students via email."
+        />
+      </Helmet>
+
       <h1 className="text-2xl font-semibold pb-5">Schedule a Google Meet</h1>
       <div className="border border-primary p-5 rounded-lg lg:w-1/4 md:w-1/2 w-full">
         <input
@@ -141,7 +146,12 @@ const ScheduleMeet = () => {
         {meetLink && (
           <div className="mt-3">
             <h2 className="font-semibold">Google Meet Link:</h2>
-            <a href={meetLink} target="_blank" rel="noopener noreferrer" className="text-blue-500">
+            <a
+              href={meetLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500"
+            >
               {meetLink}
             </a>
             <h4>Meet schedule Created successfully!</h4>

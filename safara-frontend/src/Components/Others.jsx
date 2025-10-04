@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet"; // ✅ Import Helmet
 
 const ManageOtherCard = () => {
   const [cards] = useState([
@@ -48,18 +49,20 @@ const ManageOtherCard = () => {
 
   const [selectedCard, setSelectedCard] = useState(null);
 
-  // Function to open the modal with the selected card
-  const handleCardClick = (card) => {
-    setSelectedCard(card);
-  };
-
-  // Function to close the modal
-  const closeModal = () => {
-    setSelectedCard(null);
-  };
+  const handleCardClick = (card) => setSelectedCard(card);
+  const closeModal = () => setSelectedCard(null);
 
   return (
     <div className="container mx-auto p-6 bg-gray-100">
+      {/* ✅ Helmet for page title and meta */}
+      <Helmet>
+        <title>Our Other Projects - Safara</title>
+        <meta
+          name="description"
+          content="Explore Safara's other projects, including luxury residential complexes, commercial office spaces, eco-friendly housing developments, and more."
+        />
+      </Helmet>
+
       <h1 className="text-4xl font-extrabold mb-8 text-center text-primary">
         Our Other Projects
       </h1>
@@ -70,7 +73,7 @@ const ManageOtherCard = () => {
           <div
             key={card.id}
             className="card bg-white shadow-xl rounded-lg overflow-hidden transform hover:scale-105 transition duration-300 cursor-pointer"
-            onClick={() => handleCardClick(card)} // Show the modal on card click
+            onClick={() => handleCardClick(card)}
           >
             <img
               src={card.img}
@@ -87,7 +90,7 @@ const ManageOtherCard = () => {
         ))}
       </div>
 
-      {/* Modal for Showing Card Details */}
+      {/* Modal */}
       {selectedCard && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-96 transform transition-all duration-500 ease-in-out scale-100 opacity-100">

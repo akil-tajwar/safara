@@ -3,6 +3,7 @@ import { MdEdit, MdPerson } from "react-icons/md";
 import { FaMedal } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet"; // <-- Import Helmet
 
 const Profile = () => {
   const { user } = useAuthContext();
@@ -10,6 +11,7 @@ const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+
   const fetchSingleUser = () => {
     const url = `${baseUrl}/api/user/singleUser/${user?.user?._id}`;
     fetch(url)
@@ -26,8 +28,6 @@ const Profile = () => {
       .catch((error) => console.log(error));
   };
 
-  console.log("enrolledCourses", enrolledCourses); // enrolledCourses.map(courses=> courses.students.map(student=> if(studentsId===user.user._id && isCourseComplete===true)))
-
   useEffect(() => {
     if (user?.user?._id) {
       fetchSingleUser();
@@ -36,17 +36,32 @@ const Profile = () => {
   }, [user?.user?._id]);
 
   if (!userData) {
-    return <div>Loading...</div>;
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <span className="loading loading-spinner w-40 h-40 text-white"></span>
+      </div>
+    );
   }
 
   return (
     <div className="lg:w-3/4 w-11/12 mx-auto">
+      {/* Helmet for page title */}
+      <Helmet>
+        <title>
+          {userData.firstname} {userData.lastname} | Profile | Safara LMS
+        </title>
+        <meta
+          name="description"
+          content={`View profile, enrolled courses, and certificates of ${userData.firstname} ${userData.lastname} on Safara Learning Center.`}
+        />
+      </Helmet>
+
       <div className="grid md:grid-cols-7 grid-cols-1 gap-8">
         <div className="md:col-span-3 lg:col-span-2 col-span-7">
           <img
             className="h-[400px] rounded-md w-full object-cover object-top border"
             src={userData.img && userData.img}
-            alt=""
+            alt={`${userData.firstname} ${userData.lastname}`}
           />
           <div className="block md:hidden">
             <div className="flex justify-between items-center pt-5">
@@ -145,7 +160,6 @@ const Profile = () => {
               {enrolledCourses?.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
                   {enrolledCourses.map((course) => {
-                    // Check if the logged-in user has completed the course
                     const isUserCompleted = course.students.some(
                       (student) =>
                         student.studentsId === user.user._id &&
@@ -161,7 +175,7 @@ const Profile = () => {
                         <img
                           src={course.banner}
                           className="h-32 min-w-full object-cover"
-                          alt=""
+                          alt={course.title}
                         />
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
                           {course.title}

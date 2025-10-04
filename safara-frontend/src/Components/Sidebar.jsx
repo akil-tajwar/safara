@@ -9,47 +9,42 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { MdOutlineFeaturedVideo, MdOutlineFolderSpecial } from "react-icons/md";
-import { GrDocumentConfig, GrDocumentUpdate } from "react-icons/gr";
+import {
+  GrDocumentConfig,
+  GrDocumentUpdate,
+  GrCloudUpload,
+} from "react-icons/gr";
 import { NavLink, useLocation } from "react-router-dom";
 import useAuthContext from "../hooks/useAuthContext";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuthContext();
-  console.log("🚀 ~ Sidebar ~ user:", user?.user?._id)
   const [currentUser, setCurrentUser] = useState([]);
   const location = useLocation();
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+  const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const fetchAllUsers = () => {
-    const url = `${baseUrl}/api/user/allUsers`;
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("🚀 ~ .then ~ data:", data)
-        const userData = data.find(userData => userData._id === user?.user?._id);
-        setCurrentUser(userData);
-        console.log("🚀 ~ .then ~ userData:", userData)
-      })
-      .catch((error) => console.log(error));
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+
+  const fetchAllUsers = async () => {
+    try {
+      const res = await fetch(`${baseUrl}/api/user/allUsers`);
+      const data = await res.json();
+      const userData = data.find((u) => u._id === user?.user?._id);
+      setCurrentUser(userData || {});
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
 
   useEffect(() => {
-    if (user?.user?._id) {
-      fetchAllUsers();
-    }
+    if (user?.user?._id) fetchAllUsers();
   }, [user?.user?._id]);
-  
 
-  // Regex to match the /singleCourse/:id pattern
   const singleCourseRegex = /^\/singleCourse\/[^/]+$/;
 
   const navLinkStyle = ({ isActive }, path) => {
     const isSingleCoursePage = singleCourseRegex.test(location.pathname);
-
     const shouldApplyActiveStyle =
       isActive ||
       (isSingleCoursePage && path === "/dashboard/admin/manageCourses");
@@ -57,17 +52,16 @@ const Sidebar = () => {
     return {
       backgroundColor: shouldApplyActiveStyle ? "#125ca6" : "transparent",
       borderRadius: "6px",
-
       fontSize: "18px",
       fontWeight: "700",
       whiteSpace: "nowrap",
-      color: shouldApplyActiveStyle ? "white" : "white",
+      color: "white",
     };
   };
 
   return (
     <>
-      {/* Hamburger button - fixed at bottom left */}
+      {/* Mobile toggle button */}
       <button
         onClick={toggleSidebar}
         className="lg:hidden fixed top-4 left-4 z-50 bg-gray-800 border-2 border-white text-white p-2 rounded-full shadow-lg"
@@ -75,7 +69,7 @@ const Sidebar = () => {
         <FaBars size={24} />
       </button>
 
-      {/* Overlay when sidebar is open on mobile */}
+      {/* Overlay for mobile */}
       <div
         onClick={toggleSidebar}
         className={`fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity duration-300 lg:hidden ${
@@ -87,42 +81,34 @@ const Sidebar = () => {
       <div
         className={`bg-gray-800 text-white h-screen fixed left-0 top-0 bottom-0 w-64 transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 z-50`} // Add z-50 or a higher z-index value
+        } lg:translate-x-0 z-50`}
       >
-        <div className="w-60">
-          <img src="logo.png" alt="" />
+        <div className="w-60 p-4">
+          <img src="/logo.png" alt="Logo" />
         </div>
-        <ul className="menu p-4">
-          {currentUser.role === "admin" && (
+
+        <ul className="menu p-4 space-y-1">
+          {currentUser?.role === "admin" && (
             <>
-              <h2 className="text-2xl font-bold pb-8">Admin Dashboard</h2>
+              <h2 className="text-2xl font-bold pb-6">Admin Dashboard</h2>
               <li>
-                <NavLink style={navLinkStyle} to={"/dashboard/admin/adminHome"}>
+                <NavLink style={navLinkStyle} to="/dashboard/admin/adminHome">
                   <FaTachometerAlt />
                   Admin Home
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  style={navLinkStyle}
-                  to={"/dashboard/admin/addCourses"}
-                >
+                <NavLink style={navLinkStyle} to="/dashboard/admin/addCourses">
                   <GrDocumentUpdate />
                   Add Course
                 </NavLink>
               </li>
-              {/* <li>
-                <NavLink style={navLinkStyle} to={"/dashboard/admin/manageOtherCard"}>
-                  <GrDocumentUpdate />
-                  Manage Other
-                </NavLink>
-              </li> */}
               <li>
                 <NavLink
                   style={(navData) =>
                     navLinkStyle(navData, "/dashboard/admin/manageCourses")
                   }
-                  to={"/dashboard/admin/manageCourses"}
+                  to="/dashboard/admin/manageCourses"
                 >
                   <FaRegBuilding />
                   Manage Courses
@@ -131,25 +117,35 @@ const Sidebar = () => {
               <li>
                 <NavLink
                   style={navLinkStyle}
-                  to={"/dashboard/admin/transactionHistory"}
+                  to="/dashboard/admin/otherProjectUpload"
+                >
+                  <GrCloudUpload />
+                  Other Project Upload
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  style={navLinkStyle}
+                  to="/dashboard/admin/transactionHistory"
                 >
                   <GrDocumentConfig />
                   Transaction History
                 </NavLink>
               </li>
               <li>
-                <NavLink style={navLinkStyle} to={"/dashboard/admin/allUsers"}>
+                <NavLink style={navLinkStyle} to="/dashboard/admin/allUsers">
                   <FaUsers />
                   All Users
                 </NavLink>
               </li>
             </>
           )}
-          {currentUser.role === "user" && (
+
+          {currentUser?.role === "user" && (
             <>
-              <h2 className="text-2xl font-bold pb-8">User Dashboard</h2>
+              <h2 className="text-2xl font-bold pb-6">User Dashboard</h2>
               <li>
-                <NavLink style={navLinkStyle} to={"/dashboard/user/userHome"}>
+                <NavLink style={navLinkStyle} to="/dashboard/user/userHome">
                   <FaTachometerAlt />
                   User Home
                 </NavLink>
@@ -157,17 +153,14 @@ const Sidebar = () => {
               <li>
                 <NavLink
                   style={navLinkStyle}
-                  to={"/dashboard/user/userPaymentHistory"}
+                  to="/dashboard/user/userPaymentHistory"
                 >
                   <GrDocumentConfig />
                   Transaction History
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  style={navLinkStyle}
-                  to={"/dashboard/user/userCourses"}
-                >
+                <NavLink style={navLinkStyle} to="/dashboard/user/userCourses">
                   <MdOutlineFeaturedVideo />
                   My Classes
                 </NavLink>
@@ -175,28 +168,28 @@ const Sidebar = () => {
             </>
           )}
 
-          {/* shared content */}
           <div className="divider bg-white h-0.5"></div>
+
           <li>
-            <NavLink style={navLinkStyle} to={"/"}>
+            <NavLink style={navLinkStyle} to="/">
               <FaHome />
               Home
             </NavLink>
           </li>
           <li>
-            <NavLink style={navLinkStyle} to={"/AllCourses"}>
+            <NavLink style={navLinkStyle} to="/allCourses">
               <FaSearch />
               Courses
             </NavLink>
           </li>
           <li>
-            <NavLink style={navLinkStyle} to={"/others"}>
-            <MdOutlineFolderSpecial />
+            <NavLink style={navLinkStyle} to="/others">
+              <MdOutlineFolderSpecial />
               Others
             </NavLink>
           </li>
           <li>
-            <NavLink style={navLinkStyle} to={`/profile`}>
+            <NavLink style={navLinkStyle} to="/profile">
               <FaUser />
               Profile
             </NavLink>
