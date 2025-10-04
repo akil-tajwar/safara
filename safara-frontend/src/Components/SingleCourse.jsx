@@ -21,13 +21,14 @@ import { FaRegCirclePlay } from "react-icons/fa6";
 import useAuthContext from "../hooks/useAuthContext";
 import Swal from "sweetalert2";
 import ReactHtmlParser from "react-html-parser";
+import { Helmet } from "react-helmet";
 
 const SingleCourse = () => {
   const { id } = useParams();
 
-  const courseId= id;
+  const courseId = id;
 
-  console.log("courseId",courseId);
+  console.log("courseId", courseId);
   const { user } = useAuthContext();
   // const [isInstructor, setIsInstructor] = useState(false);
   const [courseData, setCourseData] = useState(null);
@@ -77,7 +78,7 @@ const SingleCourse = () => {
       }
     }
   }, [courseData, userId]);
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
   const courseCompleteAction = async () => {
     try {
       const response = await fetch(
@@ -348,7 +349,7 @@ const SingleCourse = () => {
     setScore(newScore);
     setQuizSubmitted(true);
     setUnlockedVideos(courseData.videos.length);
-    
+
     const currentQuizState = [...quizzes];
 
     quizCompleteAction(newScore).then(() => {
@@ -363,10 +364,13 @@ const SingleCourse = () => {
 
   const quizCompleteAction = async (newScore) => {
     const quizMarksPercentage = (newScore * 100) / quizzes.length;
-    console.log("🚀 ~ quizCompleteAction ~ quizMarksPercentage:", quizMarksPercentage)
+    console.log(
+      "🚀 ~ quizCompleteAction ~ quizMarksPercentage:",
+      quizMarksPercentage
+    );
     console.log(score);
     try {
-      if(quizMarksPercentage < 40){
+      if (quizMarksPercentage < 40) {
         Swal.fire({
           title: "Error",
           text: `You got ${quizMarksPercentage}% marks in your quiz. You need to score at least 40% to complete the quiz.`,
@@ -374,8 +378,7 @@ const SingleCourse = () => {
           confirmButtonText: "OK",
         });
         return;
-      }
-      else{
+      } else {
         const response = await fetch(
           `${baseUrl}/api/course/completeQuiz/${userId}`,
           {
@@ -383,16 +386,20 @@ const SingleCourse = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ _id: courseData._id, quizMarks: newScore, quizMarksPercentage: quizMarksPercentage }),
+            body: JSON.stringify({
+              _id: courseData._id,
+              quizMarks: newScore,
+              quizMarksPercentage: quizMarksPercentage,
+            }),
           }
         );
-  
+
         const data = await response.json();
-  
+
         if (!response.ok) {
           throw new Error(data.message || "Failed to complete the quiz");
         }
-  
+
         console.log("quiz completed successfully:", data);
         setQuizComplete(true);
 
@@ -403,7 +410,7 @@ const SingleCourse = () => {
           confirmButtonText: "OK",
         });
       }
-      
+
       // Remove fetchSingleCourse() to preserve quiz state
     } catch (error) {
       console.error("Error completing the quiz:", error);
@@ -737,6 +744,19 @@ const SingleCourse = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>{courseData?.title || "Course Details"}</title>
+        <meta
+          name="description"
+          content={courseData?.magnetLine || "Learn more about this course"}
+        />
+        <meta property="og:title" content={courseData?.title || ""} />
+        <meta
+          property="og:description"
+          content={courseData?.magnetLine || ""}
+        />
+        <meta property="og:image" content={courseData?.banner || ""} />
+      </Helmet>
       {isAdminOrStudent === false && (
         <div>
           <Navbar />

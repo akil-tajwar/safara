@@ -63,7 +63,12 @@ const Certificate = () => {
   }, []);
   const percent = Math.max(0, Math.min(100, (score - 1) * 10));
   let currentDate = new Date().toJSON().slice(0, 10);
-  if (loading) return <p className="text-center">Loading…</p>;
+  if (loading)
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <span className="loading loading-spinner w-40 h-40 text-white"></span>
+      </div>
+    );
 
   return (
     <div className="flex flex-col items-center">

@@ -1,55 +1,51 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import useAuthContext from "../../../hooks/useAuthContext";
-import { storage } from '../../../firebase/firebase'; // Firebase import
+import { storage } from "../../../firebase/firebase"; // Firebase import
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const UpdateProfile = () => {
   const { user } = useAuthContext();
-  const [loading, setLoading] = useState(false); // State for loader visibility
-  const [uploadPerc, setUploadPerc] = useState(0); // Upload percentage for image
-  const [selectedImage, setSelectedImage] = useState(null); // State to handle image selection
-  const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false); // Loader visibility
+  const [uploadPerc, setUploadPerc] = useState(0); // Upload percentage
+  const [selectedImage, setSelectedImage] = useState(null); // Handle image selection
   const [userData, setUserData] = useState({
     firstname: "",
     lastname: "",
     email: "",
     phone: "",
     birthday: "",
-    gender: "",
+    gender: "Choose Gender",
     profession: [{ position: "", institution: "" }],
     degree: "",
     result: "",
     location: "",
     img: "",
   });
-  const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
-  // Fetch user data by ID
+
+  const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+
+  // Fetch user data
   useEffect(() => {
+    if (!user?.user?._id) return;
+
     axios
       .get(`${baseUrl}/api/user/singleUser/${user?.user?._id}`, {
         withCredentials: true,
       })
-      .then((response) => {
-        setUserData(response.data); // Populate form with fetched user data
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the user data!", error);
-      });
+      .then((res) => setUserData(res.data))
+      .catch((err) =>
+        console.error("There was an error fetching the user data!", err)
+      );
   }, [user?.user?._id]);
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedImage(e.target.files[0]);
     }
-  };
-
-  const handleProfessionChange = (index, field, value) => {
-    const updatedProfession = [...userData.profession];
-    updatedProfession[index][field] = value;
-    setUserData({ ...userData, profession: updatedProfession });
   };
 
   const handleUpdate = async (e) => {
@@ -67,7 +63,8 @@ const UpdateProfile = () => {
       profession: [
         {
           position: form.position.value || userData.profession[0]?.position,
-          institution: form.institution.value || userData.profession[0]?.institution,
+          institution:
+            form.institution.value || userData.profession[0]?.institution,
         },
       ],
       degree: form.degree.value || userData.degree,
@@ -76,17 +73,16 @@ const UpdateProfile = () => {
     };
 
     try {
-      // If an image is selected, upload to Firebase first
       if (selectedImage) {
-        const imgName = `${new Date().getTime()}_${selectedImage.name}`;
+        const imgName = `${Date.now()}_${selectedImage.name}`;
         const storageRef = ref(storage, `images/${imgName}`);
         const uploadTask = uploadBytesResumable(storageRef, selectedImage);
 
-        // Listen for state changes during upload
         uploadTask.on(
           "state_changed",
           (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             setUploadPerc(Math.round(progress));
           },
           (error) => {
@@ -94,7 +90,7 @@ const UpdateProfile = () => {
           },
           async () => {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            updatedData.img = downloadURL; // Update image URL
+            updatedData.img = downloadURL;
             await axios.patch(
               `${baseUrl}/api/user/updateUser/${user?.user?._id}`,
               updatedData,
@@ -115,176 +111,194 @@ const UpdateProfile = () => {
       }
     } catch (error) {
       console.error("There was an error updating the profile!", error);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="md:w-3/4 w-11/12 mx-auto">
-      {loading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <span className="loading loading-spinner w-40 h-40 text-white"></span>
-        </div>
-      )}
-      <p className="md:text-3xl border-b font-bold text-primary pb-2 mb-10">Update Profile</p>
-      <form onSubmit={handleUpdate} className="">
-        <p className="font-semibold text-xs text-slate-400 pb-1">PERSONAL INFO</p>
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">First Name</span>
-            </label>
-            <input
-              type="text"
-              name="firstName"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.firstname}
-            />
+    <>
+      <Helmet>
+        <title>Update Profile | Mahad LMS</title>
+        <meta
+          name="description"
+          content="Update your personal, professional, and educational details in Mahad LMS."
+        />
+      </Helmet>
+
+      <div className="md:w-3/4 w-11/12 mx-auto">
+        {loading && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <span
+              className="loading loading-spinner w-40 h-40 text-white"
+              aria-label="Updating profile..."
+            ></span>
           </div>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Last Name</span>
-            </label>
-            <input
-              type="text"
-              name="lastName"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.lastname}
-            />
+        )}
+
+        <p className="md:text-3xl border-b font-bold text-primary pb-2 mb-10">
+          Update Profile
+        </p>
+
+        <form onSubmit={handleUpdate}>
+          {/* PERSONAL INFO */}
+          <p className="font-semibold text-xs text-slate-400 pb-1">
+            PERSONAL INFO
+          </p>
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+            <div className="form-control w-full">
+              <label className="label">First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.firstname}
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.lastname}
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">Birthday</label>
+              <input
+                type="date"
+                name="birthday"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.birthday}
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">Gender</label>
+              <select
+                name="gender"
+                className="px-3 cursor-pointer py-[11px] rounded-md border border-slate-200"
+                value={userData.gender || "Choose Gender"}
+                onChange={(e) =>
+                  setUserData({ ...userData, gender: e.target.value })
+                }
+              >
+                <option value="Choose Gender">Choose Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Third Gender">Third Gender</option>
+              </select>
+            </div>
+            <div className="form-control w-full">
+              <label className="label">Photo</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="file-input w-full border border-slate-200"
+                onChange={handleImageChange}
+              />
+              {selectedImage && uploadPerc > 0 && (
+                <p className="text-xs text-slate-500 mt-1">
+                  {uploadPerc}% uploaded
+                </p>
+              )}
+            </div>
           </div>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Birthday</span>
-            </label>
-            <input
-              type="date"
-              name="birthday"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.birthday}
-            />
+
+          {/* PROFESSIONAL INFO */}
+          <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">
+            PROFESSIONAL INFO
+          </p>
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+            <div className="form-control w-full">
+              <label className="label">Position</label>
+              <input
+                type="text"
+                name="position"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.profession[0]?.position}
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">Institution</label>
+              <input
+                type="text"
+                name="institution"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.profession[0]?.institution}
+              />
+            </div>
           </div>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Gender</span>
-            </label>
-            <select name="gender" className="px-3 cursor-pointer py-[11px] rounded-md border border-slate-200">
-              <option value="Choose Gender" selected={userData.gender === "Choose Gender"}>
-                Choose Gender
-              </option>
-              <option value="Male" selected={userData.gender === "Male"}>
-                Male
-              </option>
-              <option value="Female" selected={userData.gender === "Female"}>
-                Female
-              </option>
-              <option value="Third Gender" selected={userData.gender === "Third Gender"}>
-                Third Gender
-              </option>
-            </select>
+
+          {/* EDUCATION */}
+          <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">
+            EDUCATIONAL HISTORY
+          </p>
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+            <div className="form-control w-full">
+              <label className="label">Degree</label>
+              <input
+                type="text"
+                name="degree"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.degree}
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">Result</label>
+              <input
+                type="text"
+                name="result"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.result}
+              />
+            </div>
           </div>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Photo</span>
-            </label>
-            <input type="file" accept="image/*" className="file-input w-full border border-slate-200" onChange={handleImageChange} />
-            {/* <p>{uploadPerc}% uploaded</p> */}
+
+          {/* CONTACT */}
+          <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">
+            CONTACT INFO
+          </p>
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+            <div className="form-control w-full">
+              <label className="label">Phone</label>
+              <input
+                type="text"
+                name="phone"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.phone}
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">Address</label>
+              <input
+                type="text"
+                name="location"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.location}
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">Email</label>
+              <input
+                type="email"
+                name="email"
+                className="px-3 py-[11px] rounded-md border border-slate-200"
+                defaultValue={userData.email}
+              />
+            </div>
           </div>
-        </div>
-        {/* Profession Section */}
-        <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">PROFESSIONAL INFO</p>
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Position</span>
-            </label>
-            <input
-              type="text"
-              name="position"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.profession[0]?.position}
-            />
+
+          <div className="py-10 text-center">
+            <button
+              type="submit"
+              className="rounded-md py-[11px] px-4 bg-primary text-white"
+            >
+              Update
+            </button>
           </div>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Institution</span>
-            </label>
-            <input
-              type="text"
-              name="institution"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.profession[0]?.institution}
-            />
-          </div>
-        </div>
-        {/* Educational History */}
-        <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">EDUCATIONAL HISTORY</p>
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Degree</span>
-            </label>
-            <input
-              type="text"
-              name="degree"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.degree}
-            />
-          </div>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Result</span>
-            </label>
-            <input
-              type="text"
-              name="result"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.result}
-            />
-          </div>
-        </div>
-        {/* Contact Info */}
-        <p className="font-semibold text-xs text-slate-400 pb-1 pt-10">CONTACT INFO</p>
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Phone</span>
-            </label>
-            <input
-              type="text"
-              name="phone"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.phone}
-            />
-          </div>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Address</span>
-            </label>
-            <input
-              type="text"
-              name="location"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.location}
-            />
-          </div>
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Email</span>
-            </label>
-            <input
-              type="text"
-              name="email"
-              className="px-3 py-[11px] rounded-md border border-slate-200"
-              defaultValue={userData.email}
-            />
-          </div>
-        </div>
-        <div className="py-10 text-center">
-          <button type="submit" className="rounded-md py-[11px] px-4 bg-primary text-white">
-            Update
-          </button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 };
 

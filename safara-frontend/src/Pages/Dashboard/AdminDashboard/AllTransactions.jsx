@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
 import { TbCurrencyTaka } from "react-icons/tb";
+import { Helmet } from "react-helmet"; // ✅ Import Helmet
 
 const AllTransactions = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,8 +16,7 @@ const AllTransactions = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
-        // Fetch all data in parallel
+        const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
         const [transactionsRes, usersRes, coursesRes] = await Promise.all([
           fetch(`${baseUrl}/api/course/getAllTransactions`),
           fetch(`${baseUrl}/api/user/allUsers`),
@@ -29,7 +29,6 @@ const AllTransactions = () => {
           coursesRes.json(),
         ]);
 
-        // Create lookup objects for users and courses
         const usersMap = usersData.reduce((acc, user) => {
           acc[user._id] = `${user.firstname} ${user.lastname}`;
           return acc;
@@ -53,7 +52,6 @@ const AllTransactions = () => {
     fetchData();
   }, []);
 
-  // Filter transactions based on search term
   const filteredTransactions = transactions.filter((transaction) => {
     const studentName = users[transaction.studentsId] || "";
     const courseName = courses[transaction.courseId] || "";
@@ -66,7 +64,7 @@ const AllTransactions = () => {
     );
   });
 
-  // Pagination logic
+  // Pagination
   const indexOfLastTransaction = currentPage * transactionsPerPage;
   const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
   const currentTransactions = filteredTransactions.slice(
@@ -79,17 +77,27 @@ const AllTransactions = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-primary">Loading transactions...</div>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <span className="loading loading-spinner w-40 h-40 text-white"></span>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen p-6">
+      {/* ✅ Helmet for page title and description */}
+      <Helmet>
+        <title>Transaction History - Admin Dashboard</title>
+        <meta
+          name="description"
+          content="View and manage all course transactions. Search, filter, and paginate through transaction history with student and course details."
+        />
+      </Helmet>
+
       <h1 className="text-3xl font-bold text-primary mb-8">
         Transaction History
       </h1>
+
       <div className="bg-white rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <div className="relative">

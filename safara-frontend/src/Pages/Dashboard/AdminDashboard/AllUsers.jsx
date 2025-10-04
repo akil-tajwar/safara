@@ -4,17 +4,17 @@ import {
   FaChevronRight,
   FaUserMinus,
   FaUserShield,
-  FaUserTimes,
 } from "react-icons/fa";
-import { FaUserCheck } from "react-icons/fa6";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Swal from "sweetalert2";
+import { Helmet } from "react-helmet"; // ✅ Import Helmet
 
 const AllUsers = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 15;
   const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+
   const fetchAllUsers = () => {
     const url = `${baseUrl}/api/user/allUsers`;
     fetch(url)
@@ -29,6 +29,7 @@ const AllUsers = () => {
     fetchAllUsers();
   }, []);
 
+  // Delete user
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -38,42 +39,34 @@ const AllUsers = () => {
       confirmButtonColor: "#125ca6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-      customClass: {
-        confirmButton: "custom-confirm-btn",
-      },
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(`${baseUrl}/api/user/deleteUser/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
-          .then((data) => {
+          .then(() => {
             Swal.fire({
               title: "Deleted!",
               text: "The user has been deleted.",
               icon: "success",
               confirmButtonColor: "#125ca6",
-              customClass: {
-                confirmButton: "custom-confirm-btn",
-              },
             });
             fetchAllUsers();
           })
-          .catch((error) => {
+          .catch(() => {
             Swal.fire({
               title: "Error!",
               text: "There was an error deleting the user.",
               icon: "error",
               confirmButtonColor: "#125ca6",
-              customClass: {
-                confirmButton: "custom-confirm-btn",
-              },
             });
           });
       }
     });
   };
 
+  // Make admin
   const handleMakeAdmin = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -86,9 +79,7 @@ const AllUsers = () => {
       if (result.isConfirmed) {
         fetch(`${baseUrl}/api/user/makeAdmin/${id}`, {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ role: "admin" }),
         })
           .then((res) => res.json())
@@ -99,20 +90,17 @@ const AllUsers = () => {
               icon: "success",
               confirmButtonColor: "#125ca6",
             });
-            setAllUsers((prevUsers) => {
-              return prevUsers.map((prevUser) => {
-                if (prevUser._id === id) {
-                  return { ...prevUser, role: "admin" };
-                } else {
-                  return prevUser;
-                }
-              });
-            });
+            setAllUsers((prevUsers) =>
+              prevUsers.map((user) =>
+                user._id === id ? { ...user, role: "admin" } : user
+              )
+            );
           });
       }
     });
   };
 
+  // Undo admin
   const handleUndoAdmin = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -123,12 +111,7 @@ const AllUsers = () => {
       confirmButtonText: "Yes, do it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`${baseUrl}/api/user/undoAdmin/${id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        fetch(`${baseUrl}/api/user/undoAdmin/${id}`, { method: "PATCH" })
           .then((res) => res.json())
           .then((data) => {
             Swal.fire({
@@ -137,116 +120,43 @@ const AllUsers = () => {
               icon: "success",
               confirmButtonColor: "#125ca6",
             });
-            setAllUsers((prevUsers) => {
-              return prevUsers.map((prevUser) => {
-                if (prevUser._id === id) {
-                  return { ...prevUser, role: data.role };
-                } else {
-                  return prevUser;
-                }
-              });
-            });
+            setAllUsers((prevUsers) =>
+              prevUsers.map((user) =>
+                user._id === id ? { ...user, role: data.role } : user
+              )
+            );
           });
       }
     });
   };
 
-  const handleSuspendUser = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, suspend!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(`${baseUrl}/api/user/suspendUser/${id}`, {
-          method: "PATCH",
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            Swal.fire({
-              title: "Done!",
-              text: `${data.firstname} ${data.lastname} has been suspended`,
-              icon: "success",
-            });
-            setAllUsers((prevUsers) => {
-              return prevUsers.map((prevUser) => {
-                if (prevUser._id === id) {
-                  return { ...prevUser, isSuspended: true };
-                } else {
-                  return prevUser;
-                }
-              });
-            });
-          });
-      }
-    });
-  };
-
-  const handleContinueUser = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, continue!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(`${baseUrl}/api/user/continueUser/${id}`, {
-          method: "PATCH",
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            Swal.fire({
-              title: "Done!",
-              text: `${data.firstname} ${data.lastname} has been reinstated`,
-              icon: "success",
-            });
-            setAllUsers((prevUsers) => {
-              return prevUsers.map((prevUser) => {
-                if (prevUser._id === id) {
-                  return { ...prevUser, isSuspended: false };
-                } else {
-                  return prevUser;
-                }
-              });
-            });
-          });
-      }
-    });
-  };
-
-  // Pagination logic
+  // Pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = allUsers.slice(indexOfFirstUser, indexOfLastUser);
-
   const totalPages = Math.ceil(allUsers.length / usersPerPage);
 
   const handlePageChange = (pageNumber) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
+    if (pageNumber > 0 && pageNumber <= totalPages) setCurrentPage(pageNumber);
   };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prevPage) => prevPage - 1);
-    }
-  };
+  const handleNextPage = () =>
+    currentPage < totalPages && setCurrentPage((p) => p + 1);
+  const handlePreviousPage = () =>
+    currentPage > 1 && setCurrentPage((p) => p - 1);
 
   return (
-    <div className=" m-6">
+    <div className="m-6">
+      {/* ✅ Helmet for dynamic page title and meta */}
+      <Helmet>
+        <title>All Users - Admin Dashboard</title>
+        <meta
+          name="description"
+          content="Admin dashboard to view and manage all users. Promote users to admin, delete users, and navigate through paginated list of users."
+        />
+      </Helmet>
+
       <h1 className="text-3xl font-bold text-primary mb-6">All Users</h1>
+
       <div className="overflow-x-hidden border rounded-md">
         <table className="table table-zebra">
           <thead>
@@ -302,7 +212,7 @@ const AllUsers = () => {
         </table>
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       <div
         className={`flex justify-center mt-16 ${
           allUsers.length <= 0 && "hidden"

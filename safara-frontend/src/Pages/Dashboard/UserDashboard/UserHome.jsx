@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FaBookOpen, FaCertificate } from "react-icons/fa";
 import { TbCurrencyTaka } from "react-icons/tb";
 import useAuthContext from "../../../hooks/useAuthContext";
+import { Helmet } from "react-helmet";
 
 const UserHome = () => {
   const [totalSpent, setTotalSpent] = useState(0);
@@ -12,6 +13,7 @@ const UserHome = () => {
 
   const { user } = useAuthContext();
   const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+
   const fetchTotalSpent = () => {
     fetch(`${baseUrl}/api/course/getSpentByStudent/${user?.user?._id}`)
       .then((res) => res.json())
@@ -26,7 +28,6 @@ const UserHome = () => {
         setTotalEnrolledCourses(data.courses.length);
         setCoursesByStudent(data.courses);
 
-        // Count completed courses for certificates
         const completedCourses = data.courses.reduce((count, course) => {
           const studentData = course.students.find(
             (student) => student.studentsId === user.user._id
@@ -47,6 +48,19 @@ const UserHome = () => {
 
   return (
     <div className="min-h-screen lg:p-8 pt-5 bg-gray-50">
+      {/* Helmet for SEO + Page Title */}
+      <Helmet>
+        <title>
+          User Dashboard | {user?.user?.name || "Student"} | Mahad LMS
+        </title>
+        <meta
+          name="description"
+          content={`Welcome ${
+            user?.user?.name || "student"
+          }! View your enrolled courses, progress, certificates, and total spent.`}
+        />
+      </Helmet>
+
       <h1 className="text-3xl font-bold text-primary mb-8">
         Welcome, {user?.user?.name || "User"}!
       </h1>
@@ -96,7 +110,7 @@ const UserHome = () => {
 
 // StatCard Component
 const StatCard = ({ icon, title, value }) => (
-  <div className="bg-white rounded-lg border p-6 ">
+  <div className="bg-white rounded-lg border p-6">
     <div className="flex justify-between items-center mb-4">
       <h2 className="text-sm font-medium text-gray-500">{title}</h2>
       <div className="text-primary text-xl">{icon}</div>

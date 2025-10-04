@@ -43,14 +43,16 @@ const userSchema = new mongoose.Schema(
     location: {
       type: String,
     },
-    profession: [{
-      position: {
-        type: String,
-      },//lecturer, manager, student
-      institution: {
-        type: String,
-      }, //IIUC, USTC, Chittaong University, Jamuna Bank
-    }],
+    profession: [
+      {
+        position: {
+          type: String,
+        }, //lecturer, manager, student
+        institution: {
+          type: String,
+        }, //IIUC, USTC, Chittaong University, Jamuna Bank
+      },
+    ],
     degree: {
       type: String,
     }, //bba(hon's), mba
@@ -68,33 +70,57 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.statics.signup = async function (firstname, lastname, email, phone, role, prevRole, img, password) {
-  console.log("🚀 ~ signup method ~ password before any processing:", password);
+userSchema.statics.signup = async function (
+  firstname,
+  lastname,
+  email,
+  phone,
+  role,
+  prevRole,
+  img,
+  password
+) {
   const exist = await this.findOne({ email });
   console.log(password);
   if (exist) {
-      if (!password)
-          return exist;
-      throw Error("Email already exists.!.");
+    if (!password) return exist;
+    throw Error("Email already exists.!.");
   }
   if (!firstname || !lastname || !email || !phone) {
-      throw Error("Required fields must be filled...");
+    throw Error("Required fields must be filled...");
   }
   if (!validator.isEmail(email)) {
-      throw Error("Not a valid email.!.")
+    throw Error("Not a valid email.!.");
   }
   if (password && !validator.isStrongPassword(password)) {
-      throw Error("Password is not strong enough.!.")
+    throw Error("Password is not strong enough.!.");
   }
   if (password) {
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(password, salt);
-      const user = await this.create({ firstname, lastname, email, phone, role, prevRole, img, password: hash });
-      return user;
-  }
-  else {
-      const user = await this.create({ firstname, lastname, email, phone, role, prevRole, img, password, });
-      return user;
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+    const user = await this.create({
+      firstname,
+      lastname,
+      email,
+      phone,
+      role,
+      prevRole,
+      img,
+      password: hash,
+    });
+    return user;
+  } else {
+    const user = await this.create({
+      firstname,
+      lastname,
+      email,
+      phone,
+      role,
+      prevRole,
+      img,
+      password,
+    });
+    return user;
   }
 };
 

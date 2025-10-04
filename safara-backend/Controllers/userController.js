@@ -115,6 +115,7 @@ const googleLogin = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log("email pas", email, password);
   try {
     const user = await userModel.login(email, password);
     // Detect the device type
@@ -377,7 +378,9 @@ const deleteMyAccount = async (req, res) => {
     res.status(200).json({ message: "User account deleted successfully." });
   } catch (error) {
     console.error("Error deleting user:", error);
-    res.status(500).json({ error: "An error occurred. Please try again later." });
+    res
+      .status(500)
+      .json({ error: "An error occurred. Please try again later." });
   }
 };
 

@@ -539,7 +539,7 @@ const AddCourses = () => {
                 </div>
               </div>
             </div>
-            <div >
+            <div>
               <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text">Requirements</span>

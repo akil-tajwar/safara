@@ -2,18 +2,20 @@ import axios from "axios";
 import { useState } from "react";
 import useAuthContext from "../hooks/useAuthContext";
 import { useLogout } from "../hooks/useLogout";
+import { Helmet } from "react-helmet"; // ✅ Import Helmet
+
 const Settings = () => {
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState(""); // for success messages
-  const [error, setError] = useState(""); // for error messages
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const { user } = useAuthContext();
   const { logout } = useLogout();
   const id = user?.user?._id;
 
+  const baseUrl = import.meta.env.VITE_SAFARA_baseUrl;
+
   const handleDeleteMyAccount = async (e) => {
     e.preventDefault();
-
-    // Reset messages
     setMessage("");
     setError("");
 
@@ -21,9 +23,8 @@ const Settings = () => {
       setError("Password is required.");
       return;
     }
-    const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
+
     try {
-      // Send request to delete the account
       const response = await axios.delete(
         `${baseUrl}/api/user/deleteMyAccount`,
         {
@@ -32,7 +33,6 @@ const Settings = () => {
       );
 
       setMessage(response.data.message || "Account deleted successfully.");
-      // Optionally, log the user out and redirect
       localStorage.removeItem("token");
       logout();
     } catch (err) {
@@ -44,18 +44,14 @@ const Settings = () => {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-
     const form = e.target;
     const oldPassword = form.oldPassword.value;
     const newPassword = form.newPassword.value;
     const retypePassword = form.retypePassword.value;
 
-    console.log(oldPassword, newPassword, retypePassword, id);
-    // Clear previous messages
     setMessage("");
     setError("");
 
-    // Client-side validations
     if (!oldPassword || !newPassword || !retypePassword) {
       setError("All fields are required.");
       return;
@@ -70,19 +66,18 @@ const Settings = () => {
       setError("New password and confirmation do not match.");
       return;
     }
-    const baseUrl= import.meta.env.VITE_SAFARA_baseUrl;
-    try {
-      // Make API request
-      const response = await axios.patch(
-        `${baseUrl}/api/user/changePassword`,
-        { oldPassword, newPassword, retypePassword, id }
-      );
 
-      // Handle successful response
+    try {
+      const response = await axios.patch(`${baseUrl}/api/user/changePassword`, {
+        oldPassword,
+        newPassword,
+        retypePassword,
+        id,
+      });
+
       setMessage(response.data.message || "Password changed successfully!");
-      form.reset(); // Clear the form fields
+      form.reset();
     } catch (err) {
-      // Handle error response
       setError(
         err.response?.data?.error || "An error occurred. Please try again."
       );
@@ -91,6 +86,15 @@ const Settings = () => {
 
   return (
     <div className="w-3/4 mx-auto">
+      {/* ✅ Helmet for SEO and page title */}
+      <Helmet>
+        <title>Account Settings - Safara</title>
+        <meta
+          name="description"
+          content="Manage your Safara account settings. Change your password or delete your account safely."
+        />
+      </Helmet>
+
       <div>
         <h3 className="text-2xl pb-2">Security</h3>
         <div className="border p-4 rounded-lg flex justify-between items-center">
@@ -106,14 +110,11 @@ const Settings = () => {
           <dialog id="change-password-modal" className="modal">
             <div className="modal-box">
               <form method="dialog">
-                {/* Modal close button */}
                 <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                   ✕
                 </button>
               </form>
               <h3 className="font-semibold text-xl pb-3">Change Password</h3>
-
-              {/* Display feedback */}
               {error && <p className="text-red-500 pb-3">{error}</p>}
               {message && <p className="text-green-500 pb-3">{message}</p>}
 
@@ -178,7 +179,6 @@ const Settings = () => {
           <dialog id="delete-account" className="modal">
             <div className="modal-box">
               <form method="dialog">
-                {/* Modal close button */}
                 <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                   ✕
                 </button>
