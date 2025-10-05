@@ -6,7 +6,6 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import app from "../firebase/firebase";
 import DOMPurify from "dompurify";
-import { Helmet } from "react-helmet"; // ✅ Import Helmet
 
 // Initialize Firebase Authentication
 const auth = getAuth(app);
@@ -19,12 +18,17 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const sanitizeInput = (input) => DOMPurify.sanitize(input.trim());
+  // Helper function to sanitize email and password inputs
+  const sanitizeInput = (input) => {
+    return DOMPurify.sanitize(input.trim()); // Trimming and sanitizing input
+  };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    // Sanitize email and password
     const sanitizedEmail = sanitizeInput(email);
     const sanitizedPassword = sanitizeInput(password);
 
@@ -36,10 +40,10 @@ const Login = () => {
     try {
       const userData = await login(sanitizedEmail, sanitizedPassword);
       if (userData) {
-        if (userData.user.role === "school-owner") {
-          navigate("/dashboard");
-        } else if (userData.user.role === "teacher") {
-          navigate("/teacherDashboard");
+        if (userData.user.role === "user") {
+          navigate("/dashboard/user/userHome");
+        } else if (userData.user.role === "admin") {
+          navigate("/dashboard/admin/adminHome");
         } else {
           navigate("/");
         }
@@ -51,6 +55,7 @@ const Login = () => {
     }
   };
 
+  // Handle Google Login
   const handleGoogleLogin = async () => {
     try {
       setError("");
@@ -86,15 +91,6 @@ const Login = () => {
 
   return (
     <div className="mt-20">
-      {/* ✅ Helmet for dynamic title + meta */}
-      <Helmet>
-        <title>Login | Safara LMS</title>
-        <meta
-          name="description"
-          content="Login to Safara LMS to access your courses, dashboard, and personalized learning experience."
-        />
-      </Helmet>
-
       <Link
         to={"/"}
         className="flex items-center gap-2 font-semibold lg:w-3/4 md:11/12 mx-auto text-xl pb-10"
@@ -113,7 +109,7 @@ const Login = () => {
           <p
             className="text-red-500 mb-4"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(error || loginError),
+              __html: DOMPurify.sanitize(error || loginError), // Sanitizing the error message
             }}
           />
         )}
@@ -153,7 +149,7 @@ const Login = () => {
           </button>
         </div>
         <p className="text-center pt-4">
-          Don't have an account?{" "}
+          Don&lsquo;t have an account?
           <Link
             to="/signup"
             className="text-primary transition-all hover:text-[#0a4a6f] hover:underline"
