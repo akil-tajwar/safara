@@ -12,6 +12,7 @@ import { Helmet } from "react-helmet";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { db, storage } from "../../../firebase/firebase";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const UploadOtherProject = () => {
   const [projects, setProjects] = useState([]);
@@ -25,7 +26,7 @@ const UploadOtherProject = () => {
 
   const navigate = useNavigate();
 
-  // 🔹 Fetch all projects
+  // 🔹 Fetch all projects from Firestore
   const fetchProjects = async () => {
     try {
       const snapshot = await getDocs(collection(db, "otherProjects"));
@@ -54,8 +55,8 @@ const UploadOtherProject = () => {
 
     try {
       if (file) {
-        // ✅ sanitize file name
-        const sanitizedFileName = file.name.replace(/\s/g, "_");
+        // ✅ sanitize file name (remove spaces)
+        const sanitizedFileName = file.name.replace(/\s+/g, "_");
         const storageRef = ref(
           storage,
           `otherProjects/${Date.now()}_${sanitizedFileName}`
@@ -95,7 +96,7 @@ const UploadOtherProject = () => {
         });
       }
 
-      // Reset form
+      // ✅ Reset form
       setTitle("");
       setDescription("");
       setFile(null);
@@ -105,7 +106,6 @@ const UploadOtherProject = () => {
       setUploading(false);
       fetchProjects();
 
-      // ✅ Show success and redirect
       Swal.fire({
         icon: "success",
         title: editId ? "Project updated!" : "Project uploaded!",
@@ -164,7 +164,7 @@ const UploadOtherProject = () => {
         Manage Other Projects
       </h1>
 
-      {/* Upload / Edit Form */}
+      {/* 🔹 Upload / Edit Form */}
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow-lg rounded-xl p-6 mb-10"
@@ -236,7 +236,7 @@ const UploadOtherProject = () => {
         </button>
       </form>
 
-      {/* Project List */}
+      {/* 🔹 Project List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {projects.map((p) => (
           <div
@@ -255,18 +255,21 @@ const UploadOtherProject = () => {
               <p className="text-gray-600 text-sm line-clamp-3">
                 {p.description}
               </p>
+
               <div className="mt-4 flex justify-between">
                 <button
                   onClick={() => handleEdit(p)}
-                  className="px-4 py-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition duration-300"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-full shadow-md transition"
+                  title="Edit Project"
                 >
-                  Edit
+                  <FaEdit size={18} />
                 </button>
                 <button
                   onClick={() => handleDelete(p.id)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition duration-300"
+                  className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-md transition"
+                  title="Delete Project"
                 >
-                  Delete
+                  <FaTrash size={18} />
                 </button>
               </div>
             </div>
