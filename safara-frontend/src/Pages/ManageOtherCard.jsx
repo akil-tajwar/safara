@@ -3,7 +3,7 @@ import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { Helmet } from "react-helmet";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { db } from "../firebase/firebase";
+import { db } from "../firebase/firebase"; // ✅ use db only here
 import { PiPencilCircleDuotone } from "react-icons/pi";
 import { BsTrash } from "react-icons/bs";
 
@@ -17,9 +17,11 @@ const ManageOtherCard = () => {
   // 🔹 Fetch projects from Firestore
   const fetchProjects = async () => {
     try {
+      // ✅ Correct: use Firestore db, not storage
       const snapshot = await getDocs(collection(db, "otherProjects"));
       const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setCards(data);
+      console.log("data", data);
     } catch (err) {
       console.error("Error fetching projects:", err);
       Swal.fire("Error", "Failed to load projects!", "error");
@@ -36,9 +38,7 @@ const ManageOtherCard = () => {
   const closeModal = () => setSelectedCard(null);
 
   const handleEdit = (card) => {
-    navigate("/dashboard/admin/otherProjectUpload");
-    // Optional: you can pass state with navigate to prefill form
-    // navigate("/dashboard/admin/otherProjectUpload", { state: card });
+    navigate("/dashboard/admin/otherProjectUpload", { state: card });
   };
 
   const handleDelete = async (id) => {
@@ -70,7 +70,7 @@ const ManageOtherCard = () => {
         <title>Our Other Projects - Safara</title>
         <meta
           name="description"
-          content="Explore Safara's other projects, including luxury residential complexes, commercial office spaces, eco-friendly housing developments, and more."
+          content="Explore Safara's other projects — modern, eco-friendly, and premium developments built with quality and innovation."
         />
       </Helmet>
 
@@ -78,6 +78,7 @@ const ManageOtherCard = () => {
         Our Other Projects
       </h1>
 
+      {/* 🔹 Loader */}
       {loading ? (
         <div className="flex justify-center items-center py-20">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-600 border-solid"></div>
@@ -91,20 +92,20 @@ const ManageOtherCard = () => {
           {cards.map((card) => (
             <div
               key={card.id}
-              className="relative bg-white shadow-xl rounded-lg overflow-hidden transform hover:scale-105 transition duration-300"
+              className="relative bg-white shadow-md rounded-xl overflow-hidden hover:shadow-xl transform hover:scale-[1.02] transition duration-300"
             >
               {/* Floating Edit/Delete Buttons */}
-              <div className="absolute top-2 right-2 flex flex-col space-y-2 z-10">
+              <div className="absolute top-3 right-3 flex flex-col space-y-2 z-10">
                 <button
                   onClick={() => handleEdit(card)}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition duration-300"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white p-2.5 rounded-full shadow-md transition-transform hover:rotate-6"
                   title="Edit Project"
                 >
                   <PiPencilCircleDuotone className="h-5 w-5" />
                 </button>
                 <button
                   onClick={() => handleDelete(card.id)}
-                  className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition duration-300"
+                  className="bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-full shadow-md transition-transform hover:-rotate-6"
                   title="Delete Project"
                 >
                   <BsTrash className="h-5 w-5" />
@@ -113,40 +114,45 @@ const ManageOtherCard = () => {
 
               <img
                 src={card.img || "/placeholder.jpg"}
-                alt={card.title}
+                alt={card?.title}
                 className="w-full h-48 object-cover cursor-pointer"
                 onClick={() => handleCardClick(card)}
               />
+
               <div
                 className="p-4 cursor-pointer"
                 onClick={() => handleCardClick(card)}
               >
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                <h3 className="text-lg font-semibold text-gray-800 mb-1">
                   {card.title}
                 </h3>
-                <p className="text-gray-600 line-clamp-3">{card.description}</p>
+                <p className="text-gray-600 text-sm line-clamp-3">
+                  {card.description}
+                </p>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal */}
+      {/* 🔹 Modal View */}
       {selectedCard && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-96 transform transition-all duration-300">
-            <h2 className="text-3xl font-bold text-indigo-600 mb-4">
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-60 z-50 backdrop-blur-sm">
+          <div className="bg-white p-8 rounded-2xl shadow-xl w-96 max-w-full animate-fadeIn">
+            <h2 className="text-2xl font-bold text-indigo-600 mb-3 text-center">
               {selectedCard.title}
             </h2>
             <img
               src={selectedCard.img || "/placeholder.jpg"}
-              alt={selectedCard.title}
-              className="w-full h-48 object-cover rounded-lg mb-4"
+              alt={selectedCard?.title}
+              className="w-full h-52 object-cover rounded-lg mb-4"
             />
-            <p className="text-gray-700 mb-6">{selectedCard.description}</p>
+            <p className="text-gray-700 mb-6 text-sm leading-relaxed">
+              {selectedCard.description}
+            </p>
             <button
               onClick={closeModal}
-              className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300"
+              className="w-full py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition duration-300"
             >
               Close
             </button>
