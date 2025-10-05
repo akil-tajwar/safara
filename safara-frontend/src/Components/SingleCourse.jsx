@@ -761,37 +761,37 @@ const SingleCourse = () => {
         <div>
           <Navbar />
           <div className="pt-[73px] pb-20">
-            <div className="rounded-md bg-gradient-to-b from-primary via-[#1870c8] to-[#1c7edf] text-white px-5 py-5 border-b mb-8">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-3xl">{courseData?.title}</h3>
-                  <div className="flex gap-1 text-xl mt-2 items-center">
-                    {renderStars(calculateAverageRating())}
-                    <p className="ml-3">
-                      {courseData?.studentsOpinion?.length || 0} Ratings
-                    </p>
+            <div className="rounded-md bg-gradient-to-b from-primary via-[#1870c8] to-[#1c7edf] text-white py-5 border-b mb-8">
+              <div className="lg:w-3/4 w-11/12 mx-auto">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-3xl">{courseData?.title}</h3>
+                    <div className="flex gap-1 text-xl mt-2 items-center">
+                      {renderStars(calculateAverageRating())}
+                      <p className="ml-3">
+                        {courseData?.studentsOpinion?.length || 0} Ratings
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col md:flex-row gap-2">
-                  {(user?.user?.role === "admin" ||
-                    courseData?.instructorsId?.includes(userId)) && (
-                    <Link
-                      to={`/dashboard/admin/schedulemeet?${courseId}`}
+                  <div className="flex flex-col md:flex-row gap-2">
+                    {(user?.user?.role === "admin" ||
+                      courseData?.instructorsId?.includes(userId)) && (
+                      <Link
+                        to={`/dashboard/admin/schedulemeet?${courseId}`}
+                        className="text-primary flex items-center gap-2 bg-white py-2 px-4 rounded-md"
+                      >
+                        Create Meet
+                      </Link>
+                    )}
+                    <button
+                      onClick={() => downloadFiteAtURL(courseData?.syllabus)}
                       className="text-primary flex items-center gap-2 bg-white py-2 px-4 rounded-md"
                     >
-                      Create Meet
-                    </Link>
-                  )}
-                  <button
-                    onClick={() => downloadFiteAtURL(courseData?.syllabus)}
-                    className="text-primary flex items-center gap-2 bg-white py-2 px-4 rounded-md"
-                  >
-                    <IoMdDownload className="text-xl" />
-                    <p className="">Syllabus</p>
-                  </button>
+                      <IoMdDownload className="text-xl" />
+                      <p className="">Syllabus</p>
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div>
                 <p className="pt-5 w-2/3">{courseData?.magnetLine}</p>
               </div>
             </div>
@@ -883,11 +883,11 @@ const SingleCourse = () => {
         </div>
       )}
       {isAdminOrStudent === true && (
-        <div className="lg:flex block">
-          <div className="lg:fixed top-0 z-10">
+        <div className="">
+          <div className="top-0 z-10">
             <Sidebar />
           </div>
-          <div className="lg:pl-72 pl-0 top-7 lg:absolute lg:pr-8 pr-0">
+          <div className="lg:pl-72 pl-0 top-7 lg:absolute lg:pr-8 pr-0 w-full">
             <div className="rounded-md bg-gradient-to-b from-primary via-[#1870c8] to-[#1c7edf] text-white px-5 py-5 border-b mb-8">
               <div className="flex justify-between items-center">
                 <div>

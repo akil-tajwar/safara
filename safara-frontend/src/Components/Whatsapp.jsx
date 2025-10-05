@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+// import {WhatsappLogo} from "../../public/whatsapp-logo.png"
 
 const Whatsapp = () => {
   const [isExpanded, setIsExpanded] = useState(false);
