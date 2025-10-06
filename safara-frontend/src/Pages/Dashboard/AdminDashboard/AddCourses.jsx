@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
 import { RxCross2 } from "react-icons/rx";
-import { storage } from "../../../firebase/firebase"; // Import the initialized Firebase storage
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import useAuthContext from "../../../hooks/useAuthContext";
+import { storage } from "../../../firebase/firebase";
 
 const AddCourses = () => {
   const { user } = useAuthContext();
