@@ -49,9 +49,9 @@ const Navbar = () => {
       <div className="fixed w-full py-3 bg-white z-10">
         <div className="lg:w-3/4 w-11/12 mx-auto">
           <div className="flex justify-between items-center">
-            <div className="w-40">
-              <img src={logo} alt="Logo" />
-            </div>
+            <Link className="w-40" to="/">
+              <img src={logo} alt="Logo" className="cursor-pointer" />
+            </Link>
 
             <div
               className={`lg:flex lg:gap-10 md:gap-5 items-center ${

@@ -1,46 +1,52 @@
+const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const express = require("express");
 const helmet = require("helmet");
 const compression = require("compression");
-
-// Use helmet middleware for secure headers
+require("dotenv").config();
 
 const userRoutes = require("./Routes/userRoutes.js");
 const meetRoutes = require("./Routes/meetRoutes.js");
 const courseRoutes = require("./Routes/courseRoutes.js");
-
 const whatsappRoutes = require("./Routes/whatsappRoutes.js");
-require("dotenv").config();
+
 const app = express();
 const baseUrl = process.env.BASE_URL;
-console.log("🚀 ~ baseUrl:", baseUrl);
+// ✅ 1. CORS must be FIRST
 app.use(
   cors({
-    origin: baseUrl, // Your frontend URL
+    origin: [
+      "http://localhost:5173", // your local dev frontend
+      "https://safaraapp.netlify.app",
+    ],
     methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true, // If needed for cookies/auth
+    credentials: true,
   })
 );
-// Middleware to parse JSON request bodies
+
+// ✅ 2. Basic express middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ✅ 3. Then security and performance
 app.use(helmet());
 app.use(compression());
 
-// Routes
+// ✅ 4. Routes
 app.use("/api/user", userRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/whatsapp", whatsappRoutes);
 app.use("/api/meet", meetRoutes);
 
-// Test route
-app.get("/", async (req, res) => {
+// ✅ 5. Root route
+app.get("/", (req, res) => {
   res.send("Server is working!");
 });
+
+// ✅ 6. Static files (optional)
 app.use(express.static("dist"));
 
-// Set CSP headers
+// ✅ 7. CSP (optional, but keep after CORS)
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
@@ -48,18 +54,13 @@ app.use((req, res, next) => {
   );
   next();
 });
-const MONGODB_URI = process.env.MONGODB_URI;
 
+// ✅ 8. Connect to DB and start server
 mongoose
-  .connect(MONGODB_URI)
+  .connect(process.env.MONGODB_URI)
   .then(() => {
-    // Listen for requests
-    console.log("Successfully Connected to DB");
-    app.listen(process.env.PORT || 4000, () => {
-      // Added default port 4000
-      console.log(`Listening on PORT ${process.env.PORT || 4000}`);
-    });
+    console.log("✅ Successfully Connected to DB");
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => console.log(`🚀 Server running on PORT ${PORT}`));
   })
-  .catch((error) => {
-    console.log("Error connecting to DB: " + error.message);
-  });
+  .catch((error) => console.log("❌ DB Connection Error: " + error.message));
