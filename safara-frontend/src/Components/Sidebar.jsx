@@ -14,7 +14,7 @@ import {
   GrDocumentUpdate,
   GrCloudUpload,
 } from "react-icons/gr";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import useAuthContext from "../hooks/useAuthContext";
 
 const Sidebar = () => {
@@ -84,9 +84,11 @@ const Sidebar = () => {
         } lg:translate-x-0 z-50`}
       >
         <div className="w-60 p-4">
-          <img src="/logo.png" alt="Logo" />
+          {/* ✅ Wrap your logo in a Link */}
+          <Link to="/">
+            <img src="/logo.png" alt="Logo" className="cursor-pointer" />
+          </Link>
         </div>
-
         <ul className="menu p-4 space-y-1">
           {currentUser?.role === "admin" && (
             <>
