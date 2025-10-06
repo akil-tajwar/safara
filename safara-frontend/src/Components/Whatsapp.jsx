@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 
 const Whatsapp = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   const handleClick = () => {
     setIsExpanded(!isExpanded);
   };
 
   return (
-    <div className="fixed z-50 bottom-10 right-10">
-      <div 
+    <div className="fixed z-50 bottom-5 right-10">
+      <div
         className={`bg-white rounded-lg overflow-hidden transition-all duration-300 ease-in-out ${
           isExpanded ? "w-64 h-72" : "w-16 h-16"
         }`}
@@ -20,7 +20,7 @@ const Whatsapp = () => {
           <div className="p-4 custom-shadow border rounded-ld">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-green-600 font-bold">WhatsApp</h3>
-              <button 
+              <button
                 onClick={handleClick}
                 className="text-gray-500 hover:text-gray-700"
               >
@@ -40,7 +40,9 @@ const Whatsapp = () => {
                   />
                 </div>
               </div>
-              <span className="text-xs text-gray-500">Or click to chat now</span>
+              <span className="text-xs text-gray-500">
+                Or click to chat now
+              </span>
             </div>
           </div>
         ) : (
