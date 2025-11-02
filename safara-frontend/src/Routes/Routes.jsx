@@ -1,11 +1,13 @@
-import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import ErrorBoundary from "../utils/ErrorBoundary";
 import LoadingSpinner from "../components/LoadingSpinner";
-import Main from "../Layout/Main";
 
-// Lazy imports
-const Home = lazy(() => import("../Pages/Home"));
+// ⚡ Non-lazy imports for instant initial load
+import Main from "../Layout/Main";
+import Home from "../Pages/Home";
+
+// 🕓 Lazy imports (loaded only when needed)
 const Signup = lazy(() => import("../Pages/Signup"));
 const Login = lazy(() => import("../Pages/Login"));
 const Dashboard = lazy(() => import("../Pages/Dashboard/Dashboard"));
@@ -50,13 +52,13 @@ const ScheduleMeet = lazy(() => import("../Components/ScheduleMeet"));
 const UpdateCourse = lazy(() =>
   import("../Pages/Dashboard/AdminDashboard/UpdateCourse")
 );
-const Others = lazy(() => import("../Pages/ManageOtherCard.jsx"));
+const Others = lazy(() => import("../Pages/ManageOtherCard"));
 const OtherProjectUpload = lazy(() =>
-  import("../Pages/Dashboard/AdminDashboard/UploadOtherProject.jsx")
+  import("../Pages/Dashboard/AdminDashboard/UploadOtherProject")
 );
 const ErrorPage = lazy(() => import("../Pages/ErrorPage"));
 
-// Helper to wrap lazy-loaded components
+// 💡 Helper to wrap lazy-loaded components safely
 const Lazy = (Component) => (
   <ErrorBoundary>
     <Suspense fallback={<LoadingSpinner />}>
@@ -65,17 +67,18 @@ const Lazy = (Component) => (
   </ErrorBoundary>
 );
 
+// 🌐 Router Configuration
 export const router = createBrowserRouter([
   // Public Routes
   {
     path: "/",
-    element: Lazy(Main),
+    element: <Main />, // ⚡ Non-lazy for fast first paint
     errorElement: Lazy(ErrorPage),
     children: [
-      { path: "/", element: Lazy(Home) },
+      { path: "/", element: <Home /> }, // ⚡ Home loads instantly (no spinner)
       { path: "/signup", element: Lazy(Signup) },
       { path: "/login", element: Lazy(Login) },
-      { path: "/others", element: Lazy(Others) }, // ✅ dynamic Others page
+      { path: "/others", element: Lazy(Others) },
       { path: "/forgetPassword", element: Lazy(ForgetPassword) },
       { path: "/resetPassword/:token", element: Lazy(ResetPassword) },
       { path: "/allCourses", element: Lazy(AllCourses) },
@@ -109,7 +112,7 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/admin/otherProjectUpload",
         element: Lazy(OtherProjectUpload),
-      }, // ✅ Admin upload page
+      },
     ],
   },
 
