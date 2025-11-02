@@ -35,22 +35,6 @@ const Home = () => {
     fetchTopCourses();
   }, []);
 
-  // Show loader while fetching courses
-  // if (loading)
-  //   return (
-  //     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-  //       <span className="loading loading-spinner w-40 h-40 text-white"></span>
-  //     </div>
-  //   );
-
-  // if (error) {
-  //   return (
-  //     <div className="text-center text-red-500 mt-20">
-  //       <p>Failed to load courses: {error}</p>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       {/* Helmet for dynamic page title and meta */}
