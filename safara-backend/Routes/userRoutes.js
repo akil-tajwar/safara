@@ -26,7 +26,7 @@ const loginLimiter = rateLimit({
 });
 //post
 router.post("/signup", loginLimiter, signupUser);
-router.post("/login", loginLimiter, loginUser);
+router.post("/login", loginUser);
 router.post("/googleLogin", googleLogin);
 router.post("/forgetPassword", forgetPassword);
 router.post("/resetPassword/:token", resetPassword);
