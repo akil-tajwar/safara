@@ -55,6 +55,9 @@ const OtherProjectUpload = lazy(() =>
   import("../Pages/Dashboard/AdminDashboard/UploadOtherProject.jsx")
 );
 const ErrorPage = lazy(() => import("../Pages/ErrorPage"));
+const TermsAndConditions = lazy(() => import("../Pages/TermsAndConditions.jsx"));
+const PrivacyAndPolicy = lazy(() => import("../Pages/PrivacyAndPolicy.jsx"));
+const FAQ = lazy(() => import("../Pages/FAQ.jsx"));
 
 // Helper to wrap lazy-loaded components
 const Lazy = (Component) => (
@@ -84,6 +87,9 @@ export const router = createBrowserRouter([
       { path: "/settings", element: Lazy(Settings) },
       { path: "/certificate", element: Lazy(Certificate) },
       { path: "/updateProfile", element: Lazy(UpdateProfile) },
+      { path: "/termsAndConditions", element: Lazy(TermsAndConditions) },
+      { path: "/privacyAndPolicy", element: Lazy(PrivacyAndPolicy) },
+      { path: "/FAQ", element: Lazy(FAQ) },
     ],
   },
 
