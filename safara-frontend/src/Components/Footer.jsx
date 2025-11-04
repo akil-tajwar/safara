@@ -41,29 +41,20 @@ const Footer = () => {
             className="flex items-center text-white mb-4 hover:text-gray-300"
           >
             <MdEmail className="mr-3 text-xl" />
-            info@university.edu
+            safaralearningcenter@gmail.com
           </Link>
         </div>
 
         {/* Quick Links Section */}
         <div className="flex flex-col lg:ml-28">
           <h6 className="text-lg font-semibold mb-6">Quick Links</h6>
-          <Link to="/admissions" className="mb-3 text-sm hover:text-gray-300">
-            Enroll
+          <Link to="/FAQ" className="mb-3 text-sm hover:text-gray-300">
+            FAQ
           </Link>
-          <Link
-            to="/academic-programs"
-            className="mb-3 text-sm hover:text-gray-300"
-          >
-            Academic Programs
-          </Link>
-          <Link to="/research" className="mb-3 text-sm hover:text-gray-300">
-            Research
-          </Link>
-          <Link to="/privacy" className="text-sm mb-3 hover:text-gray-300">
+          <Link to="/privacyAndPolicy" className="text-sm mb-3 hover:text-gray-300">
             Privacy Policy
           </Link>
-          <Link to="/terms" className="text-sm hover:text-gray-300">
+          <Link to="/termsAndConditions" className="text-sm hover:text-gray-300">
             Terms & Conditions
           </Link>
         </div>
